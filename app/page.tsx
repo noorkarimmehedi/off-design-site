@@ -114,7 +114,7 @@ export default function Page() {
   ]
 
   return (
-    <main className="bg-neutral-950 text-white">
+    <main className="bg-white text-neutral-900">
       {/* HERO: full-viewport row. Left is sticky; right scrolls internally. */}
       <section className="px-4 pt-4 pb-16 lg:pb-4">
         <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[420px_1fr]">
@@ -123,13 +123,13 @@ export default function Page() {
             <RevealOnView
               as="div"
               intensity="hero"
-              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-white/10 bg-black p-6 sm:p-8"
+              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-8"
               staggerChildren
             >
               {/* Wordmark */}
               <div className="mb-20 lg:mb-20 flex items-center gap-2">
                 <div className="text-2xl font-extrabold tracking-tight">off-design</div>
-                <div className="h-2 w-2 rounded-full bg-white/60" aria-hidden="true" />
+                <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
               </div>
 
               {/* Main content moved to bottom */}
@@ -140,7 +140,7 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 text-[10px] sm:text-xs text-white/70">
+                <p className="mt-4 text-[10px] sm:text-xs text-neutral-600">
                   <span className="block sm:inline">Off-Design is a AI-Powered MVP developer based in London.</span>
                   <span className="block sm:inline sm:ml-1">
                     We help early‑stage startups ship beautiful, usable software fast.
@@ -174,12 +174,12 @@ export default function Page() {
                 {/* Pricing */}
                 <div className="mt-6 space-y-3">
                   <div className="flex items-center gap-2 text-2xl font-black">
-                    <span className="text-white/40 line-through">$5000</span>
-                    <span className="text-white">$3099</span>
+                    <span className="text-neutral-400 line-through">$5000</span>
+                    <span className="text-neutral-900">$3099</span>
                     <div className="flex items-center gap-1 ml-2">
-                      <PlayArrow className="h-5 w-5 text-white/60" />
+                      <PlayArrow className="h-5 w-5 text-neutral-500" />
                       <span
-                        className="text-sm text-white/60"
+                        className="text-sm text-neutral-500"
                         style={{
                           fontFamily: '"Kalam", "Caveat", "Dancing Script", cursive',
                           transform: "rotate(-2deg)",
@@ -190,7 +190,7 @@ export default function Page() {
                       </span>
                     </div>
                   </div>
-                  <div className="space-y-2 text-sm text-white/70">
+                  <div className="space-y-2 text-sm text-neutral-600">
                     <div>• Web application</div>
                     <div>• Modern, scalable tech stack</div>
                     <div>• Personalized, founder-led development</div>
@@ -201,8 +201,8 @@ export default function Page() {
                 </div>
 
                 {/* Social proof */}
-                <div className="mt-4 pt-4 border-t border-white/10">
-                  <p className="text-[10px] sm:text-xs text-white/60 leading-relaxed">
+                <div className="mt-4 pt-4 border-t border-neutral-200">
+                  <p className="text-[10px] sm:text-xs text-neutral-500 leading-relaxed">
                     "Off-design" has—and still—partners with some of the most successful founders in the world after
                     only launching in 2024.
                   </p>
@@ -210,7 +210,7 @@ export default function Page() {
 
                 {/* Copyright */}
                 <div className="mt-3">
-                  <p className="text-xs text-white/40">© Off-design</p>
+                  <p className="text-xs text-neutral-400">© Off-design</p>
                 </div>
               </div>
             </RevealOnView>
