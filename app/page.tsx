@@ -147,6 +147,11 @@ export default function Page() {
                   </span>
                 </p>
 
+                {/* SVG container margin changed from mt-1 to mt-0 */}
+                <div className="mt-0">
+                  <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[200px]" />
+                </div>
+
                 {/* CTAs */}
                 <div className="mt-6 flex items-center gap-3">
                   <FancyButton asChild size="large" variant="neutral">
