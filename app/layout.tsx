@@ -3,8 +3,9 @@ import type { Metadata } from "next"
 import "../styles/globals.css"
 
 export const metadata: Metadata = {
-  title: "off-design",
-  description: "AI-Powered MVP developer based in London",
+  title: "Off-design: An Award-Winning MVP Studio",
+  description:
+    "AI-Powered MVP developer based in London. We help early-stage startups ship beautiful, usable software fast.",
   generator: "v0.dev",
 }
 
@@ -16,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.png" type="image/svg+xml" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
