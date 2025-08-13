@@ -78,7 +78,7 @@ export default function ProjectCard({
           {/* Bottom content */}
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
+              <div className="hidden lg:block">
                 <h3 className="text-lg font-semibold sm:text-xl">{title}</h3>
                 <p className="text-sm text-white/70">{subtitle}</p>
               </div>

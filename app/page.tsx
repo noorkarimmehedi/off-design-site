@@ -140,14 +140,14 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 mb-2 text-[10px] sm:text-xs text-white/70">
+                <p className="mt-4 text-[10px] sm:text-xs text-white/70">
                   <span className="block sm:inline">Off-Design is a AI-Powered MVP developer based in London.</span>
                   <span className="block sm:inline sm:ml-1">
                     We help early‑stage startups ship beautiful, usable software fast.
                   </span>
                 </p>
 
-                <div>
+                <div className="mt-2">
                   <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[200px]" />
                 </div>
 
