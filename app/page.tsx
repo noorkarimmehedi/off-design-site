@@ -140,15 +140,14 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 text-[10px] sm:text-xs text-white/70">
+                <p className="mt-4 mb-2 text-[10px] sm:text-xs text-white/70">
                   <span className="block sm:inline">Off-Design is a AI-Powered MVP developer based in London.</span>
                   <span className="block sm:inline sm:ml-1">
                     We help early‑stage startups ship beautiful, usable software fast.
                   </span>
                 </p>
 
-                {/* SVG container margin changed from mt-1 to mt-0 */}
-                <div className="mt-0">
+                <div>
                   <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[200px]" />
                 </div>
 
@@ -173,7 +172,7 @@ export default function Page() {
                 </div>
 
                 {/* Pricing */}
-                <div className="mt-8 space-y-3">
+                <div className="mt-6 space-y-3">
                   <div className="flex items-center gap-2 text-2xl font-black">
                     <span className="text-white/40 line-through">$5000</span>
                     <span className="text-white">$3099</span>
@@ -202,7 +201,7 @@ export default function Page() {
                 </div>
 
                 {/* Social proof */}
-                <div className="mt-6 pt-4 border-t border-white/10">
+                <div className="mt-4 pt-4 border-t border-white/10">
                   <p className="text-[10px] sm:text-xs text-white/60 leading-relaxed">
                     "Off-design" has—and still—partners with some of the most successful founders in the world after
                     only launching in 2024.
@@ -210,7 +209,7 @@ export default function Page() {
                 </div>
 
                 {/* Copyright */}
-                <div className="mt-1">
+                <div className="mt-3">
                   <p className="text-xs text-white/40">© Off-design</p>
                 </div>
               </div>
