@@ -31,16 +31,16 @@ const PlayArrow = ({ className }: { className?: string }) => (
 export default function Page() {
   const heroImages = [
     {
-      src: "/images/portfolio-sample.png",
-      caption: "Walletly — Mobile banking overview",
-      from: "#0f172a",
-      to: "#6d28d9",
+      src: "/images/a-trips-travel-app.webp",
+      caption: "A-Trips — AI Travel Planning Assistant",
+      from: "#ff6b35",
+      to: "#8b5cf6",
     },
     {
-      src: "/placeholder.svg?height=900&width=1600",
-      caption: "Nimbus — SaaS analytics dashboard",
-      from: "#111827",
-      to: "#2563eb",
+      src: "/images/lucid-dreams-app.webp",
+      caption: "Lucid — Dream visualization platform",
+      from: "#ff6b35",
+      to: "#8b5cf6",
     },
     {
       src: "/placeholder.svg?height=900&width=1600",
@@ -52,24 +52,24 @@ export default function Page() {
 
   const projects = [
     {
-      title: "Walletly — Multi‑account mobile banking",
-      subtitle: "End‑to‑end product design",
-      imageSrc: "/images/1 (1).webp",
-      tags: ["Mobile", "Fintech", "UI/UX"],
+      title: "A-Trips — AI Travel Planning Assistant",
+      subtitle: "Conversational travel planning platform",
+      imageSrc: "/images/a-trips-travel-app.webp",
+      tags: ["AI", "Travel", "SaaS", "UI/UX"],
       href: "#project-1",
       priority: true,
-      gradientFrom: "#0f172a",
-      gradientTo: "#6d28d9",
+      gradientFrom: "#ff6b35",
+      gradientTo: "#8b5cf6",
     },
     {
-      title: "Nimbus — SaaS analytics",
-      subtitle: "Design system & web app",
-      imageSrc: "/images/1 (2).webp",
-      tags: ["SaaS", "Design System", "Web"],
+      title: "Lucid — Dream Visualization Platform",
+      subtitle: "Unlock visuals from your dreams",
+      imageSrc: "/images/lucid-dreams-app.webp",
+      tags: ["Wellness", "AI", "Mobile", "UI/UX"],
       href: "#project-2",
       priority: false,
-      gradientFrom: "#111827",
-      gradientTo: "#2563eb",
+      gradientFrom: "#ff6b35",
+      gradientTo: "#8b5cf6",
     },
     {
       title: "Arcade — E‑commerce for streetwear",
