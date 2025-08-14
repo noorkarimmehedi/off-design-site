@@ -171,32 +171,33 @@ export default function Page() {
                   </FancyButton>
                 </div>
 
-                {/* Pricing */}
-                <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-2 text-2xl font-black">
-                    <span className="text-neutral-400 line-through">$5000</span>
-                    <span className="text-neutral-900">$3099</span>
-                    <div className="flex items-center gap-1 ml-2">
-                      <PlayArrow className="h-5 w-5 text-neutral-500" />
-                      <span
-                        className="text-sm text-neutral-500"
-                        style={{
-                          fontFamily: '"Kalam", "Caveat", "Dancing Script", cursive',
-                          transform: "rotate(-2deg)",
-                          fontWeight: "400",
-                        }}
-                      >
-                        (Launching offer)
-                      </span>
+                {/* Feature list */}
+                <div className="mt-4 pt-4 border-t border-neutral-200">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Web application</span>
                     </div>
-                  </div>
-                  <div className="space-y-2 text-sm text-neutral-600">
-                    <div>• Web application</div>
-                    <div>• Modern, scalable tech stack</div>
-                    <div>• Personalized, founder-led development</div>
-                    <div>• Regular updates and transparent process</div>
-                    <div>• Complete MVP development in 3-4 weeks</div>
-                    <div>• Seamless integrations (payments, auth, etc.)</div>
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Modern, scalable tech stack</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Personalized, founder-led development</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Regular updates and transparent process</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Complete MVP development in 3-4 weeks</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
+                      <span>Seamless integrations (payments, auth, etc.)</span>
+                    </div>
                   </div>
                 </div>
 
