@@ -74,7 +74,7 @@ export default function Page() {
     {
       title: "Arcade — E‑commerce for streetwear",
       subtitle: "Mobile‑first storefront",
-      imageSrc: "/demo_07.mp4",
+      imageSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/git-blob/prj_XVXJ9rPLBXdt3NSlZBguUjAS3xEK/a3aHq2ZUZGljsOOhzrmsFE/public/demo_07.mp4",
       isVideo: true,
       tags: ["Commerce", "Mobile", "Brand"],
       href: "#project-3",
