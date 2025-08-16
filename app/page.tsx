@@ -85,7 +85,8 @@ export default function Page() {
     {
       title: "CareConnect — Patient portal",
       subtitle: "Accessibility‑first UI",
-      imageSrc: "/images/1 (4).webp",
+      imageSrc: "/demo_08.mp4",
+      isVideo: true,
       tags: ["A11y", "Web App", "Health"],
       href: "#project-4",
       priority: false,
