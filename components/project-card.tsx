@@ -1,14 +1,18 @@
+"use client";
+
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import RevealOnView from "@/components/reveal-on-view"
+import { useEffect, useRef } from "react"
 
 type Props = {
   title?: string
   subtitle?: string
   imageSrc?: string
+  isVideo?: boolean
   tags?: string[]
   href?: string
   priority?: boolean
@@ -19,11 +23,11 @@ type Props = {
   revealDelay?: number
 }
 
-// Server Component (no client hooks)
 export default function ProjectCard({
   title = "Project title",
   subtitle = "Project subtitle",
   imageSrc = "/placeholder.svg?height=720&width=1280",
+  isVideo = false,
   tags = ["Design", "Web"],
   href = "#",
   priority = false,
@@ -33,6 +37,23 @@ export default function ProjectCard({
   containerClassName,
   revealDelay = 0,
 }: Props) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (isVideo && videoRef.current) {
+      console.log('Video props:', {
+        src: imageSrc,
+        isVideo,
+        videoElement: videoRef.current
+      });
+      
+      // Try to play the video
+      videoRef.current.play().catch(error => {
+        console.error('Error playing video:', error);
+      });
+    }
+  }, [isVideo, imageSrc]);
+
   return (
     <article className={cn("group relative", containerClassName)}>
       <RevealOnView
@@ -43,21 +64,40 @@ export default function ProjectCard({
         }}
       >
         <div className="relative overflow-hidden bg-black lg:h-full">
-          {/* Image */}
+          {/* Image/Video Container */}
           <div
             className={cn(
               "relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto lg:h-full",
               imageContainerClassName,
             )}
           >
-            <Image
-              src={imageSrc || "/placeholder.svg"}
-              alt={title}
-              fill
-              sizes="(min-width: 1024px) 66vw, 100vw"
-              priority={priority}
-              className="object-cover"
-            />
+            {isVideo ? (
+              <video
+                ref={videoRef}
+                autoPlay={true}
+                loop={true}
+                muted={true}
+                playsInline={true}
+                controls={false}
+                preload="auto"
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{ objectFit: 'cover' }}
+                onLoadedData={() => console.log('Video loaded successfully')}
+                onError={(e) => console.error('Video error:', e)}
+              >
+                <source src={imageSrc} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              <Image
+                src={imageSrc || "/placeholder.svg"}
+                alt={title}
+                fill
+                sizes="(min-width: 1024px) 66vw, 100vw"
+                priority={priority}
+                className="object-cover"
+              />
+            )}
             {/* Subtle vignette */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/30" />
           </div>

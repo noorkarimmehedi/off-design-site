@@ -74,7 +74,8 @@ export default function Page() {
     {
       title: "Arcade — E‑commerce for streetwear",
       subtitle: "Mobile‑first storefront",
-      imageSrc: "/images/1 (3).webp",
+      imageSrc: "/demo_07.mp4",
+      isVideo: true,
       tags: ["Commerce", "Mobile", "Brand"],
       href: "#project-3",
       priority: false,
@@ -225,6 +226,7 @@ export default function Page() {
                 title={p.title}
                 subtitle={p.subtitle}
                 imageSrc={p.imageSrc}
+                isVideo={p.isVideo}
                 tags={p.tags}
                 href={p.href}
                 priority={p.priority}
