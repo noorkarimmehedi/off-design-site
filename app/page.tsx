@@ -156,8 +156,8 @@ export default function Page() {
                 {/* CTAs */}
                 <div className="mt-6 flex items-center gap-3">
                   <FancyButton asChild size="large" variant="neutral">
-                    <Link href="https://cal.com/noor-foumnf/15min" target="_blank" rel="noopener noreferrer">
-                      Book a Call
+                    <Link href="https://tally.so/r/wz94LE" target="_blank" rel="noopener noreferrer">
+                      Book a slot
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </FancyButton>
