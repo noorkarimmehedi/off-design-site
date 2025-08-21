@@ -102,8 +102,8 @@ export default function ProjectCard({
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/30" />
           </div>
 
-          {/* Top-left tags */}
-          <div className="pointer-events-none absolute left-4 top-4 flex flex-wrap gap-2">
+          {/* Top-left tags - hidden on mobile */}
+          <div className="pointer-events-none absolute left-4 top-4 hidden sm:flex flex-wrap gap-2">
             {tags.map((t) => (
               <Badge
                 key={t}
@@ -124,7 +124,7 @@ export default function ProjectCard({
               </div>
               <Link
                 href={href}
-                className="inline-flex items-center gap-2 bg-white/10 px-3 py-2 text-sm font-medium backdrop-blur transition-colors hover:bg-white/20 self-start sm:self-auto"
+                className="hidden sm:inline-flex items-center gap-2 bg-white/10 px-3 py-2 text-sm font-medium backdrop-blur transition-colors hover:bg-white/20 self-start sm:self-auto"
                 aria-label={`Open case study: ${title}`}
               >
                 Case study
