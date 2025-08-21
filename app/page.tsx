@@ -96,8 +96,8 @@ export default function Page() {
     {
       title: "Aurora — Creative portfolio",
       subtitle: "Motion & interaction design",
-      imageSrc: "/5th video.mp4",
-      isVideo: true,
+      imageSrc: "/Gtf-9FWWAAEL1s.webp",
+      isVideo: false,
       tags: ["Portfolio", "Animation", "UI/UX"],
       href: "#project-5",
       priority: false,
@@ -107,7 +107,7 @@ export default function Page() {
     {
       title: "Hydra — AI assistant",
       subtitle: "Conversational product UX",
-      imageSrc: "/images/1 (6).webp",
+      imageSrc: "/my-image-02.png",
       tags: ["AI", "SaaS", "Product"],
       href: "#project-6",
       priority: false,
