@@ -69,6 +69,7 @@ export default function ProjectCard({
             className={cn(
               "relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto lg:h-full",
               imageContainerClassName,
+              imageSrc === "/Gtf-9FWWAAEL1s.webp" ? "aspect-[1/1] sm:aspect-[16/9]" : ""
             )}
           >
             {isVideo ? (
@@ -95,7 +96,7 @@ export default function ProjectCard({
                 fill
                 sizes="(min-width: 1024px) 66vw, 100vw"
                 priority={priority}
-                className="object-cover"
+                className={`${imageSrc === "/Gtf-9FWWAAEL1s.webp" ? "object-contain sm:object-cover" : "object-cover"}`}
               />
             )}
             {/* Subtle vignette */}
