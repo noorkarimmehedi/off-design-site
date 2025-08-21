@@ -210,6 +210,11 @@ export default function Page() {
                     only launching in 2024.
                   </p>
                 </div>
+                
+                {/* Signature image */}
+                <div className="mt-4">
+                  <img src="/imgi_11_image.webp" alt="Signature" className="h-12 w-auto" />
+                </div>
 
                 {/* Copyright */}
                 <div className="mt-3">
