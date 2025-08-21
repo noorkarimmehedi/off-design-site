@@ -31,11 +31,11 @@ const variantStyles = {
 
 const sizeStyles = {
   medium: {
-    root: "h-10 gap-3 rounded-xl px-4",
+    root: "h-10 gap-3 rounded-sm px-4",
     icon: "-mx-1",
   },
   large: {
-    root: "h-12 gap-3 rounded-xl px-6",
+    root: "h-12 gap-3 rounded-sm px-6",
     icon: "-mx-1",
   },
 }
