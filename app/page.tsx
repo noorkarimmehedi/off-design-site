@@ -96,7 +96,8 @@ export default function Page() {
     {
       title: "Aurora — Creative portfolio",
       subtitle: "Motion & interaction design",
-      imageSrc: "/images/1 (5).webp",
+      imageSrc: "/5th video.mp4",
+      isVideo: true,
       tags: ["Portfolio", "Animation", "UI/UX"],
       href: "#project-5",
       priority: false,
