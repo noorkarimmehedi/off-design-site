@@ -10,6 +10,10 @@
 This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
 Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
 
+## Latest Updates
+
+- Updated third project video to use new x_video_05 file (updated on: June 27, 2024)
+
 ## Deployment
 
 Your project is live at:
