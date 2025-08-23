@@ -114,6 +114,16 @@ export default function Page() {
       gradientFrom: "#0b132b",
       gradientTo: "#10b981",
     },
+    {
+      title: "Nexus — Design System",
+      subtitle: "Component library showcase",
+      imageSrc: "/my-image-07.webp",
+      tags: ["Design System", "UI/UX", "Documentation"],
+      href: "#project-7",
+      priority: false,
+      gradientFrom: "#1e293b",
+      gradientTo: "#3b82f6",
+    },
   ]
 
   return (
