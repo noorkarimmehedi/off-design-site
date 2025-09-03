@@ -103,36 +103,9 @@ export default function ProjectCard({
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/30" />
           </div>
 
-          {/* Top-left tags - hidden on mobile */}
-          <div className="pointer-events-none absolute left-4 top-4 hidden sm:flex flex-wrap gap-2">
-            {tags.map((t) => (
-              <Badge
-                key={t}
-                variant="secondary"
-                className="pointer-events-auto bg-black/50 text-white border-white/20 backdrop-blur-sm"
-              >
-                {t}
-              </Badge>
-            ))}
-          </div>
+          {/* Tags removed globally */}
 
-          {/* Bottom content - hidden on mobile */}
-          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5 bg-black/40 backdrop-blur-sm hidden sm:block">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div className="hidden sm:block">
-                <h3 className="text-lg font-semibold sm:text-xl text-white">{title}</h3>
-                <p className="text-sm text-white/70">{subtitle}</p>
-              </div>
-              <Link
-                href={href}
-                className="hidden sm:inline-flex items-center gap-2 bg-white/10 px-3 py-2 text-sm font-medium backdrop-blur transition-colors hover:bg-white/20 self-start sm:self-auto"
-                aria-label={`Open case study: ${title}`}
-              >
-                Case study
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
+          {/* Bottom content removed: titles/subtitles and Case study hidden for all */}
         </div>
       </RevealOnView>
     </article>
