@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   description:
     "AI-Powered MVP developer based in London. We help early-stage startups ship beautiful, usable software fast.",
   generator: "v0.dev",
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 }
 
 export default function RootLayout({
@@ -17,8 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/new-favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon_02.webp" type="image/webp" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <meta name="theme-color" content="#3C3C3C" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

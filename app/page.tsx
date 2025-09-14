@@ -226,11 +226,11 @@ export default function Page() {
                     </div>
                     <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">Landing Pages</span>
+                      <span className="font-ppmondwest">E-commerce Store</span>
                     </div>
                     <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">E-commerce Store</span>
+                      <span className="font-ppmondwest">Fully customized website</span>
                     </div>
                     <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
