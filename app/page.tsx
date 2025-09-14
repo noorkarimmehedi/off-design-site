@@ -183,7 +183,7 @@ export default function Page() {
             >
               {/* Wordmark */}
               <div className="mb-20 lg:mb-20 flex items-center gap-2">
-                <div className="text-2xl font-extrabold tracking-tight">off-design</div>
+                <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">off-design</div>
                 <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
               </div>
 
