@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { FancyButton } from "@/components/ui/fancy-button"
+import AnimatedButton from "@/components/animated-button"
 
 import ProjectCard from "@/components/project-card"
 import AnimatedHeading from "@/components/animated-heading"
@@ -194,7 +195,7 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 text-[10px] sm:text-xs text-neutral-600">
+                <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
                   <span className="block sm:inline">Off-Design is a AI-Powered MVP developer based in London.</span>
                   <span className="block sm:inline sm:ml-1">
                     We help early‑stage startups ship beautiful, usable software fast.
@@ -207,50 +208,33 @@ export default function Page() {
 
                 {/* CTAs */}
                 <div className="mt-6 flex items-center gap-3">
-                  <FancyButton asChild size="large" variant="neutral">
-                    <Link href="https://tally.so/r/wz94LE" target="_blank" rel="noopener noreferrer">
-                      Book a slot
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </FancyButton>
-                  <FancyButton asChild size="large" variant="neutral">
-                    <Link
-                      href="https://api.whatsapp.com/send/?phone=8801733670129"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Chat
-                      <WhatsAppIcon className="ml-2 h-4 w-4" />
-                    </Link>
-                  </FancyButton>
+                  <AnimatedButton href="https://cal.com/noor-foumnf/15min">
+                    Book a Call
+                  </AnimatedButton>
+                  <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">
+                    Chat with us
+                  </AnimatedButton>
                 </div>
 
                 {/* Feature list */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
+                  <h3 className="text-base font-medium text-neutral-900 mb-3 font-ppmondwest">What We Design & Build:</h3>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Web application</span>
+                      <span className="font-ppmondwest">Dashboards</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Modern, scalable tech stack</span>
+                      <span className="font-ppmondwest">Landing Pages</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Personalized, founder-led development</span>
+                      <span className="font-ppmondwest">E-commerce Store</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
+                    <div className="flex items-center gap-2 text-base text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Regular updates and transparent process</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Complete MVP development in 3-4 weeks</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span>Seamless integrations (payments, auth, etc.)</span>
+                      <span className="font-ppmondwest">Minimum Viable Product (MVP)</span>
                     </div>
                   </div>
                 </div>
