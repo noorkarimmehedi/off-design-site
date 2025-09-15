@@ -221,10 +221,7 @@ export default function Page() {
                 />
 
                 <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
-                  <span className="block sm:inline">Off-Design is a AI-Powered IT solution based in Dhaka.</span>
-                  <span className="block sm:inline sm:ml-1">
-                    We help early‑stage Startups & Businesses ship beautiful software fast.
-                  </span>
+                  <span className="block sm:inline">Off-Design is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Startups ship beautiful website fast.</span>
                 </p>
 
                 <div className="mt-2">
