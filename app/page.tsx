@@ -204,20 +204,23 @@ export default function Page() {
               staggerChildren
             >
               {/* Wordmark */}
-              <div className="mb-20 lg:mb-20 flex items-center gap-2">
+              <div className="mb-1 lg:mb-1 flex items-center gap-2">
                 <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">off-design</div>
                 <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
               </div>
+              <div className="mt-0 mb-4 text-[10px] sm:text-xs text-neutral-600 font-ppmondwest">
+                Bangladesh First AI-Powered IT Solution Company
+              </div>
 
               {/* Main content moved to bottom */}
-              <div className="mt-30 lg:mt-0">
+              <div className="mt-30 lg:mt-14">
                 {/* Headline with intro blur effect */}
                 <AnimatedHeading
                   className="text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl"
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 text-[11px] sm:text-sm text-neutral-600 font-ppmondwest">
+                <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
                   <span className="block sm:inline">Off-Design is a AI-Powered IT solution based in Dhaka.</span>
                   <span className="block sm:inline sm:ml-1">
                     We help early‑stage Startups & Businesses ship beautiful software fast.
