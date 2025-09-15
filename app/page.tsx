@@ -53,6 +53,17 @@ export default function Page() {
 
   const projects = [
     {
+      title: "Prelude — Featured Visual",
+      subtitle: "New photo card",
+      imageSrc: "/imgi_8_image.webp",
+      isVideo: false,
+      tags: ["Visual", "UI/UX"],
+      href: "#project-0",
+      priority: true,
+      gradientFrom: "#111827",
+      gradientTo: "#6b7280",
+    },
+    {
       title: "Portfolio — New 04",
       subtitle: "Selected work",
       imageSrc: "/new_portfolio_04.webp",
@@ -127,8 +138,8 @@ export default function Page() {
     {
       title: "CareConnect — Patient portal",
       subtitle: "Accessibility‑first UI",
-      imageSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/git-blob/prj_XVXJ9rPLBXdt3NSlZBguUjAS3xEK/f0cudgkwwj9UYBRhUSxkR-/public/demo_08.mp4",
-      isVideo: true,
+      imageSrc: "/Bg_01.webp",
+      isVideo: false,
       tags: ["A11y", "Web App", "Health"],
       href: "#project-8",
       priority: false,
@@ -138,7 +149,7 @@ export default function Page() {
     {
       title: "Aurora — Creative portfolio",
       subtitle: "Motion & interaction design",
-      imageSrc: "/Gtf-9FWWAAEL1s.webp",
+      imageSrc: "/imgi_2_image (1).webp",
       isVideo: false,
       tags: ["Portfolio", "Animation", "UI/UX"],
       href: "#project-5",
@@ -165,6 +176,17 @@ export default function Page() {
       priority: false,
       gradientFrom: "#1e293b",
       gradientTo: "#3b82f6",
+    },
+    {
+      title: "Atlas — Visual Showcase",
+      subtitle: "Static visual composition",
+      imageSrc: "/bg_02.webp",
+      isVideo: false,
+      tags: ["Visual", "UI/UX", "Web"],
+      href: "#project-12",
+      priority: false,
+      gradientFrom: "#111827",
+      gradientTo: "#6b7280",
     },
   ]
 
@@ -195,10 +217,10 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
                 />
 
-                <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
-                  <span className="block sm:inline">Off-Design is a AI-Powered MVP developer based in London.</span>
+                <p className="mt-4 text-[11px] sm:text-sm text-neutral-600 font-ppmondwest">
+                  <span className="block sm:inline">Off-Design is a AI-Powered IT solution based in Dhaka.</span>
                   <span className="block sm:inline sm:ml-1">
-                    We help early‑stage startups ship beautiful, usable software fast.
+                    We help early‑stage Startups & Businesses ship beautiful software fast.
                   </span>
                 </p>
 
