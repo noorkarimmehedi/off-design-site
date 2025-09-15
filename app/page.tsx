@@ -204,12 +204,14 @@ export default function Page() {
               staggerChildren
             >
               {/* Wordmark */}
-              <div className="mb-1 lg:mb-1 flex items-center gap-2">
-                <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">off-design</div>
-                <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
-              </div>
-              <div className="mt-0 mb-4 text-[10px] sm:text-xs text-neutral-600 font-ppmondwest">
-                Bangladesh First AI-Powered IT Solution Company
+              <div className="mb-4 lg:mb-4 flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">off-design</div>
+                  <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
+                </div>
+                <div className="text-[9px] sm:text-[11px] text-neutral-500 font-ppmondwest">
+                  Bangladesh First AI-Powered IT Solution Company
+                </div>
               </div>
 
               {/* Main content moved to bottom */}
