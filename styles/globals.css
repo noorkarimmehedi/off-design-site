@@ -1,6 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: "PPMondwest";
+  src: local("PPMondwest"), url("/ppmondwest-regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@layer base {
+  .font-PPMondwest {
+    font-family: "PPMondwest", sans-serif !important;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

@@ -242,23 +242,23 @@ export default function Page() {
 
                 {/* Feature list */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <h3 className="text-base font-medium text-neutral-900 mb-3 font-ppmondwest">What We Design & Build:</h3>
+                  <h3 className="text-sm font-medium text-neutral-900 mb-3 font-departuremono">WHAT WE DESIGN & BUILD:</h3>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-base text-neutral-600">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">Dashboards</span>
+                      <span className="font-departuremono">DASHBOARDS</span>
                     </div>
-                    <div className="flex items-center gap-2 text-base text-neutral-600">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">E-commerce Store</span>
+                      <span className="font-departuremono">E-COMMERCE STORE</span>
                     </div>
-                    <div className="flex items-center gap-2 text-base text-neutral-600">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">Fully customized website</span>
+                      <span className="font-departuremono">FULLY CUSTOMIZED WEBSITE</span>
                     </div>
-                    <div className="flex items-center gap-2 text-base text-neutral-600">
+                    <div className="flex items-center gap-2 text-sm text-neutral-600">
                       <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-ppmondwest">Minimum Viable Product (MVP)</span>
+                      <span className="font-departuremono">MINIMUM VIABLE PRODUCT (MVP)</span>
                     </div>
                   </div>
                 </div>
