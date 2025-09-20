@@ -219,7 +219,7 @@ export default function Page() {
                 {/* Headline with intro blur effect */}
                 <AnimatedHeading
                   className="text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl"
-                  lines={["WE DESIGN & BUILD", "PRODUCTS USING", "LOVABLE & CURSOR"]}
+                  lines={["WE DESIGN & BUILD", "PRODUCTS USING", "SHOPIFY & CURSOR"]}
                 />
 
                 <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
