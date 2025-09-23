@@ -242,7 +242,7 @@ export default function Page() {
 
                 {/* Feature sentence */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <p className="text-[13px] sm:text-sm text-neutral-600">
+                  <p className="text-[12px] sm:text-[13px] text-neutral-600">
                     We design and build digital solutions including <strong>dashboards</strong> for data insights,
                     <strong> e-commerce stores</strong> for online sales, <strong>fully customized websites</strong>
                     {" "}tailored to your brand, and <strong>Minimum Viable Products (MVPs)</strong> to help you quickly
