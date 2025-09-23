@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import "../styles/globals.css"
 
 export const metadata: Metadata = {
-  title: "Off-design",
+  title: "Arc Lab Technology",
   description:
     "AI-Powered MVP developer based in London. We help early-stage startups ship beautiful, usable software fast.",
   generator: "v0.dev",
