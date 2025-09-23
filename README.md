@@ -33,3 +33,20 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Development
+
+Run the project locally:
+
+```bash
+pnpm install
+pnpm dev
+# App runs at http://localhost:3000
+```
+
+## Tech Stack
+
+- Next.js 15
+- React 19
+- Tailwind CSS 4
+- PNPM
