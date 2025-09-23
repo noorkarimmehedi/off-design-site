@@ -240,27 +240,14 @@ export default function Page() {
                   </AnimatedButton>
                 </div>
 
-                {/* Feature list */}
+                {/* Feature sentence */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <h3 className="text-sm font-medium text-neutral-900 mb-3 font-departuremono">WHAT WE DESIGN & BUILD:</h3>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-departuremono">DASHBOARDS</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-departuremono">E-COMMERCE STORE</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-departuremono">FULLY CUSTOMIZED WEBSITE</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-neutral-600">
-                      <div className="h-1 w-1 rounded-full bg-neutral-400" />
-                      <span className="font-departuremono">MINIMUM VIABLE PRODUCT (MVP)</span>
-                    </div>
-                  </div>
+                  <p className="text-[13px] sm:text-sm text-neutral-600">
+                    We design and build digital solutions including <strong>dashboards</strong> for data insights,
+                    <strong> e-commerce stores</strong> for online sales, <strong>fully customized websites</strong>
+                    {" "}tailored to your brand, and <strong>Minimum Viable Products (MVPs)</strong> to help you quickly
+                    launch and test new ideas.
+                  </p>
                 </div>
 
                 {/* Social proof */}
