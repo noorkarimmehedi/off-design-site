@@ -278,7 +278,7 @@ export default function Page() {
 
                 {/* Copyright */}
                 <div className="mt-3">
-                  <p className="text-xs text-neutral-400">© Off-design</p>
+                  <p className="text-xs text-neutral-400">© Arc Lab Technology</p>
                 </div>
               </div>
             </RevealOnView>
