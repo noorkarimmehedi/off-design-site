@@ -1,4 +1,4 @@
-# Portfolio template design
+# Arc Lab Technology — Portfolio
 
 *Automatically synced with your [v0.dev](https://v0.dev) deployments*
 
@@ -13,6 +13,7 @@ Any changes you make to your deployed app will be automatically pushed to this r
 ## Latest Updates
 
 - Updated third project video to use new x_video_05 file (updated on: June 27, 2024)
+- Branding updated from Off-design to Arc Lab Technology (updated on: Sept 23, 2025)
 
 ## Deployment
 
