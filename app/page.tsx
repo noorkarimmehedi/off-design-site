@@ -204,12 +204,12 @@ export default function Page() {
               staggerChildren
             >
               {/* Wordmark */}
-              <div className="mb-4 lg:mb-4 flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">off-design</div>
+              <div className="mb-4 lg:mb-4 flex items-center gap-0.5 sm:gap-1 flex-wrap">
+                <div className="flex items-center gap-1 sm:gap-2">
+                  <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">Arc Lab Technology</div>
                   <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
                 </div>
-                <div className="text-[9px] sm:text-[11px] text-neutral-500 font-ppmondwest">
+                <div className="text-[11px] sm:text-[11px] text-neutral-500 font-ppmondwest">
                   Bangladesh First AI-Powered IT Solution Company
                 </div>
               </div>
@@ -222,8 +222,8 @@ export default function Page() {
                   lines={["WE DESIGN & BUILD", "PRODUCTS USING", "SHOPIFY & CURSOR"]}
                 />
 
-                <p className="mt-4 text-xs sm:text-sm text-neutral-600 font-ppmondwest">
-                  <span className="block sm:inline">Off-Design is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Startups ship beautiful website fast.</span>
+                <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
+                  <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Startups ship beautiful website fast.</span>
                 </p>
 
                 <div className="mt-2">
@@ -265,8 +265,8 @@ export default function Page() {
 
                 {/* Social proof */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <p className="text-[10px] sm:text-xs text-neutral-500 leading-relaxed">
-                    "Off-design" has—and still—partners with some of the most successful founders in the world after
+                  <p className="text-[9px] sm:text-[11px] text-neutral-500 leading-relaxed">
+                    "Arc Lab Technology" has—and still—partners with some of the most successful founders in the world after
                     only launching in 2024.
                   </p>
                 </div>
@@ -329,8 +329,8 @@ export default function Page() {
                   <li className="hover:underline cursor-pointer">X (Twitter)</li>
                 </ul>
               </div>
-              <h2 className="absolute bottom-0 left-0  translate-y-1/3 sm:text-[192px]  text-[80px] text-[#ff5941] font-ppmondwest">
-                off-design
+              <h2 className="absolute bottom-0 left-0  translate-y-1/3 sm:text-[192px]  text-[44px] text-[#ff5941] font-ppmondwest">
+                Arc Lab Technology
               </h2>
             </div>
           </div>
