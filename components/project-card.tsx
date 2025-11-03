@@ -21,6 +21,7 @@ type Props = {
   imageContainerClassName?: string
   containerClassName?: string
   revealDelay?: number
+  indicatorText?: string
 }
 
 export default function ProjectCard({
@@ -36,8 +37,10 @@ export default function ProjectCard({
   imageContainerClassName,
   containerClassName,
   revealDelay = 0,
+  indicatorText,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isExternal = href?.startsWith("http");
 
   useEffect(() => {
     if (isVideo && videoRef.current) {
@@ -76,6 +79,16 @@ export default function ProjectCard({
               imageSrc === "/Bg_01.webp" ? "aspect-[16/9] sm:aspect-[16/9]" : ""
             )}
           >
+            {/* Clickable overlay for external links */}
+            {isExternal && (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={title}
+                className="absolute inset-0 z-[2]"
+              />
+            )}
             {isVideo ? (
               <video
                 ref={videoRef}
@@ -109,6 +122,15 @@ export default function ProjectCard({
             )}
             {/* Subtle vignette */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/30" />
+
+            {/* Indicator badge */}
+            {indicatorText && (
+              <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-[50]">
+                <span className="select-none bg-black/70 px-3 py-1 text-[12px] sm:text-xs font-medium text-white shadow-lg">
+                  {indicatorText}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Tags removed globally */}

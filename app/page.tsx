@@ -32,7 +32,7 @@ const PlayArrow = ({ className }: { className?: string }) => (
 export default function Page() {
   const heroImages = [
     {
-      src: "/images/a-trips-travel-app.webp",
+      src: "/angonaloy.webp",
       caption: "A-Trips — AI Travel Planning Assistant",
       from: "#ff6b35",
       to: "#8b5cf6",
@@ -55,10 +55,11 @@ export default function Page() {
     {
       title: "Prelude — Featured Visual",
       subtitle: "New photo card",
-      imageSrc: "/imgi_8_image.webp",
+      imageSrc: "/angonaloy.webp",
       isVideo: false,
       tags: ["Visual", "UI/UX"],
-      href: "#project-0",
+      href: "https://angonaloy.shop/",
+      indicatorText: "View the Project",
       priority: true,
       gradientFrom: "#111827",
       gradientTo: "#6b7280",
@@ -243,7 +244,7 @@ export default function Page() {
 
                 {/* Feature sentence */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <p className="text-[12px] sm:text-[13px] text-neutral-600">
+                  <p className="text-[10px] sm:text-[11px] text-neutral-600">
                     Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
                   </p>
                 </div>
@@ -280,6 +281,7 @@ export default function Page() {
                 isVideo={p.isVideo}
                 tags={p.tags}
                 href={p.href}
+                indicatorText={(p as any).indicatorText}
                 priority={p.priority}
                 gradientFrom={p.gradientFrom}
                 gradientTo={p.gradientTo}
