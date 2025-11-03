@@ -8,6 +8,8 @@ type AnimatedHeadingProps = {
   className?: string
   /** Lines of text. Each string will be rendered on its own line. */
   lines: string[]
+  /** Optional class names per line index to customize styling per line */
+  lineClassNames?: string[]
   /** Delay before the streaming effect starts */
   startDelay?: number
   /** Duration of each word's animation */
@@ -25,6 +27,7 @@ type AnimatedHeadingProps = {
 export default function AnimatedHeading({
   className,
   lines,
+  lineClassNames,
   startDelay = 0,
   durationPerWord = 0.9,
   staggerPerWord = 0.08,
@@ -89,7 +92,7 @@ export default function AnimatedHeading({
       {isReady && (
         <span aria-hidden>
           {tokensPerLine.map((tokens, lineIdx) => (
-            <span key={`line-${lineIdx}`} className="block">
+            <span key={`line-${lineIdx}`} className={cn("block", lineClassNames?.[lineIdx])}>
               {tokens.map((token, idx) => {
                 const isSpace = /^\s+$/.test(token)
                 if (isSpace) {

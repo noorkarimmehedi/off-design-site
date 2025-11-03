@@ -220,6 +220,7 @@ export default function Page() {
                 <AnimatedHeading
                   className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
                   lines={["WE BUILD & SCALE", "BRANDS USING", "SHOPIFY & FACEBOOK"]}
+                  lineClassNames={["", "text-[1.22em] sm:text-[1.28em]", ""]}
                 />
 
                 <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
