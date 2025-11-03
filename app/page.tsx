@@ -101,6 +101,18 @@ export default function Page() {
       gradientTo: "#5bc0be",
     },
     {
+      title: "Hobbyshop — Featured Visual",
+      subtitle: "New photo card",
+      imageSrc: "/hobbyshop.webp",
+      isVideo: false,
+      tags: ["Visual", "UI/UX"],
+      href: "https://hobbyshopbd.shop/",
+      indicatorText: "View the Project",
+      priority: false,
+      gradientFrom: "#111827",
+      gradientTo: "#6b7280",
+    },
+    {
       title: "Portfolio — New 04",
       subtitle: "Selected work",
       imageSrc: "/new_portfolio_04.webp",
