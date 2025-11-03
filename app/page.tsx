@@ -218,12 +218,12 @@ export default function Page() {
               <div className="mt-30 lg:mt-14">
                 {/* Headline with intro blur effect */}
                 <AnimatedHeading
-                  className="text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl"
-                  lines={["WE DESIGN & BUILD", "PRODUCTS USING", "SHOPIFY & CURSOR"]}
+                  className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
+                  lines={["WE BUILD & SCALE", "BRANDS USING", "SHOPIFY & FACEBOOK"]}
                 />
 
                 <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
-                  <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Startups ship beautiful website fast.</span>
+                  <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.</span>
                 </p>
 
                 <div className="mt-2">
@@ -243,10 +243,7 @@ export default function Page() {
                 {/* Feature sentence */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
                   <p className="text-[12px] sm:text-[13px] text-neutral-600">
-                    We design and build digital solutions including <strong>dashboards</strong> for data insights,
-                    <strong> e-commerce stores</strong> for online sales, <strong>fully customized websites</strong>
-                    {" "}tailored to your brand, and <strong>Minimum Viable Products (MVPs)</strong> to help you quickly
-                    launch and test new ideas.
+                    Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
                   </p>
                 </div>
 
