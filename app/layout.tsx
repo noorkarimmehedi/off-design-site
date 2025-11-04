@@ -5,7 +5,7 @@ import "../styles/globals.css"
 export const metadata: Metadata = {
   title: "Arc Lab Technology",
   description:
-    "AI-Powered MVP developer based in London. We help early-stage startups ship beautiful, usable software fast.",
+    "AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.",
   generator: "v0.dev",
   icons: {
     icon: "/favicon.svg",
