@@ -219,12 +219,12 @@ export default function Page() {
                 <AnimatedHeading
                   className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
                   lines={["THE BESPOKE DESIGN", "& DEVELOPMENT FOR YOUR BUSINESS"]}
-                  lineClassNames={["", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
+                  lineClassNames={["text-3xl sm:text-3xl", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
                   wordClassNamesByLine={[
                     {},
                     {
-                      "&": "lg:text-[0.98em]",
-                      DEVELOPMENT: "lg:text-[0.98em]",
+                      "&": "text-[1.35em] sm:text-[1.28em] lg:text-[0.98em]",
+                      DEVELOPMENT: "text-[1.35em] sm:text-[1.28em] lg:text-[0.98em]",
                       FOR: "lg:text-[0.98em]",
                       YOUR: "lg:text-[1.18em]",
                       BUSINESS: "lg:text-[1.18em]",
