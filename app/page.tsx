@@ -215,51 +215,47 @@ export default function Page() {
 
               {/* Main content moved to bottom */}
               <div className="mt-12 lg:mt-14">
-                {/* Swiss Grid Headline */}
-                <div className="border-y border-neutral-200 divide-y divide-neutral-200">
-                  {/* Segment 01 */}
-                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
-                    <div className="flex items-center justify-center p-1">
-                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
-                        Type / Core
+                {/* Refined Swiss Luxury Headline */}
+                <div className="mt-16 pt-10 border-t border-neutral-200">
+                  <div className="grid grid-cols-12 gap-y-8">
+                    {/* Metadata Row */}
+                    <div className="col-span-12 flex items-center justify-between">
+                      <span className="text-[10px] font-mono tracking-[0.3em] text-neutral-400 uppercase">
+                        Archive / 2024 / System
+                      </span>
+                      <div className="h-px flex-1 mx-4 bg-neutral-100 hidden sm:block" />
+                      <span className="text-[10px] font-mono tracking-[0.2em] text-neutral-400 uppercase hidden sm:block">
+                        Approach — 01
                       </span>
                     </div>
-                    <div className="p-4 sm:p-6 bg-white">
-                      <AnimatedHeading
-                        className="text-[26px] sm:text-[42px] font-black leading-[0.85] tracking-tighter uppercase"
-                        lines={["THE BESPOKE DESIGN"]}
-                        lineClassNames={["whitespace-nowrap"]}
-                      />
-                    </div>
-                  </div>
 
-                  {/* Segment 02 */}
-                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
-                    <div className="flex items-center justify-center p-1">
-                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
-                        Focus / ARC
-                      </span>
-                    </div>
-                    <div className="p-4 sm:p-6 bg-neutral-50">
-                      <AnimatedHeading
-                        className="text-[22px] sm:text-[36px] font-black leading-[0.85] tracking-tighter uppercase"
-                        lines={["& DEVELOPMENT"]}
-                      />
-                    </div>
-                  </div>
+                    {/* Main Headline Block */}
+                    <div className="col-span-12 lg:col-span-11 xl:col-span-10">
+                      <div className="space-y-4 sm:space-y-6">
+                        <AnimatedHeading
+                          className="text-[32px] sm:text-[48px] lg:text-[64px] font-black leading-[0.95] tracking-tighter uppercase"
+                          lines={["THE BESPOKE DESIGN"]}
+                          lineClassNames={["whitespace-nowrap"]}
+                        />
 
-                  {/* Segment 03 */}
-                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
-                    <div className="flex items-center justify-center p-1">
-                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
-                        Task / 24
-                      </span>
-                    </div>
-                    <div className="p-4 sm:p-6 bg-white">
-                      <AnimatedHeading
-                        className="text-[18px] sm:text-[28px] font-black leading-[0.85] tracking-tighter uppercase text-neutral-500"
-                        lines={["FOR YOUR BUSINESS"]}
-                      />
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-4">
+                          <AnimatedHeading
+                            className="text-[24px] sm:text-[36px] lg:text-[48px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
+                            lines={["& DEVELOPMENT"]}
+                          />
+                          <div className="h-px sm:h-[24px] w-full sm:w-px bg-neutral-200" />
+                          <span className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase pt-1">
+                            Core Service / Web
+                          </span>
+                        </div>
+
+                        <div className="pt-2 sm:pt-4">
+                          <AnimatedHeading
+                            className="text-[18px] sm:text-[24px] lg:text-[32px] font-bold leading-[1.1] tracking-tight uppercase text-neutral-500"
+                            lines={["FOR YOUR BUSINESS"]}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
