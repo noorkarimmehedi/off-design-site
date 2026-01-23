@@ -55,7 +55,7 @@ export default function Page() {
     {
       title: "Screen Recording 02 — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/screen_recording_02.mp4",
+      imageSrc: "/screen_recording_02.webm",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -67,7 +67,7 @@ export default function Page() {
     {
       title: "Screen Recording 03 — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/screen_recording_03.mp4",
+      imageSrc: "/screen_recording_03.webm",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -91,7 +91,7 @@ export default function Page() {
     {
       title: "Screen Recording — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/screen_recording_01.mp4",
+      imageSrc: "/screen_recording_01.webm",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -190,7 +190,7 @@ export default function Page() {
     {
       title: "Arcade — E‑commerce for streetwear",
       subtitle: "Mobile‑first storefront",
-      imageSrc: "/x_video_05 copy.mp4",
+      imageSrc: "/x_video_05 copy.webm",
       isVideo: true,
       tags: ["Commerce", "Mobile", "Brand"],
       href: "#project-7",

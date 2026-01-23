@@ -165,7 +165,7 @@ export default function ProjectCard({
                   {isVideoVisible && (
                     <source
                       src={encodeURI(imageSrc)}
-                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'}
+                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : imageSrc?.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
                     />
                   )}
                   Your browser does not support the video tag.
@@ -173,7 +173,7 @@ export default function ProjectCard({
                 {videoError && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                     <p className="text-white text-sm px-4 text-center">
-                      Video format not supported. Please convert to MP4 format.
+                      Video format not supported. Please convert to MP4 or WebM format.
                     </p>
                   </div>
                 )}
