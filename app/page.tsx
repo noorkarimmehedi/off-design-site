@@ -233,14 +233,14 @@ export default function Page() {
                     <div className="col-span-12 lg:col-span-11 xl:col-span-10">
                       <div className="space-y-4 sm:space-y-6">
                         <AnimatedHeading
-                          className="text-[32px] sm:text-[48px] lg:text-[64px] font-black leading-[0.95] tracking-tighter uppercase"
+                          className="text-[32px] sm:text-[48px] lg:text-[42px] font-black leading-[0.95] tracking-tighter uppercase"
                           lines={["THE BESPOKE DESIGN"]}
                           lineClassNames={["whitespace-nowrap"]}
                         />
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline gap-4">
                           <AnimatedHeading
-                            className="text-[24px] sm:text-[36px] lg:text-[48px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
+                            className="text-[24px] sm:text-[36px] lg:text-[32px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
                             lines={["& DEVELOPMENT"]}
                           />
                           <div className="h-px sm:h-[24px] w-full sm:w-px bg-neutral-200" />
@@ -251,7 +251,7 @@ export default function Page() {
 
                         <div className="pt-2 sm:pt-4">
                           <AnimatedHeading
-                            className="text-[18px] sm:text-[24px] lg:text-[32px] font-bold leading-[1.1] tracking-tight uppercase text-neutral-500"
+                            className="text-[18px] sm:text-[24px] lg:text-[24px] font-bold leading-[1.1] tracking-tight uppercase text-neutral-500"
                             lines={["FOR YOUR BUSINESS"]}
                           />
                         </div>
