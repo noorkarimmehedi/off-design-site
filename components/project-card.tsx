@@ -63,7 +63,7 @@ export default function ProjectCard({
         });
       },
       {
-        rootMargin: "100px", // Start loading 100px before entering viewport
+        rootMargin: "300px", // Start loading 300px before entering viewport
         threshold: 0.1,
       }
     );
@@ -177,8 +177,8 @@ export default function ProjectCard({
                 sizes="(min-width: 1024px) 66vw, 100vw"
                 priority={priority}
                 className={`${imageSrc === "/Gtf-9FWWAAEL1s.webp" ? "object-contain sm:object-cover" :
-                    imageSrc === "/Bg_01.webp" ? "object-contain" :
-                      "object-cover"
+                  imageSrc === "/Bg_01.webp" ? "object-contain" :
+                    "object-cover"
                   }`}
               />
             )}

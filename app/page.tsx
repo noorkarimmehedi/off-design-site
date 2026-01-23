@@ -55,7 +55,7 @@ export default function Page() {
     {
       title: "Screen Recording 02 — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/Screen Recording 02.mp4",
+      imageSrc: "/screen_recording_02.mp4",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -67,7 +67,7 @@ export default function Page() {
     {
       title: "Screen Recording 03 — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/Screen Recording 03.mp4",
+      imageSrc: "/screen_recording_03.mp4",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -91,7 +91,7 @@ export default function Page() {
     {
       title: "Screen Recording — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/Screen Recording 01.mp4",
+      imageSrc: "/screen_recording_01.mp4",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
@@ -324,7 +324,7 @@ export default function Page() {
           <div className="space-y-4">
             {projects.map((p, idx) => (
               <ProjectCard
-                key={p.title}
+                key={`${p.title}-${idx}`}
                 title={p.title}
                 subtitle={p.subtitle}
                 imageSrc={p.imageSrc}
