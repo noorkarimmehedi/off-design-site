@@ -22,6 +22,7 @@ type Props = {
   containerClassName?: string
   revealDelay?: number
   indicatorText?: string
+  poster?: string
 }
 
 export default function ProjectCard({
@@ -38,6 +39,7 @@ export default function ProjectCard({
   containerClassName,
   revealDelay = 0,
   indicatorText,
+  poster,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -65,7 +67,8 @@ export default function ProjectCard({
         });
       },
       {
-        rootMargin: "200px", // Reduced from 600px to avoid downloading too many huge videos at once
+        // On mobile, we use 0px to only load when visible. On desktop, we can be more aggressive.
+        rootMargin: typeof window !== 'undefined' && window.innerWidth < 768 ? "0px" : "200px",
         threshold: 0.01,
       }
     );
@@ -138,10 +141,10 @@ export default function ProjectCard({
             {isVideo ? (
               <>
                 {!isVideoLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white z-[1]">
+                  <div className="absolute inset-0 flex items-center justify-center z-[1]">
                     <div className="flex flex-col items-center gap-2">
-                      <div className="w-6 h-6 border-2 border-neutral-200 border-t-neutral-800 rounded-full animate-spin" />
-                      <div className="text-neutral-400 text-[10px] font-mono tracking-widest uppercase">Loading Project...</div>
+                      <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <div className="text-white/60 text-[10px] font-mono tracking-widest uppercase">Loading Project...</div>
                     </div>
                   </div>
                 )}
@@ -152,7 +155,8 @@ export default function ProjectCard({
                   muted={true}
                   playsInline={true}
                   controls={false}
-                  preload="auto"
+                  preload="metadata"
+                  poster={poster}
                   className="absolute inset-0 h-full w-full object-contain"
                   style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : 0 }}
                   onLoadedData={() => {

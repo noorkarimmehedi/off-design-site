@@ -338,6 +338,7 @@ export default function Page() {
                 imageContainerClassName="lg:h-full"
                 containerClassName="lg:h-[calc(100svh-2rem)]"
                 revealDelay={idx * 0.06}
+                poster={(p as any).poster}
               />
             ))}
           </div>
