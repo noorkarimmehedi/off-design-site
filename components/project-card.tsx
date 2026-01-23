@@ -40,27 +40,58 @@ export default function ProjectCard({
   indicatorText,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [videoError, setVideoError] = useState(false);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const isExternal = href?.startsWith("http");
 
+  // Intersection Observer for lazy loading videos
   useEffect(() => {
-    if (isVideo && videoRef.current) {
-      console.log('Video props:', {
-        src: imageSrc,
-        isVideo,
-        videoElement: videoRef.current
-      });
+    if (!isVideo || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVideoVisible(true);
+            // Load video source when visible
+            if (videoRef.current && !isVideoLoaded) {
+              videoRef.current.load();
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "50px", // Start loading 50px before entering viewport
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(containerRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isVideo, isVideoLoaded]);
+
+  // Play video when it's visible and loaded
+  useEffect(() => {
+    if (isVideo && videoRef.current && isVideoVisible && isVideoLoaded) {
+      const playPromise = videoRef.current.play();
       
-      // Reset error state when video source changes
-      setVideoError(false);
-      
-      // Try to play the video
-      videoRef.current.play().catch(error => {
-        console.error('Error playing video:', error);
-        setVideoError(true);
-      });
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setVideoError(false);
+          })
+          .catch((error) => {
+            console.error('Error playing video:', error);
+            setVideoError(true);
+          });
+      }
     }
-  }, [isVideo, imageSrc]);
+  }, [isVideo, isVideoVisible, isVideoLoaded]);
 
   return (
     <article className={cn("group relative", containerClassName)}>
@@ -77,6 +108,7 @@ export default function ProjectCard({
         )}>
           {/* Image/Video Container */}
           <div
+            ref={containerRef}
             className={cn(
               "relative w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto lg:h-full",
               imageContainerClassName,
@@ -96,18 +128,23 @@ export default function ProjectCard({
             )}
             {isVideo ? (
               <>
+                {!isVideoVisible && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+                    <div className="text-neutral-400 text-xs">Loading...</div>
+                  </div>
+                )}
                 <video
                   ref={videoRef}
-                  autoPlay={true}
+                  autoPlay={isVideoVisible && isVideoLoaded}
                   loop={true}
                   muted={true}
                   playsInline={true}
                   controls={false}
-                  preload="auto"
+                  preload="none"
                   className="absolute inset-0 h-full w-full object-contain"
-                  style={{ objectFit: 'contain' }}
+                  style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : 0 }}
                   onLoadedData={() => {
-                    console.log('Video loaded successfully');
+                    setIsVideoLoaded(true);
                     setVideoError(false);
                   }}
                   onError={(e) => {
@@ -116,10 +153,12 @@ export default function ProjectCard({
                     setVideoError(true);
                   }}
                 >
-                  <source 
-                    src={encodeURI(imageSrc)} 
-                    type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} 
-                  />
+                  {isVideoVisible && (
+                    <source 
+                      src={encodeURI(imageSrc)} 
+                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} 
+                    />
+                  )}
                   Your browser does not support the video tag.
                 </video>
                 {videoError && (
