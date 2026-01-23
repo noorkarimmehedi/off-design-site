@@ -156,7 +156,6 @@ export default function ProjectCard({
                 )}
                 <video
                   ref={videoRef}
-                  src={isVideoVisible ? imageSrc : undefined}
                   autoPlay={true}
                   loop={true}
                   muted={true}
@@ -175,28 +174,26 @@ export default function ProjectCard({
                   }}
                   onError={(e) => {
                     const video = e.currentTarget;
-                    if (video.error) {
-                      // Only show the error overlay for actual format/source issues
-                      // Code 3 = Decode error, Code 4 = Source not supported
-                      if (video.error.code === 3 || video.error.code === 4) {
-                        console.error('Video format error:', video.error.code, imageSrc);
-                        setVideoError(true);
-                      }
+                    if (video.error && isVideoVisible) {
+                      console.error('Video error:', video.error.code, imageSrc);
+                      setVideoError(true);
                     }
                   }}
                 >
+                  {isVideoVisible && (
+                    <>
+                      <source src={imageSrc} type={imageSrc?.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+                      {imageSrc?.endsWith('.webm') && (
+                        <source src={imageSrc.replace('.webm', '.mp4')} type="video/mp4" />
+                      )}
+                    </>
+                  )}
                   Your browser does not support the video tag.
                 </video>
-                {videoError && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-[10]">
-                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 max-w-[80%] text-center">
-                      <p className="text-white text-xs font-mono tracking-widest uppercase mb-2">Notice</p>
-                      <p className="text-white/80 text-[11px] leading-relaxed">
-                        This video format is not supported by your current browser version.
-                        <br /><br />
-                        <span className="text-[9px] opacity-60">Recommendation: Use Safari 15+ or Chrome for best experience.</span>
-                      </p>
-                    </div>
+                {/* Fallback when video fails or is loading */}
+                {videoError && !poster && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/5">
+                    <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-neutral-400">Preview Unavailable</span>
                   </div>
                 )}
               </>
