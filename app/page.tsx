@@ -60,7 +60,7 @@ export default function Page() {
       tags: ["Visual", "Video"],
       href: "#",
       indicatorText: "View the Project",
-      priority: true,
+      priority: false, // Set to false for heavy videos
       gradientFrom: "#1f2937",
       gradientTo: "#10b981",
     },
@@ -96,7 +96,7 @@ export default function Page() {
       tags: ["Visual", "Video"],
       href: "#",
       indicatorText: "View the Project",
-      priority: true,
+      priority: false, // Set to false for heavy videos
       gradientFrom: "#0b132b",
       gradientTo: "#5bc0be",
     },

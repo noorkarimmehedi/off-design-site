@@ -65,7 +65,7 @@ export default function ProjectCard({
         });
       },
       {
-        rootMargin: "600px", // Aggressive preloading margin
+        rootMargin: "200px", // Reduced from 600px to avoid downloading too many huge videos at once
         threshold: 0.01,
       }
     );
@@ -137,9 +137,12 @@ export default function ProjectCard({
             )}
             {isVideo ? (
               <>
-                {!isVideoVisible && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-white/80">
-                    <div className="text-neutral-400 text-xs">Loading...</div>
+                {!isVideoLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white z-[1]">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-6 h-6 border-2 border-neutral-200 border-t-neutral-800 rounded-full animate-spin" />
+                      <div className="text-neutral-400 text-[10px] font-mono tracking-widest uppercase">Loading Project...</div>
+                    </div>
                   </div>
                 )}
                 <video
@@ -155,6 +158,10 @@ export default function ProjectCard({
                   onLoadedData={() => {
                     setIsVideoLoaded(true);
                     setVideoError(false);
+                  }}
+                  onLoadedMetadata={() => {
+                    // Try to show the first frame as soon as metadata is ready
+                    setIsVideoLoaded(true);
                   }}
                   onError={(e) => {
                     console.error('Video error:', e);
