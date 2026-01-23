@@ -63,7 +63,7 @@ export default function ProjectCard({
         });
       },
       {
-        rootMargin: "50px", // Start loading 50px before entering viewport
+        rootMargin: "100px", // Start loading 100px before entering viewport
         threshold: 0.1,
       }
     );
@@ -79,7 +79,7 @@ export default function ProjectCard({
   useEffect(() => {
     if (isVideo && videoRef.current && isVideoVisible && isVideoLoaded) {
       const playPromise = videoRef.current.play();
-      
+
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
@@ -140,7 +140,7 @@ export default function ProjectCard({
                   muted={true}
                   playsInline={true}
                   controls={false}
-                  preload="none"
+                  preload="metadata"
                   className="absolute inset-0 h-full w-full object-contain"
                   style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : 0 }}
                   onLoadedData={() => {
@@ -154,9 +154,9 @@ export default function ProjectCard({
                   }}
                 >
                   {isVideoVisible && (
-                    <source 
-                      src={encodeURI(imageSrc)} 
-                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} 
+                    <source
+                      src={encodeURI(imageSrc)}
+                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'}
                     />
                   )}
                   Your browser does not support the video tag.
@@ -176,11 +176,10 @@ export default function ProjectCard({
                 fill
                 sizes="(min-width: 1024px) 66vw, 100vw"
                 priority={priority}
-                className={`${
-                  imageSrc === "/Gtf-9FWWAAEL1s.webp" ? "object-contain sm:object-cover" :
-                  imageSrc === "/Bg_01.webp" ? "object-contain" :
-                  "object-cover"
-                }`}
+                className={`${imageSrc === "/Gtf-9FWWAAEL1s.webp" ? "object-contain sm:object-cover" :
+                    imageSrc === "/Bg_01.webp" ? "object-contain" :
+                      "object-cover"
+                  }`}
               />
             )}
             {/* Subtle vignette */}

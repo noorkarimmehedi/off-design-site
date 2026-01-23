@@ -65,6 +65,18 @@ export default function Page() {
       gradientTo: "#10b981",
     },
     {
+      title: "Screen Recording 03 — Featured Visual",
+      subtitle: "New video card",
+      imageSrc: "/Screen Recording 03.mp4",
+      isVideo: true,
+      tags: ["Visual", "Video"],
+      href: "#",
+      indicatorText: "View the Project",
+      priority: false,
+      gradientFrom: "#111827",
+      gradientTo: "#6b7280",
+    },
+    {
       title: "Prelude — Featured Visual",
       subtitle: "New photo card",
       imageSrc: "/angonaloy.webp",
