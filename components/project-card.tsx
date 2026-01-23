@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import RevealOnView from "@/components/reveal-on-view"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type Props = {
   title?: string
@@ -40,6 +40,7 @@ export default function ProjectCard({
   indicatorText,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoError, setVideoError] = useState(false);
   const isExternal = href?.startsWith("http");
 
   useEffect(() => {
@@ -50,9 +51,13 @@ export default function ProjectCard({
         videoElement: videoRef.current
       });
       
+      // Reset error state when video source changes
+      setVideoError(false);
+      
       // Try to play the video
       videoRef.current.play().catch(error => {
         console.error('Error playing video:', error);
+        setVideoError(true);
       });
     }
   }, [isVideo, imageSrc]);
@@ -68,7 +73,7 @@ export default function ProjectCard({
       >
         <div className={cn(
           "relative overflow-hidden lg:h-full",
-          imageSrc === "/Bg_01.webp" ? "bg-white" : "bg-black"
+          imageSrc === "/Bg_01.webp" || isVideo ? "bg-white" : "bg-black"
         )}>
           {/* Image/Video Container */}
           <div
@@ -90,22 +95,41 @@ export default function ProjectCard({
               />
             )}
             {isVideo ? (
-              <video
-                ref={videoRef}
-                autoPlay={true}
-                loop={true}
-                muted={true}
-                playsInline={true}
-                controls={false}
-                preload="auto"
-                className="absolute inset-0 h-full w-full object-cover"
-                style={{ objectFit: 'cover' }}
-                onLoadedData={() => console.log('Video loaded successfully')}
-                onError={(e) => console.error('Video error:', e)}
-              >
-                <source src={imageSrc} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <>
+                <video
+                  ref={videoRef}
+                  autoPlay={true}
+                  loop={true}
+                  muted={true}
+                  playsInline={true}
+                  controls={false}
+                  preload="auto"
+                  className="absolute inset-0 h-full w-full object-contain"
+                  style={{ objectFit: 'contain' }}
+                  onLoadedData={() => {
+                    console.log('Video loaded successfully');
+                    setVideoError(false);
+                  }}
+                  onError={(e) => {
+                    console.error('Video error:', e);
+                    console.error('Video src:', imageSrc);
+                    setVideoError(true);
+                  }}
+                >
+                  <source 
+                    src={encodeURI(imageSrc)} 
+                    type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'} 
+                  />
+                  Your browser does not support the video tag.
+                </video>
+                {videoError && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <p className="text-white text-sm px-4 text-center">
+                      Video format not supported. Please convert to MP4 format.
+                    </p>
+                  </div>
+                )}
+              </>
             ) : (
               <Image
                 src={imageSrc || "/placeholder.svg"}
@@ -123,12 +147,27 @@ export default function ProjectCard({
             {/* Subtle vignette */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/30" />
 
-            {/* Indicator badge */}
+            {/* Indicator badge - Swiss Grid Style */}
             {indicatorText && (
-              <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 z-[50]">
-                <span className="select-none bg-black/70 px-3 py-1 text-[12px] sm:text-xs font-medium text-white shadow-lg">
-                  {indicatorText}
-                </span>
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-[50]">
+                <div className="grid grid-cols-12 gap-0 px-4 sm:px-6 pb-4 sm:pb-6">
+                  <div className="col-span-12 sm:col-start-2 sm:col-span-10 lg:col-start-3 lg:col-span-8">
+                    <div className="border-t border-white/20 pt-3 sm:pt-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="h-px w-8 sm:w-12 bg-white/40"></div>
+                          <span className="select-none font-departuremono text-[9px] sm:text-[10px] tracking-[0.15em] uppercase text-white/90 font-normal leading-none">
+                            {indicatorText}
+                          </span>
+                          <div className="h-px flex-1 bg-white/40"></div>
+                        </div>
+                        <div className="ml-4 sm:ml-6">
+                          <div className="h-1 w-1 bg-white/60"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

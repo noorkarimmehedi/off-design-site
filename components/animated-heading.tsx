@@ -10,6 +10,11 @@ type AnimatedHeadingProps = {
   lines: string[]
   /** Optional class names per line index to customize styling per line */
   lineClassNames?: string[]
+  /**
+   * Optional per-word class names, by line index.
+   * Example: [{}, { YOUR: "lg:text-[1.18em]", BUSINESS: "lg:text-[1.18em]" }]
+   */
+  wordClassNamesByLine?: Array<Record<string, string>>
   /** Delay before the streaming effect starts */
   startDelay?: number
   /** Duration of each word's animation */
@@ -28,6 +33,7 @@ export default function AnimatedHeading({
   className,
   lines,
   lineClassNames,
+  wordClassNamesByLine,
   startDelay = 0,
   durationPerWord = 0.9,
   staggerPerWord = 0.08,
@@ -103,7 +109,10 @@ export default function AnimatedHeading({
                     key={`w-${lineIdx}-${idx}`}
                     data-word
                     data-line-index={lineIdx}
-                    className="inline-block will-change-transform"
+                    className={cn(
+                      "inline-block will-change-transform",
+                      wordClassNamesByLine?.[lineIdx]?.[token],
+                    )}
                   >
                     {token}
                   </span>

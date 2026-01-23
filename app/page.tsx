@@ -53,6 +53,18 @@ export default function Page() {
 
   const projects = [
     {
+      title: "Screen Recording 02 — Featured Visual",
+      subtitle: "New video card",
+      imageSrc: "/Screen Recording 02.mp4",
+      isVideo: true,
+      tags: ["Visual", "Video"],
+      href: "#",
+      indicatorText: "View the Project",
+      priority: true,
+      gradientFrom: "#1f2937",
+      gradientTo: "#10b981",
+    },
+    {
       title: "Prelude — Featured Visual",
       subtitle: "New photo card",
       imageSrc: "/angonaloy.webp",
@@ -60,17 +72,17 @@ export default function Page() {
       tags: ["Visual", "UI/UX"],
       href: "https://angonaloy.shop/",
       indicatorText: "View the Project",
-      priority: true,
+      priority: false,
       gradientFrom: "#111827",
       gradientTo: "#6b7280",
     },
     {
-      title: "Fakeer — Featured Visual",
-      subtitle: "New photo card",
-      imageSrc: "/fakeer.webp",
-      isVideo: false,
-      tags: ["Visual", "UI/UX"],
-      href: "https://fakeerlifestyle.com/",
+      title: "Screen Recording — Featured Visual",
+      subtitle: "New video card",
+      imageSrc: "/Screen Recording 01.mp4",
+      isVideo: true,
+      tags: ["Visual", "Video"],
+      href: "#",
       indicatorText: "View the Project",
       priority: false,
       gradientFrom: "#0b132b",
@@ -94,8 +106,8 @@ export default function Page() {
       imageSrc: "/Zair.webp",
       isVideo: false,
       tags: ["Visual", "UI/UX"],
-      href: "#project-2",
-      indicatorText: "Coming Soon",
+      href: "https://zairbd.com/",
+      indicatorText: "View the Project",
       priority: false,
       gradientFrom: "#0b132b",
       gradientTo: "#5bc0be",
@@ -121,16 +133,6 @@ export default function Page() {
       priority: false,
       gradientFrom: "#0b132b",
       gradientTo: "#5bc0be",
-    },
-    {
-      title: "Portfolio — New 02",
-      subtitle: "Selected work",
-      imageSrc: "/new_portfolio_02.webp",
-      tags: ["Portfolio", "UI/UX", "Web"],
-      href: "#project-2",
-      priority: false,
-      gradientFrom: "#1f2937",
-      gradientTo: "#10b981",
     },
     {
       title: "Portfolio — New 03",
@@ -216,8 +218,18 @@ export default function Page() {
                 {/* Headline with intro blur effect */}
                 <AnimatedHeading
                   className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
-                  lines={["WE BUILD & SCALE", "BRANDS USING", "SHOPIFY & META"]}
-                  lineClassNames={["", "text-[1.22em] sm:text-[1.28em]", "text-[1.12em] sm:text-[1.18em]"]}
+                  lines={["THE BESPOKE DESIGN", "& DEVELOPMENT FOR YOUR BUSINESS"]}
+                  lineClassNames={["", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
+                  wordClassNamesByLine={[
+                    {},
+                    {
+                      "&": "lg:text-[0.98em]",
+                      DEVELOPMENT: "lg:text-[0.98em]",
+                      FOR: "lg:text-[0.98em]",
+                      YOUR: "lg:text-[1.18em]",
+                      BUSINESS: "lg:text-[1.18em]",
+                    },
+                  ]}
                 />
 
                 <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
