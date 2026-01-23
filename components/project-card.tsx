@@ -89,7 +89,10 @@ export default function ProjectCard({
 
   // Play video when it's visible and loaded
   useEffect(() => {
-    if (isVideo && videoRef.current && isVideoVisible && isVideoLoaded) {
+    if (isVideo && videoRef.current && isVideoVisible) {
+      // If we already have error, don't try to play
+      if (videoError) return;
+
       const playPromise = videoRef.current.play();
 
       if (playPromise !== undefined) {
@@ -98,12 +101,15 @@ export default function ProjectCard({
             setVideoError(false);
           })
           .catch((error) => {
-            console.error('Error playing video:', error);
-            setVideoError(true);
+            // Only set error if it's not an AbortError (which happens when scrolling fast)
+            if (error.name !== "AbortError") {
+              console.error('Error playing video:', error);
+              // We don't necessarily set videoError here as it might be a temporary autoplay block
+            }
           });
       }
     }
-  }, [isVideo, isVideoVisible, isVideoLoaded]);
+  }, [isVideo, isVideoVisible, videoError]);
 
   return (
     <article className={cn("group relative", containerClassName)}>
@@ -150,42 +156,47 @@ export default function ProjectCard({
                 )}
                 <video
                   ref={videoRef}
+                  src={isVideoVisible ? imageSrc : undefined}
                   autoPlay={true}
                   loop={true}
                   muted={true}
                   playsInline={true}
                   controls={false}
-                  preload="metadata"
+                  preload="auto"
                   poster={poster}
                   className="absolute inset-0 h-full w-full object-contain"
-                  style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : 0 }}
+                  style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : (poster ? 1 : 0) }}
                   onLoadedData={() => {
                     setIsVideoLoaded(true);
                     setVideoError(false);
                   }}
                   onLoadedMetadata={() => {
-                    // Try to show the first frame as soon as metadata is ready
                     setIsVideoLoaded(true);
                   }}
                   onError={(e) => {
-                    console.error('Video error:', e);
-                    console.error('Video src:', imageSrc);
-                    setVideoError(true);
+                    const video = e.currentTarget;
+                    if (video.error) {
+                      // Only show the error overlay for actual format/source issues
+                      // Code 3 = Decode error, Code 4 = Source not supported
+                      if (video.error.code === 3 || video.error.code === 4) {
+                        console.error('Video format error:', video.error.code, imageSrc);
+                        setVideoError(true);
+                      }
+                    }
                   }}
                 >
-                  {isVideoVisible && (
-                    <source
-                      src={encodeURI(imageSrc)}
-                      type={imageSrc?.endsWith('.mov') ? 'video/quicktime' : imageSrc?.endsWith('.webm') ? 'video/webm' : 'video/mp4'}
-                    />
-                  )}
                   Your browser does not support the video tag.
                 </video>
                 {videoError && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                    <p className="text-white text-sm px-4 text-center">
-                      Video format not supported. Please convert to MP4 or WebM format.
-                    </p>
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-[10]">
+                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-lg border border-white/20 max-w-[80%] text-center">
+                      <p className="text-white text-xs font-mono tracking-widest uppercase mb-2">Notice</p>
+                      <p className="text-white/80 text-[11px] leading-relaxed">
+                        This video format is not supported by your current browser version.
+                        <br /><br />
+                        <span className="text-[9px] opacity-60">Recommendation: Use Safari 15+ or Chrome for best experience.</span>
+                      </p>
+                    </div>
                   </div>
                 )}
               </>
