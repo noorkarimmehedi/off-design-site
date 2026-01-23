@@ -190,7 +190,7 @@ export default function Page() {
     {
       title: "Arcade — E‑commerce for streetwear",
       subtitle: "Mobile‑first storefront",
-      imageSrc: "/x_video_05 copy.webm",
+      imageSrc: "/x_video_05 copy.mp4",
       isVideo: true,
       tags: ["Commerce", "Mobile", "Brand"],
       href: "#project-7",
