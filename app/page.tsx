@@ -252,7 +252,7 @@ export default function Page() {
 
                         <div className="pt-2 sm:pt-4">
                           <AnimatedHeading
-                            className="text-[30px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
+                            className="text-[28px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
                             lines={["FOR YOUR BUSINESS"]}
                             lineClassNames={["whitespace-nowrap"]}
                           />
