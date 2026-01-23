@@ -242,6 +242,7 @@ export default function Page() {
                           <AnimatedHeading
                             className="text-[34px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
                             lines={["& DEVELOPMENT"]}
+                            lineClassNames={["whitespace-nowrap"]}
                           />
                           <div className="h-px sm:h-[24px] w-full sm:w-px bg-neutral-200" />
                           <span className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase pt-1">
@@ -253,6 +254,7 @@ export default function Page() {
                           <AnimatedHeading
                             className="text-[26px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
                             lines={["FOR YOUR BUSINESS"]}
+                            lineClassNames={["whitespace-nowrap"]}
                           />
                         </div>
                       </div>
