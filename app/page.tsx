@@ -91,7 +91,7 @@ export default function Page() {
     {
       title: "Screen Recording — Featured Visual",
       subtitle: "New video card",
-      imageSrc: "/screen_recording_01.webm",
+      imageSrc: "/screen_recording_01.mp4",
       isVideo: true,
       tags: ["Visual", "Video"],
       href: "#",
