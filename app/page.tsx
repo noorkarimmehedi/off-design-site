@@ -96,7 +96,7 @@ export default function Page() {
       tags: ["Visual", "Video"],
       href: "#",
       indicatorText: "View the Project",
-      priority: false,
+      priority: true,
       gradientFrom: "#0b132b",
       gradientTo: "#5bc0be",
     },
