@@ -50,21 +50,23 @@ export default function ProjectCard({
   useEffect(() => {
     if (!isVideo || !containerRef.current) return;
 
+    // If priority is true, make it visible immediately to trigger loading
+    if (priority) {
+      setIsVideoVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setIsVideoVisible(true);
-            // Load video source when visible
-            if (videoRef.current && !isVideoLoaded) {
-              videoRef.current.load();
-            }
           }
         });
       },
       {
-        rootMargin: "300px", // Start loading 300px before entering viewport
-        threshold: 0.1,
+        rootMargin: "600px", // Aggressive preloading margin
+        threshold: 0.01,
       }
     );
 
@@ -73,7 +75,14 @@ export default function ProjectCard({
     return () => {
       observer.disconnect();
     };
-  }, [isVideo, isVideoLoaded]);
+  }, [isVideo, priority]);
+
+  // Load video source when it becomes visible
+  useEffect(() => {
+    if (isVideo && isVideoVisible && videoRef.current && !isVideoLoaded) {
+      videoRef.current.load();
+    }
+  }, [isVideo, isVideoVisible, isVideoLoaded]);
 
   // Play video when it's visible and loaded
   useEffect(() => {
@@ -135,12 +144,12 @@ export default function ProjectCard({
                 )}
                 <video
                   ref={videoRef}
-                  autoPlay={isVideoVisible && isVideoLoaded}
+                  autoPlay={true}
                   loop={true}
                   muted={true}
                   playsInline={true}
                   controls={false}
-                  preload="metadata"
+                  preload="auto"
                   className="absolute inset-0 h-full w-full object-contain"
                   style={{ objectFit: 'contain', opacity: isVideoLoaded ? 1 : 0 }}
                   onLoadedData={() => {
