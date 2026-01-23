@@ -214,23 +214,55 @@ export default function Page() {
               </div>
 
               {/* Main content moved to bottom */}
-              <div className="mt-30 lg:mt-14">
-                {/* Headline with intro blur effect */}
-                <AnimatedHeading
-                  className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
-                  lines={["THE BESPOKE DESIGN", "& DEVELOPMENT FOR YOUR BUSINESS"]}
-                  lineClassNames={["text-[26px] sm:text-3xl whitespace-nowrap", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
-                  wordClassNamesByLine={[
-                    {},
-                    {
-                      "&": "text-[1.35em] sm:text-[1.28em] lg:text-[0.98em]",
-                      DEVELOPMENT: "text-[1.35em] sm:text-[1.28em] lg:text-[0.98em]",
-                      FOR: "lg:text-[0.98em]",
-                      YOUR: "lg:text-[1.18em]",
-                      BUSINESS: "lg:text-[1.18em]",
-                    },
-                  ]}
-                />
+              <div className="mt-12 lg:mt-14">
+                {/* Swiss Grid Headline */}
+                <div className="border-y border-neutral-200 divide-y divide-neutral-200">
+                  {/* Segment 01 */}
+                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
+                    <div className="flex items-center justify-center p-1">
+                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
+                        Type / Core
+                      </span>
+                    </div>
+                    <div className="p-4 sm:p-6 bg-white">
+                      <AnimatedHeading
+                        className="text-[26px] sm:text-[42px] font-black leading-[0.85] tracking-tighter uppercase"
+                        lines={["THE BESPOKE DESIGN"]}
+                        lineClassNames={["whitespace-nowrap"]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Segment 02 */}
+                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
+                    <div className="flex items-center justify-center p-1">
+                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
+                        Focus / ARC
+                      </span>
+                    </div>
+                    <div className="p-4 sm:p-6 bg-neutral-50">
+                      <AnimatedHeading
+                        className="text-[22px] sm:text-[36px] font-black leading-[0.85] tracking-tighter uppercase"
+                        lines={["& DEVELOPMENT"]}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Segment 03 */}
+                  <div className="grid grid-cols-[32px_1fr] divide-x divide-neutral-200">
+                    <div className="flex items-center justify-center p-1">
+                      <span className="text-[9px] font-mono text-neutral-400 rotate-180 [writing-mode:vertical-lr] uppercase tracking-widest">
+                        Task / 24
+                      </span>
+                    </div>
+                    <div className="p-4 sm:p-6 bg-white">
+                      <AnimatedHeading
+                        className="text-[18px] sm:text-[28px] font-black leading-[0.85] tracking-tighter uppercase text-neutral-500"
+                        lines={["FOR YOUR BUSINESS"]}
+                      />
+                    </div>
+                  </div>
+                </div>
 
                 <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
                   <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.</span>
@@ -331,6 +363,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-    </main>
+    </main >
   )
 }
