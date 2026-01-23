@@ -186,7 +186,7 @@ export default function Page() {
       gradientFrom: "#0b132b",
       gradientTo: "#5bc0be",
     },
-    
+
   ]
 
   return (
@@ -219,7 +219,7 @@ export default function Page() {
                 <AnimatedHeading
                   className="text-2xl font-black leading-[1.05] tracking-tight sm:text-3xl"
                   lines={["THE BESPOKE DESIGN", "& DEVELOPMENT FOR YOUR BUSINESS"]}
-                  lineClassNames={["text-3xl sm:text-3xl", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
+                  lineClassNames={["text-[26px] sm:text-3xl whitespace-nowrap", "text-[1.22em] sm:text-[1.28em] lg:text-[1.10em]"]}
                   wordClassNamesByLine={[
                     {},
                     {
@@ -264,7 +264,7 @@ export default function Page() {
                     only launching in 2024.
                   </p>
                 </div>
-                
+
                 {/* Signature image */}
                 <div className="mt-4">
                   <img src="/imgi_11_image.webp" alt="Signature" className="h-12 w-auto" />
