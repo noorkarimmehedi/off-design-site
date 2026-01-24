@@ -63,19 +63,19 @@ export function Testimonial() {
     const current = testimonials[activeIndex]
 
     return (
-        <div className="flex items-center justify-center py-2 overflow-hidden w-full">
+        <div className="flex items-center justify-center py-1 overflow-hidden w-full">
             <div ref={containerRef} className="relative w-full px-1" onMouseMove={handleMouseMove}>
                 {/* Oversized index number - shifted right and smaller for sidebar */}
                 <motion.div
-                    className="absolute -right-2 top-1/2 -translate-y-1/2 text-[10rem] font-bold text-foreground/[0.015] select-none pointer-events-none leading-none tracking-tighter"
+                    className="absolute -right-2 top-1/2 -translate-y-1/2 text-[8rem] font-bold text-foreground/[0.012] select-none pointer-events-none leading-none tracking-tighter"
                     style={{ x: numberX, y: numberY }}
                 >
                     <AnimatePresence mode="wait">
                         <motion.span
                             key={activeIndex}
-                            initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                            initial={{ opacity: 0, scale: 0.8, filter: "blur(8px)" }}
                             animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+                            exit={{ opacity: 0, scale: 1.1, filter: "blur(8px)" }}
                             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                             className="block"
                         >
@@ -85,12 +85,12 @@ export function Testimonial() {
                 </motion.div>
 
                 {/* Main content - simplified for sidebar */}
-                <div className="relative flex flex-col gap-3">
+                <div className="relative flex flex-col gap-2">
                     {/* Header - vertical indicator + company */}
-                    <div className="flex items-start gap-3">
-                        <div className="flex flex-col items-center border-r border-border pr-3">
+                    <div className="flex items-start gap-2">
+                        <div className="flex flex-col items-center border-r border-border pr-2">
                             <motion.span
-                                className="text-[9px] font-mono text-muted-foreground tracking-widest uppercase"
+                                className="text-[8px] font-mono text-muted-foreground tracking-widest uppercase"
                                 style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -98,7 +98,7 @@ export function Testimonial() {
                             >
                                 Info
                             </motion.span>
-                            <div className="relative h-8 w-px bg-border mt-2">
+                            <div className="relative h-6 w-px bg-border mt-1">
                                 <motion.div
                                     className="absolute top-0 left-0 w-full bg-foreground origin-top"
                                     animate={{
@@ -119,7 +119,7 @@ export function Testimonial() {
                                     exit={{ opacity: 0, x: 10 }}
                                     transition={{ duration: 0.4 }}
                                 >
-                                    <span className="inline-flex items-center gap-1.5 text-[9px] font-mono text-muted-foreground border border-border rounded-full px-1.5 py-0">
+                                    <span className="inline-flex items-center gap-1 text-[8px] font-mono text-muted-foreground border border-border rounded-full px-1 py-0">
                                         <span className="w-1 h-1 rounded-full bg-accent" />
                                         {current.company}
                                     </span>
@@ -129,11 +129,11 @@ export function Testimonial() {
                     </div>
 
                     {/* Quote */}
-                    <div className="relative min-h-[70px]">
+                    <div className="relative min-h-[60px]">
                         <AnimatePresence mode="wait">
                             <motion.blockquote
                                 key={activeIndex}
-                                className="text-lg font-light text-foreground leading-tight tracking-tight"
+                                className="text-base font-light text-foreground leading-tight tracking-tight"
                                 initial="hidden"
                                 animate="visible"
                                 exit="exit"
@@ -143,20 +143,20 @@ export function Testimonial() {
                                         key={i}
                                         className="inline-block mr-[0.2em]"
                                         variants={{
-                                            hidden: { opacity: 0, y: 10, rotateX: 90 },
+                                            hidden: { opacity: 0, y: 5, rotateX: 90 },
                                             visible: {
                                                 opacity: 1,
                                                 y: 0,
                                                 rotateX: 0,
                                                 transition: {
                                                     duration: 0.5,
-                                                    delay: i * 0.04,
+                                                    delay: i * 0.03,
                                                     ease: [0.22, 1, 0.36, 1],
                                                 },
                                             },
                                             exit: {
                                                 opacity: 0,
-                                                y: -5,
+                                                y: -3,
                                                 transition: { duration: 0.2, delay: i * 0.02 },
                                             },
                                         }}
@@ -169,45 +169,45 @@ export function Testimonial() {
                     </div>
 
                     {/* Author row */}
-                    <div className="flex items-center justify-between border-t border-border pt-2">
+                    <div className="flex items-center justify-between border-t border-border pt-1">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeIndex}
-                                initial={{ opacity: 0, y: 10 }}
+                                initial={{ opacity: 0, y: 5 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -10 }}
+                                exit={{ opacity: 0, y: -5 }}
                                 transition={{ duration: 0.4, delay: 0.2 }}
                                 className="flex items-center gap-2"
                             >
                                 <motion.div
-                                    className="w-3 h-px bg-foreground"
+                                    className="w-2 h-px bg-foreground"
                                     initial={{ scaleX: 0 }}
                                     animate={{ scaleX: 1 }}
                                     transition={{ duration: 0.6, delay: 0.3 }}
                                     style={{ originX: 0 }}
                                 />
                                 <div>
-                                    <p className="text-[10px] font-medium text-foreground">{current.author}</p>
-                                    <p className="text-[9px] text-muted-foreground">{current.role}</p>
+                                    <p className="text-[9px] font-medium text-foreground">{current.author}</p>
+                                    <p className="text-[8px] text-muted-foreground">{current.role}</p>
                                 </div>
                             </motion.div>
                         </AnimatePresence>
 
                         {/* Navigation */}
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                             <button
                                 onClick={goPrev}
-                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                                className="w-5 h-5 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
                             >
-                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
                                     <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </button>
                             <button
                                 onClick={goNext}
-                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                                className="w-5 h-5 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
                             >
-                                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                                <svg width="10" height="10" viewBox="0 0 16 16" fill="none">
                                     <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                 </svg>
                             </button>

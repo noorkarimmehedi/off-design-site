@@ -212,7 +212,7 @@ export default function Page() {
             <RevealOnView
               as="div"
               intensity="hero"
-              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-7"
+              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-5 sm:p-6"
               staggerChildren
             >
               {/* Wordmark */}
@@ -227,9 +227,9 @@ export default function Page() {
               </div>
 
               {/* Main content moved to bottom */}
-              <div className="mt-6 lg:mt-8">
+              <div className="mt-4 lg:mt-6">
                 {/* Refined Swiss Luxury Headline */}
-                <div className="mt-8 pt-6 border-t border-neutral-200">
+                <div className="mt-6 pt-4 border-t border-neutral-200">
                   <div className="grid grid-cols-12 gap-y-8">
                     {/* Metadata Row */}
                     <div className="col-span-12 flex items-center justify-between">
@@ -246,14 +246,14 @@ export default function Page() {
                     <div className="col-span-12 lg:col-span-11 xl:col-span-10">
                       <div className="space-y-2 sm:space-y-3">
                         <AnimatedHeading
-                          className="text-[26px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase"
+                          className="text-[24px] sm:text-[30px] lg:text-[30px] font-black leading-[0.95] tracking-tighter uppercase"
                           lines={["THE BESPOKE DESIGN"]}
                           lineClassNames={["whitespace-nowrap"]}
                         />
 
-                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-3">
                           <AnimatedHeading
-                            className="text-[34px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
+                            className="text-[30px] sm:text-[30px] lg:text-[30px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
                             lines={["& DEVELOPMENT"]}
                             lineClassNames={["whitespace-nowrap"]}
                           />
@@ -263,9 +263,9 @@ export default function Page() {
                           </span>
                         </div>
 
-                        <div className="pt-2 sm:pt-4">
+                        <div className="pt-1 sm:pt-2">
                           <AnimatedHeading
-                            className="text-[28px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
+                            className="text-[26px] sm:text-[30px] lg:text-[30px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
                             lines={["FOR YOUR BUSINESS"]}
                             lineClassNames={["whitespace-nowrap"]}
                           />
@@ -275,7 +275,7 @@ export default function Page() {
                   </div>
                 </div>
 
-                <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
+                <p className="mt-3 text-[11px] sm:text-[12px] text-neutral-600 font-ppmondwest">
                   <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.</span>
                 </p>
 
