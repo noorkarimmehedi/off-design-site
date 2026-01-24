@@ -6,6 +6,7 @@ import AnimatedButton from "@/components/animated-button"
 import ProjectCard from "@/components/project-card"
 import AnimatedHeading from "@/components/animated-heading"
 import RevealOnView from "@/components/reveal-on-view"
+import { Testimonial } from "@/components/ui/design-testimonial"
 
 // WhatsApp Icon Component
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -299,12 +300,9 @@ export default function Page() {
                   </p>
                 </div>
 
-                {/* Social proof */}
+                {/* Social proof - Replaced with Component */}
                 <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <p className="text-[9px] sm:text-[11px] text-neutral-500 leading-relaxed">
-                    "Arc Lab Technology" has—and still—partners with some of the most successful founders in the world after
-                    only launching in 2024.
-                  </p>
+                  <Testimonial />
                 </div>
 
                 {/* Signature image */}
