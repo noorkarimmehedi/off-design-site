@@ -212,7 +212,7 @@ export default function Page() {
             <RevealOnView
               as="div"
               intensity="hero"
-              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-8"
+              className="sidebar-content relative flex h-full flex-col justify-between overflow-y-auto overflow-x-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-8 scrollbar-hide"
               staggerChildren
             >
               {/* Wordmark */}
