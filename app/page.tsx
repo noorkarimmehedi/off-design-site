@@ -212,7 +212,7 @@ export default function Page() {
             <RevealOnView
               as="div"
               intensity="hero"
-              className="sidebar-content relative flex h-full flex-col justify-between overflow-y-auto overflow-x-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-8 scrollbar-hide"
+              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-7"
               staggerChildren
             >
               {/* Wordmark */}
@@ -227,9 +227,9 @@ export default function Page() {
               </div>
 
               {/* Main content moved to bottom */}
-              <div className="mt-12 lg:mt-14">
+              <div className="mt-6 lg:mt-8">
                 {/* Refined Swiss Luxury Headline */}
-                <div className="mt-16 pt-10 border-t border-neutral-200">
+                <div className="mt-8 pt-6 border-t border-neutral-200">
                   <div className="grid grid-cols-12 gap-y-8">
                     {/* Metadata Row */}
                     <div className="col-span-12 flex items-center justify-between">
@@ -244,7 +244,7 @@ export default function Page() {
 
                     {/* Main Headline Block */}
                     <div className="col-span-12 lg:col-span-11 xl:col-span-10">
-                      <div className="space-y-4 sm:space-y-6">
+                      <div className="space-y-2 sm:space-y-3">
                         <AnimatedHeading
                           className="text-[26px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase"
                           lines={["THE BESPOKE DESIGN"]}
@@ -280,11 +280,11 @@ export default function Page() {
                 </p>
 
                 <div className="mt-2">
-                  <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[200px]" />
+                  <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[150px]" />
                 </div>
 
                 {/* CTAs */}
-                <div className="mt-6 flex items-center gap-3">
+                <div className="mt-4 flex items-center gap-2">
                   <AnimatedButton href="https://cal.com/noor-foumnf/15min">
                     Book a Call
                   </AnimatedButton>
@@ -294,24 +294,24 @@ export default function Page() {
                 </div>
 
                 {/* Feature sentence */}
-                <div className="mt-4 pt-4 border-t border-neutral-200">
-                  <p className="text-[10px] sm:text-[11px] text-neutral-600">
+                <div className="mt-3 pt-3 border-t border-neutral-200">
+                  <p className="text-[9px] sm:text-[10px] text-neutral-600">
                     Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
                   </p>
                 </div>
 
                 {/* Social proof - Replaced with Component */}
-                <div className="mt-4 pt-4 border-t border-neutral-200">
+                <div className="mt-2 pt-2 border-t border-neutral-200">
                   <Testimonial />
                 </div>
 
                 {/* Signature image */}
-                <div className="mt-4">
-                  <img src="/imgi_11_image.webp" alt="Signature" className="h-12 w-auto" />
+                <div className="mt-2">
+                  <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto" />
                 </div>
 
                 {/* Copyright */}
-                <div className="mt-3">
+                <div className="mt-2">
                   <p className="text-xs text-neutral-400">© Arc Lab Technology</p>
                 </div>
               </div>
