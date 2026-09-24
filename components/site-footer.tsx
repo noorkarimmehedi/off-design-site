@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
 import TodayDate from "@/components/today-date"
 
-export default function SiteFooter({ hideSignatureOnMobile = false }: { hideSignatureOnMobile?: boolean }) {
+export default function SiteFooter({ hideSignature = false }: { hideSignature?: boolean }) {
   const ref = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
   // 0 when the footer's top meets the viewport bottom, 1 when its bottom does
@@ -17,7 +17,7 @@ export default function SiteFooter({ hideSignatureOnMobile = false }: { hideSign
     <footer ref={ref} className="relative z-10 overflow-hidden bg-ink text-ivory">
       {/* Meta row */}
       <div className="mx-auto w-full max-w-[964px] px-2 sm:px-8">
-        <div className="flex items-center justify-between gap-4 py-5 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/35 sm:border-t sm:border-line">
+        <div className="flex items-center justify-between gap-4 py-5 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/35">
           <span>© {new Date().getFullYear()} Arc Labs</span>
           <span className="hidden sm:inline">23.8103° N — 90.4125° E</span>
           <button
@@ -44,22 +44,22 @@ export default function SiteFooter({ hideSignatureOnMobile = false }: { hideSign
           }}
         />
 
-        {/* Signature + today's date, above the right side of the wordmark */}
-        <div
-          className={`relative mx-auto w-[88vw] max-w-[1100px] justify-end pb-3 sm:pb-4 ${hideSignatureOnMobile ? "hidden sm:flex" : "flex"}`}
-        >
-          <div className="flex flex-col items-end">
-            <img
-              src="/imgi_11_image.webp"
-              alt="Signature"
-              width={256}
-              height={236}
-              className="h-14 w-auto invert opacity-80 sm:h-20"
-              draggable={false}
-            />
-            <TodayDate className="-mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
+        {/* Signature + today's date, above the right side of the wordmark (the home page shows it in the hero) */}
+        {!hideSignature && (
+          <div className="relative mx-auto flex w-[88vw] max-w-[1100px] justify-end pb-3 sm:pb-4">
+            <div className="flex flex-col items-end">
+              <img
+                src="/imgi_11_image.webp"
+                alt="Signature"
+                width={256}
+                height={236}
+                className="h-14 w-auto invert opacity-80 sm:h-20"
+                draggable={false}
+              />
+              <TodayDate className="-mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Cropped: only the top 80% shows, flush with the page bottom */}
         <div className="relative mx-auto aspect-[1398/418] w-[88vw] max-w-[1100px] overflow-hidden">

@@ -1,6 +1,5 @@
 import AnimatedButton from "@/components/animated-button"
 import AsciiHands from "@/components/ascii-hands"
-import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
@@ -26,9 +25,7 @@ const clients: { name: string; className: string; logo?: string }[] = [
 export default function Page() {
   return (
     <main className="frame relative overflow-x-clip bg-ink text-ivory">
-      <FrameGuides />
-
-      {/* HERO: one full screen, centred between the frame guides */}
+      {/* HERO: one full screen, centred in the content column */}
       <section className="relative flex min-h-svh flex-col">
         <AsciiHands />
         <SiteHeader />
@@ -58,7 +55,7 @@ export default function Page() {
               </span>
               {/* Mobile: the ampersand gets its own line between the words; sm+: it leads "development" */}
               <span className="flex flex-col self-stretch whitespace-nowrap text-[14vw] sm:-mt-[0.02em] sm:block sm:self-end sm:pl-[0.5em] sm:text-[96px] lg:text-[112px]">
-                <span className="relative block self-center text-[1.7em] leading-[0.7] tracking-[-0.06em] text-ivory/90 sm:my-0 sm:inline-block sm:text-[1.32em] sm:leading-[0]">&amp;</span>
+                <span className="relative block self-center text-[1.5em] leading-[0.62] tracking-[-0.06em] text-ivory/90 sm:my-0 sm:inline-block sm:text-[1.32em] sm:leading-[0]">&amp;</span>
                 <span className="self-end">development</span>
               </span>
             </span>
@@ -71,10 +68,15 @@ export default function Page() {
             <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
           </p>
 
-          {/* Two-tone subline */}
-          <p className="mt-6 max-w-full text-balance text-[2.7vw] leading-[1.65] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
-            <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
-            built for Bangladeshi businesses that want systems over manual, repetitive work.
+          {/* Two-tone subline. Mobile: exactly two lines, edge to edge in the box */}
+          <p className="-mx-3 mt-6 self-stretch text-[2.6vw] leading-[1.65] text-stone sm:mx-0 sm:mt-10 sm:max-w-[560px] sm:self-auto sm:text-balance sm:text-[14px] sm:leading-[1.6]">
+            <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">
+              <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
+              built for{" "}
+            </span>
+            <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">
+              Bangladeshi businesses that want systems over manual, repetitive work.
+            </span>
           </p>
 
           {/* CTAs (unchanged buttons) */}
@@ -111,22 +113,22 @@ export default function Page() {
             </ul>
           </div>
 
-          {/* Mobile: signature + today's date sign off the framed box, bottom right */}
-          <div className="mt-8 flex flex-col items-end self-end sm:hidden">
+          {/* Signature + today's date sign off the box, bottom right (desktop: the frame-guide column) */}
+          <div className="mt-8 flex flex-col items-end self-end sm:absolute sm:right-6 sm:bottom-6 sm:mt-0">
             <img
               src="/imgi_11_image.webp"
               alt="Signature"
               width={256}
               height={236}
-              className="h-12 w-auto invert opacity-80"
+              className="h-12 w-auto invert opacity-80 sm:h-16"
               draggable={false}
             />
-            <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45" />
+            <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
           </div>
         </RevealOnView>
       </section>
 
-      <SiteFooter hideSignatureOnMobile />
+      <SiteFooter hideSignature />
     </main>
   )
 }
