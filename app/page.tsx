@@ -39,9 +39,11 @@ export default function Page() {
         >
           {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
               and a small italic aside in the gap (after Hole & Corner) */}
+          {/* Bottom padding keeps the "p" descender inside the box (the reveal's blur layer clips
+              to it on iOS Safari); the negative margin cancels it so the layout doesn't move */}
           <h1
             aria-label="The bespoke automation & development for your business"
-            className="font-display -mx-3 mb-2 self-stretch font-black lowercase sm:mx-0 sm:self-auto leading-[0.82] tracking-[-0.035em] text-ivory sm:mb-3"
+            className="font-display -mx-3 mb-[calc(0.5rem-4.5vw)] self-stretch pb-[4.5vw] font-black lowercase sm:mx-0 sm:-mb-[18px] sm:self-auto sm:pb-[30px] lg:-mb-[22px] lg:pb-[34px] leading-[0.82] tracking-[-0.035em] text-ivory"
           >
             <span aria-hidden="true" className="flex flex-col items-start">
               <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
