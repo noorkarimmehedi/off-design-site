@@ -12,11 +12,14 @@ import { projects } from "@/lib/projects"
 const clients: { name: string; className: string; logo?: string }[] = [
   { name: "Gala", className: "font-serif text-[22px] tracking-tight" },
   { name: "আঙ্গনালয়", logo: "/clients/angonaloy.webp", className: "h-[21px] w-auto sm:h-[23px]" },
-  { name: "Bengal Mart", className: "text-[17px] font-bold tracking-tight" },
+  { name: "Bengal Mart", logo: "/clients/bengal-mart.webp", className: "h-[34px] w-auto sm:h-[38px]" },
   { name: "Zair", logo: "/clients/zair.webp", className: "h-[17px] w-auto sm:h-[18px]" },
   { name: "ম্যাংগো লাভার", logo: "/clients/mango-lover.webp", className: "h-[27px] w-auto sm:h-[29px]" },
-  { name: "A-Trips", className: "text-[18px] font-semibold italic" },
-  { name: "Lucid", className: "font-serif text-[20px] italic" },
+  {
+    name: "Cober Collective",
+    className: "font-[family-name:ui-serif,'New_York','Iowan_Old_Style','Apple_Garamond',Baskerville,Georgia,serif] text-[20px] tracking-[-0.01em]",
+  },
+  { name: "Listen Labs", logo: "/clients/listen-labs.webp", className: "h-[19px] w-auto sm:h-[21px]" },
   { name: "ARCADE", className: "font-mono text-[15px] font-bold tracking-widest" },
 ]
 
@@ -34,7 +37,7 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-3 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
+          className="relative z-10 mx-2 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
         >
           {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
               and a small italic aside in the gap (after Hole & Corner) */}

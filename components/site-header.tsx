@@ -2,7 +2,7 @@ import type { ReactNode } from "react"
 import LiveClock from "@/components/live-clock"
 import TransitionLink from "@/components/transition-link"
 
-const CLOCK_OPTIONS: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit", hour12: true }
+const CLOCK_OPTIONS: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }
 
 // Top bar shared by every page: optional left slot · wordmark with the live Dhaka clock beneath
 export default function SiteHeader({ left }: { left?: ReactNode }) {
@@ -16,7 +16,7 @@ export default function SiteHeader({ left }: { left?: ReactNode }) {
         <LiveClock
           timeZone="Asia/Dhaka"
           options={CLOCK_OPTIONS}
-          className="mt-1.5 font-mono text-[10px] tabular-nums tracking-[0.15em] text-ivory/40 sm:mt-2 sm:text-[11px]"
+          className="mt-1.5 font-mono text-[9px] tabular-nums tracking-[0.15em] text-ivory/40 sm:mt-2 sm:text-[11px]"
         />
       </div>
       <div aria-hidden="true" />
