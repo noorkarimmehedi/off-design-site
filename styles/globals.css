@@ -19,7 +19,7 @@
 
 /* Dark luxury palette */
 @theme {
-  --color-ink: #0b0a09;
+  --color-ink: #000000;
   --color-ivory: #ede8df;
   --color-stone: #8f887d;
   --color-line: rgb(237 232 223 / 0.09);
@@ -62,7 +62,7 @@
 }
 
 .dark {
-  --background: #0b0a09;
+  --background: #000000;
   --foreground: #ede8df;
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -162,28 +162,77 @@
   --frame-accent: #ff5941;
 }
 
+/* Swiss rule: a quiet 1px hairline (at x = 5px in an 11px strip).
+   Desktop adds sparse ticks, a small registration mark and a coordinate label. */
 .frame-guide {
+  --rule: rgb(237 232 223 / 0.09);
+  --tick: rgb(237 232 223 / 0.16);
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 1px;
-  background: rgb(237 232 223 / 0.07);
+  width: 11px;
   pointer-events: none;
   z-index: 5;
+  background: linear-gradient(var(--rule), var(--rule)) 5px 0 / 1px 100% no-repeat;
 }
 .frame-guide::before,
 .frame-guide::after {
   content: "";
   position: absolute;
-  left: 0;
+  left: 5px;
   width: 1px;
   height: 14px;
   background: var(--frame-accent);
 }
 .frame-guide::before { top: 0; }
 .frame-guide::after { bottom: 0; }
-.frame-guide--left { left: calc(50% - var(--frame-col)); }
-.frame-guide--right { right: calc(50% - var(--frame-col)); }
+.frame-guide--left { left: calc(50% - var(--frame-col) - 5px); }
+.frame-guide--right { right: calc(50% - var(--frame-col) - 5px); }
+
+/* Phones: no frame lines */
+@media (max-width: 639px) {
+  .frame-guide { display: none; }
+}
+
+.frame-guide__cross,
+.frame-guide__label { display: none; }
+
+@media (min-width: 1024px) {
+  .frame-guide {
+    background:
+      linear-gradient(var(--rule), var(--rule)) 5px 0 / 1px 100% no-repeat,
+      repeating-linear-gradient(to bottom, transparent 0 239px, var(--tick) 239px 240px) 2px 0 / 7px 100% no-repeat;
+  }
+
+  /* Registration mark where the rule meets the header line */
+  .frame-guide__cross {
+    display: block;
+    position: absolute;
+    top: 99px;
+    left: 1px;
+    width: 9px;
+    height: 9px;
+    background:
+      linear-gradient(rgb(237 232 223 / 0.35), rgb(237 232 223 / 0.35)) 50% 50% / 9px 1px no-repeat,
+      linear-gradient(rgb(237 232 223 / 0.35), rgb(237 232 223 / 0.35)) 50% 50% / 1px 9px no-repeat;
+  }
+
+  /* Vertical coordinate label beside the rule */
+  .frame-guide__label {
+    display: block;
+    position: absolute;
+    top: 136px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgb(237 232 223 / 0.2);
+    writing-mode: vertical-rl;
+  }
+  .frame-guide--left .frame-guide__label { left: 18px; }
+  .frame-guide--right .frame-guide__label { right: 18px; transform: rotate(180deg); }
+}
 
 .ascii-clip {
   position: absolute;

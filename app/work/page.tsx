@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import AnimatedHeading from "@/components/animated-heading"
+import FrameGuides from "@/components/frame-guides"
 import ProjectCard from "@/components/project-card"
 import ScrollScale from "@/components/scroll-scale"
 import SiteFooter from "@/components/site-footer"
@@ -17,8 +18,7 @@ export default function WorkPage() {
 
   return (
     <main className="frame relative overflow-x-clip bg-ink text-ivory">
-      <div className="frame-guide frame-guide--left" aria-hidden="true" />
-      <div className="frame-guide frame-guide--right" aria-hidden="true" />
+      <FrameGuides />
 
       <SiteHeader
         left={
@@ -30,7 +30,7 @@ export default function WorkPage() {
       />
 
       {/* Intro */}
-      <section className="relative z-10 mx-auto w-full max-w-[964px] px-6 pt-24 pb-12 text-center sm:px-10 sm:pt-32">
+      <section className="relative z-10 mx-auto w-full max-w-[964px] px-2 pt-24 pb-12 text-center sm:px-10 sm:pt-32">
         <div className="mx-auto flex max-w-[560px] items-center justify-center">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-stone">Archive / Work</span>
           <div className="mx-4 hidden h-px flex-1 bg-line sm:block" />
@@ -50,7 +50,7 @@ export default function WorkPage() {
       </section>
 
       {/* Projects */}
-      <section className="relative z-10 mx-auto w-full max-w-[964px] px-4 pb-16 sm:px-8">
+      <section className="relative z-10 mx-auto w-full max-w-[964px] px-1 pb-16 sm:px-8">
         <div className="space-y-6">
           {projects.map((p, idx) => (
             <ScrollScale key={`${p.title}-${idx}`}>

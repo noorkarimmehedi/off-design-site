@@ -1,6 +1,7 @@
 import AnimatedButton from "@/components/animated-button"
 import AnimatedHeading from "@/components/animated-heading"
 import AsciiHands from "@/components/ascii-hands"
+import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
@@ -22,8 +23,7 @@ const clients = [
 export default function Page() {
   return (
     <main className="frame relative overflow-x-clip bg-ink text-ivory">
-      <div className="frame-guide frame-guide--left" aria-hidden="true" />
-      <div className="frame-guide frame-guide--right" aria-hidden="true" />
+      <FrameGuides />
 
       {/* HERO: one full screen, centred between the frame guides */}
       <section className="relative flex min-h-svh flex-col">
@@ -34,7 +34,7 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-6 pt-40 pb-16 text-center sm:px-10 lg:pt-16"
+          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-40 pb-16 text-center sm:px-10 lg:pt-16"
         >
           {/* Metadata row */}
           <div className="flex w-full max-w-[560px] items-center justify-center">

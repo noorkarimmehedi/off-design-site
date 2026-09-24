@@ -34,5 +34,6 @@ export default function SiteFooter() {
     return () => window.removeEventListener("resize", update)
   }, [])
 
-  return <RuixenGradientFooter className="relative bg-ink" {...glow} />
+  // minReveal 0: no resting strip at the screen bottom; the glow only appears near the end
+  return <RuixenGradientFooter className="relative bg-ink" minReveal={0} {...glow} />
 }

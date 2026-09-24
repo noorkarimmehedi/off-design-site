@@ -25,7 +25,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
-        <meta name="theme-color" content="#0b0a09" />
+        <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -173,7 +173,7 @@ export default function RootLayout({
   transform: rotate(360deg);
 }
 
-html { font-family: var(--font-sans); background: #0b0a09; }
+html { font-family: var(--font-sans); background: #000000; }
         `}</style>
       </head>
       <body>
