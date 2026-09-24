@@ -4,6 +4,7 @@ import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
+import TodayDate from "@/components/today-date"
 import TransitionLink from "@/components/transition-link"
 import { projects } from "@/lib/projects"
 
@@ -33,13 +34,13 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-3 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 py-10 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
+          className="relative z-10 mx-3 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
         >
           {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
               and a small italic aside in the gap (after Hole & Corner) */}
           <h1
             aria-label="The bespoke automation & development for your business"
-            className="font-display mb-2 font-black lowercase leading-[0.82] tracking-[-0.035em] text-ivory sm:mb-3"
+            className="font-display -mx-3 mb-2 self-stretch font-black lowercase sm:mx-0 sm:self-auto leading-[0.82] tracking-[-0.035em] text-ivory sm:mb-3"
           >
             <span aria-hidden="true" className="flex flex-col items-start">
               <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
@@ -106,10 +107,23 @@ export default function Page() {
               ))}
             </ul>
           </div>
+
+          {/* Mobile: signature + today's date sign off the framed box, bottom right */}
+          <div className="mt-8 flex flex-col items-end self-end sm:hidden">
+            <img
+              src="/imgi_11_image.webp"
+              alt="Signature"
+              width={256}
+              height={236}
+              className="h-12 w-auto invert opacity-80"
+              draggable={false}
+            />
+            <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45" />
+          </div>
         </RevealOnView>
       </section>
 
-      <SiteFooter />
+      <SiteFooter hideSignatureOnMobile />
     </main>
   )
 }

@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
 import TodayDate from "@/components/today-date"
 
-export default function SiteFooter() {
+export default function SiteFooter({ hideSignatureOnMobile = false }: { hideSignatureOnMobile?: boolean }) {
   const ref = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
   // 0 when the footer's top meets the viewport bottom, 1 when its bottom does
@@ -34,7 +34,7 @@ export default function SiteFooter() {
       </div>
 
       {/* Giant wordmark, centred, rising out of the dark */}
-      <div className="relative mt-4 pb-8 sm:mt-8 sm:pb-12">
+      <div className="relative mt-4 sm:mt-8">
         <motion.div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
@@ -43,25 +43,11 @@ export default function SiteFooter() {
             background: "radial-gradient(55% 80% at 50% 100%, rgb(184 191 230 / 0.16), transparent 70%)",
           }}
         />
-        <div className="relative mx-auto w-[88vw] max-w-[1100px] overflow-hidden">
-          <motion.img
-            src="/arc-logo-dark-lg.webp"
-            alt=""
-            width={1398}
-            height={523}
-            className="block h-auto w-full select-none"
-            style={{
-              y: reduce ? "0%" : logoY,
-              opacity: reduce ? 1 : logoOpacity,
-              maskImage: "linear-gradient(to bottom, #000 55%, rgb(0 0 0 / 0.2) 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, #000 55%, rgb(0 0 0 / 0.2) 100%)",
-            }}
-            draggable={false}
-          />
-        </div>
 
-        {/* Signature + today's date, under the right side of the wordmark */}
-        <div className="relative mx-auto flex w-[88vw] max-w-[1100px] justify-end">
+        {/* Signature + today's date, above the right side of the wordmark */}
+        <div
+          className={`relative mx-auto w-[88vw] max-w-[1100px] justify-end pb-3 sm:pb-4 ${hideSignatureOnMobile ? "hidden sm:flex" : "flex"}`}
+        >
           <div className="flex flex-col items-end">
             <img
               src="/imgi_11_image.webp"
@@ -73,6 +59,22 @@ export default function SiteFooter() {
             />
             <TodayDate className="-mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
           </div>
+        </div>
+
+        {/* Cropped: only the top 80% shows, flush with the page bottom */}
+        <div className="relative mx-auto aspect-[1398/418] w-[88vw] max-w-[1100px] overflow-hidden">
+          <motion.img
+            src="/arc-logo-dark-lg.webp"
+            alt=""
+            width={1398}
+            height={523}
+            className="block h-auto w-full select-none"
+            style={{
+              y: reduce ? "0%" : logoY,
+              opacity: reduce ? 1 : logoOpacity,
+            }}
+            draggable={false}
+          />
         </div>
       </div>
     </footer>
