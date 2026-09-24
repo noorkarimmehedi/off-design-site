@@ -3,14 +3,40 @@ import type { Metadata } from "next"
 import "../styles/globals.css"
 import SmoothScroll from "@/components/smooth-scroll"
 
+const description =
+  "Websites, AI automation, and software — Arc Labs Corporation is built for Bangladeshi businesses that want systems over manual, repetitive work."
+
+// Absolute base for link-preview image URLs. Set NEXT_PUBLIC_SITE_URL to the live
+// domain; on Vercel it falls back to the production URL automatically.
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "http://localhost:3000")
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Arc Labs Corporation",
-  description:
-    "AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.",
-  generator: "v0.dev",
+  description,
+  openGraph: {
+    type: "website",
+    siteName: "Arc Labs Corporation",
+    title: "Arc Labs Corporation — Bespoke design & development",
+    description,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Arc Labs Corporation — Bespoke design & development",
+    description,
+  },
   icons: {
-    icon: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
 }
 
@@ -22,9 +48,6 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/favicon.svg" />
         <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

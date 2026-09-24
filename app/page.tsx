@@ -34,7 +34,7 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-40 pb-16 text-center sm:px-10 lg:pt-16"
+          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-24 text-center sm:px-10 sm:pb-16 lg:pt-16"
         >
           {/* Metadata row */}
           <div className="flex w-full max-w-[560px] items-center justify-center">
@@ -48,45 +48,53 @@ export default function Page() {
           </div>
 
           {/* Headline (copy unchanged) */}
-          <div className="mt-8 space-y-2 sm:space-y-3">
+          <div className="mt-5 space-y-1 sm:mt-12 sm:space-y-2">
             <AnimatedHeading
-              className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter sm:text-[48px] lg:text-[60px]"
+              className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter sm:text-[40px] lg:text-[46px]"
               lines={["THE BESPOKE DESIGN"]}
               lineClassNames={["whitespace-nowrap"]}
             />
-            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:items-baseline sm:gap-4">
+            <div className="flex items-baseline justify-center sm:gap-4">
               <AnimatedHeading
-                className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter text-ivory/90 sm:text-[48px] lg:text-[60px]"
+                className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter text-ivory/90 sm:text-[40px] lg:text-[46px]"
                 lines={["& DEVELOPMENT"]}
                 lineClassNames={["whitespace-nowrap"]}
               />
-              <div className="h-px w-12 bg-line sm:h-[28px] sm:w-px" />
-              <span className="font-mono text-[9px] uppercase tracking-widest text-stone sm:text-[10px]">
+              {/* Desktop: label sits beside the line */}
+              <div className="hidden h-[22px] w-px bg-line sm:block" />
+              <span className="hidden font-mono text-[10px] uppercase tracking-widest text-stone sm:inline">
                 Core Service / Web
               </span>
             </div>
-            <div className="pt-1 sm:pt-2">
+            <div className="sm:pt-1">
               <AnimatedHeading
-                className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter text-stone sm:text-[48px] lg:text-[60px]"
+                className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter text-stone sm:text-[40px] lg:text-[46px]"
                 lines={["FOR YOUR BUSINESS"]}
                 lineClassNames={["whitespace-nowrap"]}
               />
             </div>
           </div>
 
+          {/* Mobile: label becomes a caption under the headline */}
+          <div className="mt-5 flex items-center justify-center gap-3 sm:hidden">
+            <span className="h-px w-6 bg-line" />
+            <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-stone">Core Service / Web</span>
+            <span className="h-px w-6 bg-line" />
+          </div>
+
           {/* Two-tone subline */}
-          <p className="mt-6 max-w-[500px] text-pretty text-[14px] leading-[1.5] text-stone sm:text-[16px]">
-            <span className="text-ivory">Websites, AI automation, and Software</span> — Arc Labs Corporation is
+          <p className="mt-6 max-w-[380px] text-balance text-[11px] leading-[1.6] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
+            <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
             built for Bangladeshi businesses that want systems over manual, repetitive work.
           </p>
 
           {/* CTAs (unchanged buttons) */}
-          <div className="relative mt-7 flex items-center gap-2">
+          <div className="relative mt-8 flex items-center gap-2 sm:mt-12">
             <img
               src="/download.svg"
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute -left-[150px] -top-[70px] hidden w-[130px] lg:block"
+              className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
             />
             <AnimatedButton href="https://cal.com/noor-foumnf/15min">Book a Call</AnimatedButton>
             <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">Chat with us</AnimatedButton>
@@ -95,7 +103,7 @@ export default function Page() {
           {/* Link to the work page */}
           <TransitionLink
             href="/work"
-            className="group mt-8 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
+            className="group mt-8 inline-flex items-center gap-3 font-mono sm:mt-10 text-[11px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
           >
             <span className="h-px w-6 bg-stone/50 transition-all duration-300 group-hover:w-10 group-hover:bg-[#ff5941]" />
             Selected work — {String(projects.length).padStart(2, "0")}
@@ -103,9 +111,9 @@ export default function Page() {
           </TransitionLink>
 
           {/* Clients */}
-          <div className="mt-14 w-full max-w-[720px]">
+          <div className="mt-14 w-full max-w-[720px] sm:mt-28">
             <p className="text-[12px] text-stone">Brands we’ve built for</p>
-            <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-9 gap-y-4 text-stone">
+            <ul className="mt-5 flex flex-wrap sm:mt-6 items-center justify-center gap-x-9 gap-y-4 text-stone">
               {clients.map((c) => (
                 <li key={c.name} className={c.className}>
                   {c.name}
