@@ -20,12 +20,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#0b0a09" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -87,6 +87,22 @@ export default function RootLayout({
 .animated-button:focus-visible {
   color: rgba(0, 0, 0, 1);
   background: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode: same translucent chip, mirrored to ivory */
+.dark .animated-button {
+  background: rgba(237, 232, 223, 0.06);
+  color: rgba(237, 232, 223, 0.8);
+}
+
+.dark .animated-button:hover,
+.dark .animated-button:focus-visible {
+  color: #ede8df;
+  background: rgba(237, 232, 223, 0.12);
+}
+
+.dark .animated-button:focus-visible {
+  outline-color: rgba(237, 232, 223, 0.4);
 }
 
 .animated-button .corners {
@@ -157,7 +173,7 @@ export default function RootLayout({
   transform: rotate(360deg);
 }
 
-html { font-family: var(--font-sans); background: #ffffff; }
+html { font-family: var(--font-sans); background: #0b0a09; }
         `}</style>
       </head>
       <body>

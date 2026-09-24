@@ -197,7 +197,7 @@ export function Testimonial() {
                         <div className="flex items-center gap-1.5">
                             <button
                                 onClick={goPrev}
-                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-foreground/5 transition-colors"
                             >
                                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                                     <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -205,7 +205,7 @@ export function Testimonial() {
                             </button>
                             <button
                                 onClick={goNext}
-                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-neutral-100 transition-colors"
+                                className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:bg-foreground/5 transition-colors"
                             >
                                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                                     <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

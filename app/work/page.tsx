@@ -16,13 +16,13 @@ export default function WorkPage() {
   const count = String(projects.length).padStart(2, "0")
 
   return (
-    <main className="frame relative overflow-x-clip bg-white text-neutral-900">
+    <main className="frame relative overflow-x-clip bg-ink text-ivory">
       <div className="frame-guide frame-guide--left" aria-hidden="true" />
       <div className="frame-guide frame-guide--right" aria-hidden="true" />
 
       <SiteHeader
         left={
-          <TransitionLink href="/" className="group inline-flex items-center gap-2 transition-colors hover:text-black">
+          <TransitionLink href="/" className="group inline-flex items-center gap-2 transition-colors hover:text-ivory">
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
             Back
           </TransitionLink>
@@ -32,9 +32,9 @@ export default function WorkPage() {
       {/* Intro */}
       <section className="relative z-10 mx-auto w-full max-w-[964px] px-6 pt-24 pb-12 text-center sm:px-10 sm:pt-32">
         <div className="mx-auto flex max-w-[560px] items-center justify-center">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-400">Archive / Work</span>
-          <div className="mx-4 hidden h-px flex-1 bg-neutral-200 sm:block" />
-          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 sm:block">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-stone">Archive / Work</span>
+          <div className="mx-4 hidden h-px flex-1 bg-line sm:block" />
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-stone sm:block">
             Index — {count}
           </span>
         </div>
@@ -43,8 +43,8 @@ export default function WorkPage() {
           lines={["SELECTED WORK"]}
           lineClassNames={["whitespace-nowrap"]}
         />
-        <p className="mx-auto mt-5 max-w-[420px] text-[14px] leading-[1.5] text-neutral-400 sm:text-[16px]">
-          <span className="text-neutral-900">Websites, stores and products</span> we’ve designed and built for brands
+        <p className="mx-auto mt-5 max-w-[420px] text-[14px] leading-[1.5] text-stone sm:text-[16px]">
+          <span className="text-ivory">Websites, stores and products</span> we’ve designed and built for brands
           in Bangladesh and beyond
         </p>
       </section>
@@ -74,14 +74,14 @@ export default function WorkPage() {
         </div>
 
         {/* About + social proof */}
-        <div className="mt-16 grid gap-8 border-t border-neutral-200 pt-8 sm:grid-cols-2">
+        <div className="mt-16 grid gap-8 border-t border-line pt-8 sm:grid-cols-2">
           <div className="space-y-4">
-            <p className="text-[12px] leading-relaxed text-neutral-600">
+            <p className="text-[12px] leading-relaxed text-stone">
               Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We
               help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
             </p>
-            <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto" />
-            <p className="text-xs text-neutral-400">© Arc Lab Technology</p>
+            <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto invert opacity-80" />
+            <p className="text-xs text-stone">© Arc Lab Technology</p>
           </div>
           <Testimonial />
         </div>

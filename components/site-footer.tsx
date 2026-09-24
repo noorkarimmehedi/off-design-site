@@ -1,41 +1,38 @@
-import TransitionLink from "@/components/transition-link"
+"use client"
 
-const linkClass = "hover:underline underline-offset-4"
+import { useEffect, useState } from "react"
+import { RuixenGradientFooter } from "@/components/ui/ruixen-gradient-footer"
 
+// The glow's SVG is stretched to the viewport width, so its blur (in viewBox
+// units) shrinks on narrow screens and the bars read as hard columns. Size the
+// blur in screen pixels instead, and use fewer, wider bars on phones.
+const VIEWBOX_WIDTH = 1271
+const VIEWBOX_HEIGHT = 599
+
+function glowFor(width: number, height: number) {
+  const mobile = width < 640
+  const bandVh = mobile ? 45 : 60
+  const bandPx = (height * bandVh) / 100
+  const blurPx = mobile ? 26 : 44
+  return {
+    bars: mobile ? 5 : 9,
+    blur: (blurPx * VIEWBOX_WIDTH) / width,
+    blurY: (blurPx * VIEWBOX_HEIGHT) / bandPx,
+    gradientHeight: `${bandVh}vh`,
+  }
+}
+
+// Text-free footer: a blurred gradient glow that rises from the bottom edge
+// over the last stretch of scroll.
 export default function SiteFooter() {
-  return (
-    <footer className="relative z-10 overflow-hidden border-t border-neutral-200 bg-white text-[#ff5941]">
-      <div className="flex flex-col gap-10 px-6 pt-10 pb-8 sm:h-80 sm:flex-row sm:items-start sm:justify-between sm:px-12 sm:pt-12 sm:pb-0">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 sm:order-2 sm:hidden">
-          Dhaka, Bangladesh
-        </p>
+  const [glow, setGlow] = useState(() => glowFor(1440, 900))
 
-        <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-base sm:order-2 sm:ml-auto sm:flex sm:gap-24 sm:text-xl">
-          <ul className="space-y-1.5 sm:space-y-0">
-            <li>
-              <TransitionLink href="/" className={linkClass}>Home</TransitionLink>
-            </li>
-            <li>
-              <TransitionLink href="/work" className={linkClass}>Work</TransitionLink>
-            </li>
-            <li>
-              <a href="https://api.whatsapp.com/send/?phone=8801733670129" target="_blank" rel="noopener noreferrer" className={linkClass}>Whatsapp</a>
-            </li>
-          </ul>
-          <ul className="space-y-1.5 sm:space-y-0">
-            <li>
-              <a href="https://www.facebook.com/offdesign" target="_blank" rel="noopener noreferrer" className={linkClass}>Facebook</a>
-            </li>
-            <li className={`${linkClass} cursor-pointer`}>Instagram</li>
-            <li className={`${linkClass} cursor-pointer`}>X (Twitter)</li>
-          </ul>
-        </div>
-      </div>
+  useEffect(() => {
+    const update = () => setGlow(glowFor(window.innerWidth, window.innerHeight))
+    update()
+    window.addEventListener("resize", update, { passive: true })
+    return () => window.removeEventListener("resize", update)
+  }, [])
 
-      {/* Giant wordmark: fits the width on mobile, cropped at the bottom edge on desktop */}
-      <h2 className="whitespace-nowrap px-4 pb-4 font-ppmondwest text-[10.4vw] leading-[0.9] sm:absolute sm:bottom-0 sm:left-0 sm:translate-y-1/3 sm:px-0 sm:pb-0 sm:text-[192px] sm:leading-normal">
-        Arc Labs Corporation
-      </h2>
-    </footer>
-  )
+  return <RuixenGradientFooter className="relative bg-ink" {...glow} />
 }
