@@ -8,13 +8,13 @@ import SiteHeader from "@/components/site-header"
 import TransitionLink from "@/components/transition-link"
 import { projects } from "@/lib/projects"
 
-// Placeholder wordmarks set in type until real client logos are supplied
-const clients = [
+// Wordmarks set in type until real client logos are supplied (then add `logo`)
+const clients: { name: string; className: string; logo?: string }[] = [
   { name: "Gala", className: "font-serif text-[22px] tracking-tight" },
-  { name: "Angonaloy", className: "font-ppmondwest text-[20px]" },
+  { name: "আঙ্গনালয়", logo: "/clients/angonaloy.webp", className: "h-[21px] w-auto sm:h-[23px]" },
   { name: "Bengal Mart", className: "text-[17px] font-bold tracking-tight" },
-  { name: "ZAIR", className: "text-[17px] font-black tracking-[0.2em]" },
-  { name: "hobbyshop", className: "font-mono text-[16px] font-medium" },
+  { name: "Zair", logo: "/clients/zair.webp", className: "h-[17px] w-auto sm:h-[18px]" },
+  { name: "ম্যাংগো লাভার", logo: "/clients/mango-lover.webp", className: "h-[27px] w-auto sm:h-[29px]" },
   { name: "A-Trips", className: "text-[18px] font-semibold italic" },
   { name: "Lucid", className: "font-serif text-[20px] italic" },
   { name: "ARCADE", className: "font-mono text-[15px] font-bold tracking-widest" },
@@ -34,7 +34,7 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-24 text-center sm:px-10 sm:pb-16 lg:pt-16"
+          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-10 text-center sm:px-10 sm:pb-16 lg:pt-16"
         >
           {/* Metadata row */}
           <div className="flex w-full max-w-[560px] items-center justify-center">
@@ -47,39 +47,25 @@ export default function Page() {
             </span>
           </div>
 
-          {/* Headline (copy unchanged) */}
+          {/* Headline */}
           <div className="mt-5 space-y-1 sm:mt-12 sm:space-y-2">
             <AnimatedHeading
-              className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter sm:text-[40px] lg:text-[46px]"
-              lines={["THE BESPOKE DESIGN"]}
+              className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter sm:text-[40px] lg:text-[46px]"
+              lines={["THE BESPOKE AUTOMATION"]}
               lineClassNames={["whitespace-nowrap"]}
             />
-            <div className="flex items-baseline justify-center sm:gap-4">
-              <AnimatedHeading
-                className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter text-ivory/90 sm:text-[40px] lg:text-[46px]"
-                lines={["& DEVELOPMENT"]}
-                lineClassNames={["whitespace-nowrap"]}
-              />
-              {/* Desktop: label sits beside the line */}
-              <div className="hidden h-[22px] w-px bg-line sm:block" />
-              <span className="hidden font-mono text-[10px] uppercase tracking-widest text-stone sm:inline">
-                Core Service / Web
-              </span>
-            </div>
+            <AnimatedHeading
+              className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter text-ivory/90 sm:text-[40px] lg:text-[46px]"
+              lines={["& DEVELOPMENT"]}
+              lineClassNames={["whitespace-nowrap"]}
+            />
             <div className="sm:pt-1">
               <AnimatedHeading
-                className="text-[30px] font-black uppercase leading-[0.95] tracking-tighter text-stone sm:text-[40px] lg:text-[46px]"
+                className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter text-stone sm:text-[40px] lg:text-[46px]"
                 lines={["FOR YOUR BUSINESS"]}
                 lineClassNames={["whitespace-nowrap"]}
               />
             </div>
-          </div>
-
-          {/* Mobile: label becomes a caption under the headline */}
-          <div className="mt-5 flex items-center justify-center gap-3 sm:hidden">
-            <span className="h-px w-6 bg-line" />
-            <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-stone">Core Service / Web</span>
-            <span className="h-px w-6 bg-line" />
           </div>
 
           {/* Two-tone subline */}
@@ -115,8 +101,8 @@ export default function Page() {
             <p className="text-[12px] text-stone">Brands we’ve built for</p>
             <ul className="mt-5 flex flex-wrap sm:mt-6 items-center justify-center gap-x-9 gap-y-4 text-stone">
               {clients.map((c) => (
-                <li key={c.name} className={c.className}>
-                  {c.name}
+                <li key={c.name} className={c.logo ? undefined : c.className}>
+                  {c.logo ? <img src={c.logo} alt={c.name} className={c.className} /> : c.name}
                 </li>
               ))}
             </ul>
