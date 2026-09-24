@@ -1,5 +1,4 @@
 import AnimatedButton from "@/components/animated-button"
-import AnimatedHeading from "@/components/animated-heading"
 import AsciiHands from "@/components/ascii-hands"
 import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
@@ -36,29 +35,36 @@ export default function Page() {
           staggerChildren
           className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-10 text-center sm:px-10 sm:pb-16 lg:pt-16"
         >
-          {/* Headline: copperplate script overlapping a clean medium sans */}
-          <div className="flex flex-col items-center">
-            <AnimatedHeading
-              className="font-script relative z-10 -mb-[0.2em] -translate-x-[0.35em] text-[18vw] leading-[0.9] text-ivory sm:text-[92px] lg:text-[104px]"
-              lines={["The Bespoke"]}
-              lineClassNames={["whitespace-nowrap"]}
-            />
-            <AnimatedHeading
-              className="text-[13.6vw] font-medium leading-[0.95] tracking-[-0.05em] text-ivory sm:text-[64px] lg:text-[72px]"
-              lines={["Automation"]}
-              lineClassNames={["whitespace-nowrap"]}
-            />
-            <AnimatedHeading
-              className="text-[13.6vw] font-medium leading-[0.95] tracking-[-0.05em] text-ivory/85 sm:text-[64px] lg:text-[72px]"
-              lines={["& Development"]}
-              lineClassNames={["whitespace-nowrap"]}
-            />
-            <AnimatedHeading
-              className="font-script relative z-10 -mt-[0.12em] translate-x-[0.9em] text-[12.2vw] leading-[0.9] text-stone sm:text-[60px] lg:text-[66px]"
-              lines={["for your business"]}
-              lineClassNames={["whitespace-nowrap"]}
-            />
-          </div>
+          {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
+              and a small italic aside in the gap (after Hole & Corner) */}
+          <h1
+            aria-label="The bespoke automation & development for your business"
+            className="font-display mb-2 font-black lowercase leading-[0.82] tracking-[-0.035em] text-ivory sm:mb-3"
+          >
+            <span aria-hidden="true" className="flex flex-col items-start">
+              <span className="flex items-end gap-[0.35em] text-[12.4vw] sm:text-[96px] lg:text-[112px]">
+                <span>automation</span>
+                <span className="hidden pb-[0.32em] text-left font-display text-[13px] font-normal italic leading-[1.35] tracking-normal text-stone normal-case sm:block">
+                  “The bespoke —
+                  <br />
+                  for your business.”
+                  <br />
+                  <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
+                </span>
+              </span>
+              <span className="-mt-[0.02em] self-end whitespace-nowrap pl-[0.5em] text-[12.4vw] sm:text-[96px] lg:text-[112px]">
+                <span className="relative inline-block text-[1.32em] leading-[0] tracking-[-0.06em] text-ivory/90">&amp;</span>
+                development
+              </span>
+            </span>
+          </h1>
+
+          {/* Mobile: the aside sits under the headline */}
+          <p className="mt-4 self-end pr-3 text-right font-display text-[12px] italic leading-[1.35] text-stone sm:hidden">
+            “The bespoke — for your business.”
+            <br />
+            <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
+          </p>
 
           {/* Two-tone subline */}
           <p className="mt-6 max-w-[calc(100vw-24px)] text-balance text-[2.7vw] leading-[1.65] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
