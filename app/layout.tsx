@@ -1,9 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "../styles/globals.css"
+import SmoothScroll from "@/components/smooth-scroll"
 
 export const metadata: Metadata = {
-  title: "Arc Lab Technology",
+  title: "Arc Labs Corporation",
   description:
     "AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.",
   generator: "v0.dev",
@@ -24,7 +25,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.svg" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
-        <meta name="theme-color" content="#3C3C3C" />
+        <meta name="theme-color" content="#ffffff" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -156,10 +157,13 @@ export default function RootLayout({
   transform: rotate(360deg);
 }
 
-html { font-family: var(--font-sans); }
+html { font-family: var(--font-sans); background: #ffffff; }
         `}</style>
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll />
+        {children}
+      </body>
     </html>
   )
 }

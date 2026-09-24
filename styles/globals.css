@@ -147,3 +147,86 @@
     filter: blur(16px);
   }
 }
+
+/* ── Frame + ASCII hands (Skale-style hero) ───────────────────────── */
+.frame {
+  --frame-col: min(482px, calc(50% - 16px));
+  --frame-accent: #ff5941;
+}
+
+.frame-guide {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgb(0 0 0 / 0.06);
+  pointer-events: none;
+  z-index: 5;
+}
+.frame-guide::before,
+.frame-guide::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 1px;
+  height: 14px;
+  background: var(--frame-accent);
+}
+.frame-guide::before { top: 0; }
+.frame-guide::after { bottom: 0; }
+.frame-guide--left { left: calc(50% - var(--frame-col)); }
+.frame-guide--right { right: calc(50% - var(--frame-col)); }
+
+.ascii-clip {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  z-index: 1;
+}
+.ascii-hand {
+  position: absolute;
+  max-width: none;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Mobile: hands peek in from the top edges as a faint band */
+.ascii-hand { opacity: 0.45; }
+.ascii-hand--left { width: min(62vw, 300px); height: min(40vw, 200px); top: 56px; left: -14vw; }
+.ascii-hand--right { width: min(62vw, 300px); height: min(40vw, 200px); top: 64px; right: -12vw; transform: scaleX(-1); }
+
+@media (min-width: 1024px) {
+  .ascii-hand { opacity: 1; }
+  .ascii-hand--left {
+    width: min(808px, 31.56vw);
+    height: min(890px, 34.77vw);
+    top: calc(12.7% + 12px);
+    left: max(-198px, -10.8vw);
+  }
+  .ascii-hand--right {
+    width: min(799px, 31.2vw);
+    height: min(741px, 28.95vw);
+    top: calc(14.7% + 12px);
+    right: max(-148px, -8vw);
+  }
+}
+
+/* ── Page transitions + smooth scroll ─────────────────────────────── */
+html.is-leaving #page-root {
+  transition: opacity 0.32s cubic-bezier(0.4, 0, 1, 1), transform 0.32s cubic-bezier(0.4, 0, 1, 1), filter 0.32s ease;
+  opacity: 0 !important;
+  transform: translateY(-10px) !important;
+  filter: blur(6px) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.is-leaving #page-root { transform: none !important; filter: none !important; }
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }

@@ -1,377 +1,122 @@
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
-import { FancyButton } from "@/components/ui/fancy-button"
 import AnimatedButton from "@/components/animated-button"
-
-import ProjectCard from "@/components/project-card"
 import AnimatedHeading from "@/components/animated-heading"
+import AsciiHands from "@/components/ascii-hands"
 import RevealOnView from "@/components/reveal-on-view"
-import { Testimonial } from "@/components/ui/design-testimonial"
+import SiteFooter from "@/components/site-footer"
+import SiteHeader from "@/components/site-header"
+import TransitionLink from "@/components/transition-link"
+import { projects } from "@/lib/projects"
 
-// WhatsApp Icon Component
-const WhatsAppIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.63z" />
-  </svg>
-)
-
-// Custom Play Arrow Component
-const PlayArrow = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M6 9.33017V14.6702C6 17.9902 8.35 19.3402 11.22 17.6902L12.5 16.9502C12.81 16.7702 13 16.4402 13 16.0802V7.92017C13 7.56017 12.81 7.23017 12.5 7.05017L11.22 6.31017C8.35 4.66017 6 6.01017 6 9.33017Z" />
-    <path d="M14 8.78957V15.2196C14 15.6096 14.42 15.8496 14.75 15.6496L15.85 15.0096C18.72 13.3596 18.72 10.6396 15.85 8.98957L14.75 8.34957C14.42 8.15957 14 8.39957 14 8.78957Z" />
-  </svg>
-)
+// Placeholder wordmarks set in type until real client logos are supplied
+const clients = [
+  { name: "Gala", className: "font-serif text-[22px] tracking-tight" },
+  { name: "Angonaloy", className: "font-ppmondwest text-[20px]" },
+  { name: "Bengal Mart", className: "text-[17px] font-bold tracking-tight" },
+  { name: "ZAIR", className: "text-[17px] font-black tracking-[0.2em]" },
+  { name: "hobbyshop", className: "font-mono text-[16px] font-medium" },
+  { name: "A-Trips", className: "text-[18px] font-semibold italic" },
+  { name: "Lucid", className: "font-serif text-[20px] italic" },
+  { name: "ARCADE", className: "font-mono text-[15px] font-bold tracking-widest" },
+]
 
 export default function Page() {
-  const heroImages = [
-    {
-      src: "/angonaloy.webp",
-      caption: "A-Trips — AI Travel Planning Assistant",
-      from: "#ff6b35",
-      to: "#8b5cf6",
-    },
-    {
-      src: "/images/lucid-dreams-app.webp",
-      caption: "Lucid — Dream visualization platform",
-      from: "#ff6b35",
-      to: "#8b5cf6",
-    },
-    {
-      src: "/placeholder.svg?height=900&width=1600",
-      caption: "Arcade — E‑commerce storefront",
-      from: "#0b132b",
-      to: "#5bc0be",
-    },
-  ]
-
-  const projects = [
-    {
-      title: "Screen Recording 02 — Featured Visual",
-      subtitle: "New video card",
-      imageSrc: "/screen_recording_02.mp4",
-      isVideo: true,
-      tags: ["Visual", "Video"],
-      href: "#",
-      indicatorText: "View the Project",
-      priority: false, // Set to false for heavy videos
-      gradientFrom: "#1f2937",
-      gradientTo: "#10b981",
-    },
-    {
-      title: "Screen Recording 03 — Featured Visual",
-      subtitle: "New video card",
-      imageSrc: "/screen_recording_03.mp4",
-      isVideo: true,
-      tags: ["Visual", "Video"],
-      href: "#",
-      indicatorText: "View the Project",
-      priority: true,
-      gradientFrom: "#111827",
-      gradientTo: "#6b7280",
-    },
-    {
-      title: "Prelude — Featured Visual",
-      subtitle: "New photo card",
-      imageSrc: "/angonaloy.webp",
-      isVideo: false,
-      tags: ["Visual", "UI/UX"],
-      href: "https://angonaloy.shop/",
-      indicatorText: "View the Project",
-      priority: false,
-      gradientFrom: "#111827",
-      gradientTo: "#6b7280",
-    },
-    {
-      title: "Screen Recording — Featured Visual",
-      subtitle: "New video card",
-      imageSrc: "/screen_recording_01.mp4",
-      isVideo: true,
-      tags: ["Visual", "Video"],
-      href: "#",
-      indicatorText: "View the Project",
-      priority: false, // Set to false for heavy videos
-      gradientFrom: "#0b132b",
-      gradientTo: "#5bc0be",
-    },
-    {
-      title: "Bengal Mart — Featured Visual",
-      subtitle: "New photo card",
-      imageSrc: "/bengal-mart.webp",
-      isVideo: false,
-      tags: ["Visual", "UI/UX"],
-      href: "https://bengal-mart.shop/",
-      indicatorText: "View the Project",
-      priority: false,
-      gradientFrom: "#111827",
-      gradientTo: "#6b7280",
-    },
-    {
-      title: "Zair — Featured Visual",
-      subtitle: "New photo card",
-      imageSrc: "/Zair.webp",
-      isVideo: false,
-      tags: ["Visual", "UI/UX"],
-      href: "https://zairbd.com/",
-      indicatorText: "View the Project",
-      priority: false,
-      gradientFrom: "#0b132b",
-      gradientTo: "#5bc0be",
-    },
-    {
-      title: "Hobbyshop — Featured Visual",
-      subtitle: "New photo card",
-      imageSrc: "/hobbyshop.webp",
-      isVideo: false,
-      tags: ["Visual", "UI/UX"],
-      href: "https://hobbyshopbd.shop/",
-      indicatorText: "View the Project",
-      priority: false,
-      gradientFrom: "#111827",
-      gradientTo: "#6b7280",
-    },
-    {
-      title: "Portfolio — New 04",
-      subtitle: "Selected work",
-      imageSrc: "/new_portfolio_04.webp",
-      tags: ["Portfolio", "UI/UX", "Web"],
-      href: "#project-1",
-      priority: false,
-      gradientFrom: "#0b132b",
-      gradientTo: "#5bc0be",
-    },
-    {
-      title: "Portfolio — New 03",
-      subtitle: "Selected work",
-      imageSrc: "/new_portfolio_03.webp",
-      tags: ["Portfolio", "UI/UX", "Web"],
-      href: "#project-3",
-      priority: false,
-      gradientFrom: "#0f172a",
-      gradientTo: "#8b5cf6",
-    },
-    {
-      title: "Portfolio — New 01",
-      subtitle: "Selected work",
-      imageSrc: "/new_portfolio_01.webp",
-      tags: ["Portfolio", "UI/UX", "Web"],
-      href: "#project-4",
-      priority: true,
-      gradientFrom: "#111827",
-      gradientTo: "#6b7280",
-    },
-    // Restored original first four projects (now positioned after the new four)
-    {
-      title: "A-Trips — AI Travel Planning Assistant",
-      subtitle: "Conversational travel planning platform",
-      imageSrc: "/images/a-trips-travel-app.webp",
-      tags: ["AI", "Travel", "SaaS", "UI/UX"],
-      href: "#project-5",
-      priority: true,
-      gradientFrom: "#ff6b35",
-      gradientTo: "#8b5cf6",
-    },
-    {
-      title: "Lucid — Dream Visualization Platform",
-      subtitle: "Unlock visuals from your dreams",
-      imageSrc: "/images/lucid-dreams-app.webp",
-      tags: ["Wellness", "AI", "Mobile", "UI/UX"],
-      href: "#project-6",
-      priority: false,
-      gradientFrom: "#ff6b35",
-      gradientTo: "#8b5cf6",
-    },
-    {
-      title: "Arcade — E‑commerce for streetwear",
-      subtitle: "Mobile‑first storefront",
-      imageSrc: "/x_video_05 copy.mp4",
-      isVideo: true,
-      tags: ["Commerce", "Mobile", "Brand"],
-      href: "#project-7",
-      priority: false,
-      gradientFrom: "#0b132b",
-      gradientTo: "#5bc0be",
-    },
-
-  ]
-
   return (
-    <main className="bg-white text-neutral-900">
-      {/* HERO: full-viewport row. Left is sticky; right scrolls internally. */}
-      <section className="px-4 pt-4 pb-16 lg:pb-4">
-        <div className="grid h-full grid-cols-1 gap-4 lg:grid-cols-[420px_1fr]">
-          {/* LEFT: sticky and full height, no cut off */}
-          <aside className="lg:sticky lg:top-4 lg:h-[calc(100svh-2rem)]">
-            <RevealOnView
-              as="div"
-              intensity="hero"
-              className="sidebar-content relative flex h-full flex-col justify-between overflow-hidden border border-neutral-200 bg-neutral-50 p-6 sm:p-7"
-              staggerChildren
-            >
-              {/* Wordmark */}
-              <div className="mb-4 lg:mb-4 flex items-center gap-0.5 sm:gap-1 flex-wrap">
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <div className="text-2xl font-extrabold tracking-tight font-ppmondwest">Arc Lab Technology</div>
-                  <div className="h-2 w-2 rounded-full bg-neutral-400" aria-hidden="true" />
-                </div>
-                <div className="text-[11px] sm:text-[11px] text-neutral-500 font-ppmondwest">
-                  Bangladesh First AI-Powered IT Solution Company
-                </div>
-              </div>
+    <main className="frame relative overflow-x-clip bg-white text-neutral-900">
+      <div className="frame-guide frame-guide--left" aria-hidden="true" />
+      <div className="frame-guide frame-guide--right" aria-hidden="true" />
 
-              {/* Main content moved to bottom */}
-              <div className="mt-6 lg:mt-8">
-                {/* Refined Swiss Luxury Headline */}
-                <div className="mt-8 pt-6 border-t border-neutral-200">
-                  <div className="grid grid-cols-12 gap-y-8">
-                    {/* Metadata Row */}
-                    <div className="col-span-12 flex items-center justify-between">
-                      <span className="text-[10px] font-mono tracking-[0.3em] text-neutral-400 uppercase">
-                        Archive / 2024 / System
-                      </span>
-                      <div className="h-px flex-1 mx-4 bg-neutral-100 hidden sm:block" />
-                      <span className="text-[10px] font-mono tracking-[0.2em] text-neutral-400 uppercase hidden sm:block">
-                        Approach — 01
-                      </span>
-                    </div>
+      {/* HERO: one full screen, centred between the frame guides */}
+      <section className="relative flex min-h-svh flex-col">
+        <AsciiHands />
+        <SiteHeader />
 
-                    {/* Main Headline Block */}
-                    <div className="col-span-12 lg:col-span-11 xl:col-span-10">
-                      <div className="space-y-2 sm:space-y-3">
-                        <AnimatedHeading
-                          className="text-[26px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase"
-                          lines={["THE BESPOKE DESIGN"]}
-                          lineClassNames={["whitespace-nowrap"]}
-                        />
-
-                        <div className="flex flex-col sm:flex-row sm:items-baseline gap-4">
-                          <AnimatedHeading
-                            className="text-[34px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-800"
-                            lines={["& DEVELOPMENT"]}
-                            lineClassNames={["whitespace-nowrap"]}
-                          />
-                          <div className="h-px sm:h-[24px] w-full sm:w-px bg-neutral-200" />
-                          <span className="text-[9px] font-mono tracking-widest text-neutral-400 uppercase pt-1">
-                            Core Service / Web
-                          </span>
-                        </div>
-
-                        <div className="pt-2 sm:pt-4">
-                          <AnimatedHeading
-                            className="text-[28px] sm:text-[34px] lg:text-[34px] font-black leading-[0.95] tracking-tighter uppercase text-neutral-500"
-                            lines={["FOR YOUR BUSINESS"]}
-                            lineClassNames={["whitespace-nowrap"]}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="mt-4 text-[11px] sm:text-[13px] text-neutral-600 font-ppmondwest">
-                  <span className="block sm:inline">Arc Lab Technology is an AI-Powered IT solution based in Dhaka, helps early‑stage Businesses & Brands ship and scale fast.</span>
-                </p>
-
-                <div className="mt-2">
-                  <img src="/download.svg" alt="Download" className="h-auto w-full max-w-[150px]" />
-                </div>
-
-                {/* CTAs */}
-                <div className="mt-4 flex items-center gap-2">
-                  <AnimatedButton href="https://cal.com/noor-foumnf/15min">
-                    Book a Call
-                  </AnimatedButton>
-                  <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">
-                    Chat with us
-                  </AnimatedButton>
-                </div>
-
-                {/* Feature sentence */}
-                <div className="mt-3 pt-3 border-t border-neutral-200">
-                  <p className="text-[9px] sm:text-[10px] text-neutral-600">
-                    Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
-                  </p>
-                </div>
-
-                {/* Social proof - Replaced with Component */}
-                <div className="mt-2 pt-2 border-t border-neutral-200">
-                  <Testimonial />
-                </div>
-
-                {/* Signature image */}
-                <div className="mt-2">
-                  <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto" />
-                </div>
-
-                {/* Copyright */}
-                <div className="mt-2">
-                  <p className="text-xs text-neutral-400">© Arc Lab Technology</p>
-                </div>
-              </div>
-            </RevealOnView>
-          </aside>
-
-          {/* RIGHT: simplified, no internal card or horizontal carousel */}
-          <div className="space-y-4">
-            {projects.map((p, idx) => (
-              <ProjectCard
-                key={`${p.title}-${idx}`}
-                title={p.title}
-                subtitle={p.subtitle}
-                imageSrc={p.imageSrc}
-                isVideo={p.isVideo}
-                tags={p.tags}
-                href={p.href}
-                indicatorText={(p as any).indicatorText}
-                priority={p.priority}
-                gradientFrom={p.gradientFrom}
-                gradientTo={p.gradientTo}
-                imageContainerClassName="lg:h-full"
-                containerClassName="lg:h-[calc(100svh-2rem)]"
-                revealDelay={idx * 0.06}
-                poster={(p as any).poster}
-              />
-            ))}
+        <RevealOnView
+          as="div"
+          intensity="hero"
+          staggerChildren
+          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-6 pt-40 pb-16 text-center sm:px-10 lg:pt-16"
+        >
+          {/* Metadata row */}
+          <div className="flex w-full max-w-[560px] items-center justify-center">
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-400">
+              Archive / 2024 / System
+            </span>
+            <div className="mx-4 hidden h-px flex-1 bg-neutral-200 sm:block" />
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-400 sm:block">
+              Approach — 01
+            </span>
           </div>
-        </div>
-      </section>
 
-      {/* Footer preview section */}
-      <section>
-        <div className="w-full bg-[#efefef] items-center justify-center h-full overflow-auto">
-          {/* Sticky footer */}
-          <div className="sticky z-0 bottom-0 left-0 w-full h-80 bg-white flex justify-center items-center">
-            <div className="relative overflow-hidden w-full h-full flex justify-end px-12 text-center items-start py-12 text-[#ff5941]">
-              <div className="flex flex-row space-x-12 sm:pace-x-16  md:space-x-24 text-sm sm:text-lg md:text-xl">
-                <ul>
-                  <li className="hover:underline cursor-pointer">Home</li>
-                  <li className="hover:underline cursor-pointer">About</li>
-                  <li>
-                    <a href="https://api.whatsapp.com/send/?phone=8801733670129" target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">Whatsapp</a>
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    <a href="https://www.facebook.com/offdesign" target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">Facebook</a>
-                  </li>
-                  <li className="hover:underline cursor-pointer">Instagram</li>
-                  <li className="hover:underline cursor-pointer">X (Twitter)</li>
-                </ul>
-              </div>
-              <h2 className="absolute bottom-0 left-0  translate-y-1/3 sm:text-[192px]  text-[44px] text-[#ff5941] font-ppmondwest">
-                Arc Lab Technology
-              </h2>
+          {/* Headline (copy unchanged) */}
+          <div className="mt-8 space-y-2 sm:space-y-3">
+            <AnimatedHeading
+              className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter sm:text-[48px] lg:text-[60px]"
+              lines={["THE BESPOKE DESIGN"]}
+              lineClassNames={["whitespace-nowrap"]}
+            />
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:items-baseline sm:gap-4">
+              <AnimatedHeading
+                className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter text-neutral-800 sm:text-[48px] lg:text-[60px]"
+                lines={["& DEVELOPMENT"]}
+                lineClassNames={["whitespace-nowrap"]}
+              />
+              <div className="h-px w-12 bg-neutral-200 sm:h-[28px] sm:w-px" />
+              <span className="font-mono text-[9px] uppercase tracking-widest text-neutral-400 sm:text-[10px]">
+                Core Service / Web
+              </span>
+            </div>
+            <div className="pt-1 sm:pt-2">
+              <AnimatedHeading
+                className="text-[26px] font-black uppercase leading-[0.95] tracking-tighter text-neutral-500 sm:text-[48px] lg:text-[60px]"
+                lines={["FOR YOUR BUSINESS"]}
+                lineClassNames={["whitespace-nowrap"]}
+              />
             </div>
           </div>
-        </div>
+
+          {/* Two-tone subline */}
+          <p className="mt-6 max-w-[500px] text-pretty text-[14px] leading-[1.5] text-neutral-400 sm:text-[16px]">
+            <span className="text-neutral-900">Websites, AI automation, and Software</span> — Arc Labs Corporation is
+            built for Bangladeshi businesses that want systems over manual, repetitive work.
+          </p>
+
+          {/* CTAs (unchanged buttons) */}
+          <div className="relative mt-7 flex items-center gap-2">
+            <img
+              src="/download.svg"
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-[150px] -top-[70px] hidden w-[130px] lg:block"
+            />
+            <AnimatedButton href="https://cal.com/noor-foumnf/15min">Book a Call</AnimatedButton>
+            <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">Chat with us</AnimatedButton>
+          </div>
+
+          {/* Link to the work page */}
+          <TransitionLink
+            href="/work"
+            className="group mt-8 inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.2em] text-neutral-500 transition-colors hover:text-neutral-900"
+          >
+            <span className="h-px w-6 bg-neutral-300 transition-all duration-300 group-hover:w-10 group-hover:bg-[#ff5941]" />
+            Selected work — {String(projects.length).padStart(2, "0")}
+            <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+          </TransitionLink>
+
+          {/* Clients */}
+          <div className="mt-14 w-full max-w-[720px]">
+            <p className="text-[12px] text-neutral-400">Brands we’ve built for</p>
+            <ul className="mt-5 flex flex-wrap items-center justify-center gap-x-9 gap-y-4 text-neutral-400">
+              {clients.map((c) => (
+                <li key={c.name} className={c.className}>
+                  {c.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </RevealOnView>
       </section>
-    </main >
+
+      <SiteFooter />
+    </main>
   )
 }
