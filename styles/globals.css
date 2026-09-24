@@ -234,6 +234,25 @@
   .frame-guide--right .frame-guide__label { right: 18px; transform: rotate(180deg); }
 }
 
+/* No z-index here: the clips must blend with the page, not an isolated group */
+.ascii-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+@media (max-width: 639px) {
+  .ascii-stage {
+    position: relative;
+    inset: auto;
+    height: 40vw;
+    margin: 12px 8px 0;
+    border: 1px solid rgb(237 232 223 / 0.25);
+    overflow: clip;
+  }
+  .ascii-stage .ascii-hand--left { top: -6px; }
+  .ascii-stage .ascii-hand--right { top: 2px; }
+}
+
 .ascii-clip {
   position: absolute;
   inset: 0;

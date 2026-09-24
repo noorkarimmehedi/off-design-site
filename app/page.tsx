@@ -5,6 +5,7 @@ import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
 import TodayDate from "@/components/today-date"
 import TransitionLink from "@/components/transition-link"
+import { AnnotatedText } from "@/components/ui/annotated-text"
 import { projects } from "@/lib/projects"
 
 // Wordmarks set in type until real client logos are supplied (then add `logo`)
@@ -27,14 +28,14 @@ export default function Page() {
     <main className="frame relative overflow-x-clip bg-ink text-ivory">
       {/* HERO: one full screen, centred in the content column */}
       <section className="relative flex min-h-svh flex-col">
-        <AsciiHands />
         <SiteHeader />
+        <AsciiHands />
 
         <RevealOnView
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-2 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
+          className="relative z-10 mx-2 mt-2 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
         >
           {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
               and a small italic aside in the gap (after Hole & Corner) */}
@@ -46,7 +47,7 @@ export default function Page() {
               <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
                 <span>automation</span>
                 <span className="hidden pb-[0.32em] text-left font-display text-[13px] font-normal italic leading-[1.35] tracking-normal text-stone normal-case sm:block">
-                  “The bespoke —
+                  “The <AnnotatedText variant="circle" color="text-ivory" delay={0.8}>bespoke</AnnotatedText> —
                   <br />
                   for your business.”
                   <br />
@@ -63,7 +64,7 @@ export default function Page() {
 
           {/* Mobile: the aside sits under the headline */}
           <p className="mt-4 self-end pr-3 text-right font-display text-[12px] italic leading-[1.35] text-stone sm:hidden">
-            “The bespoke — for your business.”
+            “The <AnnotatedText variant="circle" color="text-ivory" delay={0.8}>bespoke</AnnotatedText> — for your business.”
             <br />
             <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
           </p>

@@ -38,13 +38,14 @@ function HandVideo({ side }: { side: "left" | "right" }) {
 
 export default function AsciiHands() {
   return (
-    <>
+    // Phones: a hairline box in flow under the header (matches the hero box); sm+: full-bleed layer
+    <div className="ascii-stage">
       <div className="ascii-clip ascii-clip--left">
         <HandVideo side="left" />
       </div>
       <div className="ascii-clip ascii-clip--right">
         <HandVideo side="right" />
       </div>
-    </>
+    </div>
   )
 }
