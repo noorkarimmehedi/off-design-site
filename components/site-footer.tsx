@@ -62,7 +62,7 @@ export default function SiteFooter({ hideSignature = false }: { hideSignature?: 
         )}
 
         {/* Cropped: only the top 80% shows, flush with the page bottom */}
-        <div className="relative mx-auto aspect-[1398/418] w-[88vw] max-w-[1100px] overflow-hidden">
+        <div className="relative mx-auto aspect-[1398/418] w-[calc(100%-16px)] max-w-[1100px] overflow-hidden sm:w-[88vw]">
           <motion.img
             src="/arc-logo-dark-lg.webp"
             alt=""
