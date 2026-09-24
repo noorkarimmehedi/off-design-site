@@ -33,7 +33,7 @@ export default function Page() {
           as="div"
           intensity="hero"
           staggerChildren
-          className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-10 text-center sm:px-10 sm:pb-16 lg:pt-16"
+          className="relative z-10 mx-3 mt-40 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 py-10 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
         >
           {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
               and a small italic aside in the gap (after Hole & Corner) */}
@@ -42,7 +42,7 @@ export default function Page() {
             className="font-display mb-2 font-black lowercase leading-[0.82] tracking-[-0.035em] text-ivory sm:mb-3"
           >
             <span aria-hidden="true" className="flex flex-col items-start">
-              <span className="flex items-end gap-[0.35em] text-[12.4vw] sm:text-[96px] lg:text-[112px]">
+              <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
                 <span>automation</span>
                 <span className="hidden pb-[0.32em] text-left font-display text-[13px] font-normal italic leading-[1.35] tracking-normal text-stone normal-case sm:block">
                   “The bespoke —
@@ -52,9 +52,10 @@ export default function Page() {
                   <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
                 </span>
               </span>
-              <span className="-mt-[0.02em] self-end whitespace-nowrap pl-[0.5em] text-[12.4vw] sm:text-[96px] lg:text-[112px]">
-                <span className="relative inline-block text-[1.32em] leading-[0] tracking-[-0.06em] text-ivory/90">&amp;</span>
-                development
+              {/* Mobile: the ampersand gets its own line between the words; sm+: it leads "development" */}
+              <span className="flex flex-col self-stretch whitespace-nowrap text-[14vw] sm:-mt-[0.02em] sm:block sm:self-end sm:pl-[0.5em] sm:text-[96px] lg:text-[112px]">
+                <span className="relative block self-center text-[1.7em] leading-[0.7] tracking-[-0.06em] text-ivory/90 sm:my-0 sm:inline-block sm:text-[1.32em] sm:leading-[0]">&amp;</span>
+                <span className="self-end">development</span>
               </span>
             </span>
           </h1>
@@ -67,7 +68,7 @@ export default function Page() {
           </p>
 
           {/* Two-tone subline */}
-          <p className="mt-6 max-w-[calc(100vw-24px)] text-balance text-[2.7vw] leading-[1.65] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
+          <p className="mt-6 max-w-full text-balance text-[2.7vw] leading-[1.65] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
             <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
             built for Bangladeshi businesses that want systems over manual, repetitive work.
           </p>
