@@ -1,6 +1,5 @@
 import AnimatedButton from "@/components/animated-button"
 import AnimatedHeading from "@/components/animated-heading"
-import { AnnotatedText } from "@/components/ui/annotated-text"
 import AsciiHands from "@/components/ascii-hands"
 import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
@@ -80,15 +79,12 @@ export default function Page() {
           </div>
 
           {/* Link to the work page */}
-          {/* Link to the work page, with a hand-drawn underline */}
           <TransitionLink
             href="/work"
             className="group mt-8 inline-flex items-center gap-3 font-mono text-[12px] font-medium uppercase tracking-[0.2em] text-ivory/75 transition-colors hover:text-ivory sm:mt-10"
           >
             <span className="h-px w-6 bg-ivory/45 transition-all duration-300 group-hover:w-10 group-hover:bg-ivory" />
-            <AnnotatedText variant="underline" color="text-[#cfcbc4]" delay={1.2} duration={0.8}>
-              Selected work — {String(projects.length).padStart(2, "0")}
-            </AnnotatedText>
+            Selected work — {String(projects.length).padStart(2, "0")}
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </TransitionLink>
 

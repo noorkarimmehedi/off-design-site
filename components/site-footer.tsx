@@ -2,6 +2,7 @@
 
 import { useRef } from "react"
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion"
+import TodayDate from "@/components/today-date"
 
 export default function SiteFooter() {
   const ref = useRef<HTMLElement>(null)
@@ -33,8 +34,9 @@ export default function SiteFooter() {
       </div>
 
       {/* Giant wordmark, centred, rising out of the dark */}
-      <div className="relative mt-4 pb-8 sm:mt-8 sm:pb-12" aria-hidden="true">
+      <div className="relative mt-4 pb-8 sm:mt-8 sm:pb-12">
         <motion.div
+          aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             opacity: reduce ? 1 : glowOpacity,
@@ -56,6 +58,21 @@ export default function SiteFooter() {
             }}
             draggable={false}
           />
+        </div>
+
+        {/* Signature + today's date, under the right side of the wordmark */}
+        <div className="relative mx-auto flex w-[88vw] max-w-[1100px] justify-end">
+          <div className="flex flex-col items-end">
+            <img
+              src="/imgi_11_image.webp"
+              alt="Signature"
+              width={256}
+              height={236}
+              className="h-14 w-auto invert opacity-80 sm:h-20"
+              draggable={false}
+            />
+            <TodayDate className="-mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
+          </div>
         </div>
       </div>
     </footer>
