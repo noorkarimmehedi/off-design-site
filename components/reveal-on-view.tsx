@@ -69,7 +69,13 @@ export default function RevealOnView({
           delay: targets.length > 1 ? stagger(0.12, { start: delay }) : delay,
           easing: "cubic-bezier(0.22, 1, 0.36, 1)",
         },
-      )
+      ).finished.then(() => {
+        // Drop the leftover filter/transform layers — iOS Safari leaves repaint trails on them
+        targets.forEach((t) => {
+          t.style.filter = "none"
+          t.style.transform = "none"
+        })
+      })
     })
 
     return () => cleanup()

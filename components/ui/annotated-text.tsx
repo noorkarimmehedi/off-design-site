@@ -448,7 +448,11 @@ export function AnnotatedText({
   useEffect(() => {
     const element = ref.current;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!element || !animate || reducedMotion.matches) return;
+    if (!element) return;
+    if (!animate || reducedMotion.matches) {
+      element.removeAttribute("data-annotation-pending");
+      return;
+    }
 
     const drawings = element.querySelectorAll("[data-annotation-drawing]");
     const animations = Array.from(drawings, (drawing, index) => {
@@ -494,6 +498,7 @@ export function AnnotatedText({
       ([entry]) => {
         if (!entry?.isIntersecting) return;
         animations.forEach((animation) => animation.play());
+        element.removeAttribute("data-annotation-pending");
         observer.disconnect();
       },
       { threshold: 0.25 },
@@ -502,6 +507,7 @@ export function AnnotatedText({
 
     const finish = () => {
       if (!reducedMotion.matches) return;
+      element.removeAttribute("data-annotation-pending");
       observer.disconnect();
       animations.forEach((animation) => animation.cancel());
     };
@@ -517,7 +523,16 @@ export function AnnotatedText({
   const decorationClass = cn(mark.decoration, color ?? mark.color);
 
   return (
-    <span ref={ref} className={cn(mark.wrapper, className)}>
+    // Pending until the draw starts, so server HTML never flashes the finished mark
+    <span
+      ref={ref}
+      data-annotation-pending={animate ? "" : undefined}
+      className={cn(
+        mark.wrapper,
+        "[&[data-annotation-pending]>[aria-hidden]]:invisible",
+        className,
+      )}
+    >
       {mark.behindText ? (
         // The mark is an opaque fill, so the words ride on top of it as ink.
         <span className="relative z-10">{children}</span>

@@ -47,7 +47,7 @@ export default function Page() {
               <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
                 <span>automation</span>
                 <span className="hidden pb-[0.32em] text-left font-display text-[13px] font-normal italic leading-[1.35] tracking-normal text-stone normal-case sm:block">
-                  “The <AnnotatedText variant="circle" color="text-ivory" delay={0.8}>bespoke</AnnotatedText> —
+                  “The <AnnotatedText variant="circle" color="text-ivory" delay={1.2}>bespoke</AnnotatedText> —
                   <br />
                   for your business.”
                   <br />
@@ -64,7 +64,7 @@ export default function Page() {
 
           {/* Mobile: the aside sits under the headline */}
           <p className="mt-4 self-end pr-3 text-right font-display text-[12px] italic leading-[1.35] text-stone sm:hidden">
-            “The <AnnotatedText variant="circle" color="text-ivory" delay={0.8}>bespoke</AnnotatedText> — for your business.”
+            “The <AnnotatedText variant="circle" color="text-ivory" delay={1.2}>bespoke</AnnotatedText> — for your business.”
             <br />
             <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
           </p>
