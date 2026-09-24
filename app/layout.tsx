@@ -52,7 +52,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Pinyon+Script&display=swap"
           rel="stylesheet"
         />
         <link href="https://fonts.googleapis.com/css2?family=Commit+Mono:wght@400&display=swap" rel="stylesheet" />
@@ -82,6 +82,12 @@ export default function RootLayout({
 
 .font-ppmondwest {
   font-family: 'PPMondwest', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji" !important;
+}
+
+.font-script {
+  font-family: 'Pinyon Script', 'Snell Roundhand', cursive !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
 }
 
 .font-departuremono {

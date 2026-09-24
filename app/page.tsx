@@ -47,29 +47,32 @@ export default function Page() {
             </span>
           </div>
 
-          {/* Headline */}
-          <div className="mt-5 space-y-1 sm:mt-12 sm:space-y-2">
+          {/* Headline: copperplate script overlapping a clean medium sans */}
+          <div className="mt-8 flex flex-col items-center sm:mt-12">
             <AnimatedHeading
-              className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter sm:text-[40px] lg:text-[46px]"
-              lines={["THE BESPOKE AUTOMATION"]}
+              className="font-script relative z-10 -mb-[0.2em] -translate-x-[0.35em] text-[18vw] leading-[0.9] text-ivory sm:text-[92px] lg:text-[104px]"
+              lines={["The Bespoke"]}
               lineClassNames={["whitespace-nowrap"]}
             />
             <AnimatedHeading
-              className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter text-ivory/90 sm:text-[40px] lg:text-[46px]"
-              lines={["& DEVELOPMENT"]}
+              className="text-[13.6vw] font-medium leading-[0.95] tracking-[-0.05em] text-ivory sm:text-[64px] lg:text-[72px]"
+              lines={["Automation"]}
               lineClassNames={["whitespace-nowrap"]}
             />
-            <div className="sm:pt-1">
-              <AnimatedHeading
-                className="text-[7vw] font-black uppercase leading-[0.95] tracking-tighter text-stone sm:text-[40px] lg:text-[46px]"
-                lines={["FOR YOUR BUSINESS"]}
-                lineClassNames={["whitespace-nowrap"]}
-              />
-            </div>
+            <AnimatedHeading
+              className="text-[13.6vw] font-medium leading-[0.95] tracking-[-0.05em] text-ivory/85 sm:text-[64px] lg:text-[72px]"
+              lines={["& Development"]}
+              lineClassNames={["whitespace-nowrap"]}
+            />
+            <AnimatedHeading
+              className="font-script relative z-10 -mt-[0.12em] translate-x-[0.9em] text-[12.2vw] leading-[0.9] text-stone sm:text-[60px] lg:text-[66px]"
+              lines={["for your business"]}
+              lineClassNames={["whitespace-nowrap"]}
+            />
           </div>
 
           {/* Two-tone subline */}
-          <p className="mt-6 max-w-[380px] text-balance text-[11px] leading-[1.6] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
+          <p className="mt-6 max-w-[calc(100vw-24px)] text-balance text-[2.7vw] leading-[1.65] text-stone sm:mt-10 sm:max-w-[560px] sm:text-[14px] sm:leading-[1.6]">
             <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
             built for Bangladeshi businesses that want systems over manual, repetitive work.
           </p>
@@ -97,7 +100,7 @@ export default function Page() {
           </TransitionLink>
 
           {/* Clients */}
-          <div className="mt-14 w-full max-w-[720px] sm:mt-28">
+          <div className="mt-9 w-full max-w-[720px] sm:mt-12">
             <p className="text-[12px] text-stone">Brands we’ve built for</p>
             <ul className="mt-5 flex flex-wrap sm:mt-6 items-center justify-center gap-x-9 gap-y-4 text-stone">
               {clients.map((c) => (
