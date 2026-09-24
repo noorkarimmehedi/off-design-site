@@ -21,13 +21,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Arc Labs Corporation",
-    title: "Arc Labs Corporation — Bespoke design & development",
+    title: "Arc Labs Corporation — Bespoke automation & development",
     description,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Arc Labs Corporation — Bespoke design & development",
+    title: "Arc Labs Corporation — Bespoke automation & development",
     description,
   },
   icons: {

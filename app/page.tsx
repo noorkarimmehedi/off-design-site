@@ -1,5 +1,6 @@
 import AnimatedButton from "@/components/animated-button"
 import AnimatedHeading from "@/components/animated-heading"
+import { AnnotatedText } from "@/components/ui/annotated-text"
 import AsciiHands from "@/components/ascii-hands"
 import FrameGuides from "@/components/frame-guides"
 import RevealOnView from "@/components/reveal-on-view"
@@ -36,19 +37,8 @@ export default function Page() {
           staggerChildren
           className="relative z-10 mx-auto flex w-full max-w-[964px] flex-1 flex-col items-center justify-center px-2 pt-48 pb-10 text-center sm:px-10 sm:pb-16 lg:pt-16"
         >
-          {/* Metadata row */}
-          <div className="flex w-full max-w-[560px] items-center justify-center">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-stone">
-              Archive / 2024 / System
-            </span>
-            <div className="mx-4 hidden h-px flex-1 bg-line sm:block" />
-            <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-stone sm:block">
-              Approach — 01
-            </span>
-          </div>
-
           {/* Headline: copperplate script overlapping a clean medium sans */}
-          <div className="mt-8 flex flex-col items-center sm:mt-12">
+          <div className="flex flex-col items-center">
             <AnimatedHeading
               className="font-script relative z-10 -mb-[0.2em] -translate-x-[0.35em] text-[18vw] leading-[0.9] text-ivory sm:text-[92px] lg:text-[104px]"
               lines={["The Bespoke"]}
@@ -90,12 +80,15 @@ export default function Page() {
           </div>
 
           {/* Link to the work page */}
+          {/* Link to the work page, with a hand-drawn underline */}
           <TransitionLink
             href="/work"
-            className="group mt-8 inline-flex items-center gap-3 font-mono sm:mt-10 text-[11px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
+            className="group mt-8 inline-flex items-center gap-3 font-mono text-[12px] font-medium uppercase tracking-[0.2em] text-ivory/75 transition-colors hover:text-ivory sm:mt-10"
           >
-            <span className="h-px w-6 bg-stone/50 transition-all duration-300 group-hover:w-10 group-hover:bg-[#ff5941]" />
-            Selected work — {String(projects.length).padStart(2, "0")}
+            <span className="h-px w-6 bg-ivory/45 transition-all duration-300 group-hover:w-10 group-hover:bg-ivory" />
+            <AnnotatedText variant="underline" color="text-[#cfcbc4]" delay={1.2} duration={0.8}>
+              Selected work — {String(projects.length).padStart(2, "0")}
+            </AnnotatedText>
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </TransitionLink>
 
