@@ -10,17 +10,17 @@ import { projects } from "@/lib/projects"
 
 // Wordmarks set in type until real client logos are supplied (then add `logo`)
 const clients: { name: string; className: string; logo?: string }[] = [
-  { name: "Gala", className: "font-serif text-[22px] tracking-tight" },
+  { name: "Gala", className: "font-serif text-[20px] tracking-tight sm:text-[22px]" },
   { name: "আঙ্গনালয়", logo: "/clients/angonaloy.webp", className: "h-[21px] w-auto sm:h-[23px]" },
   { name: "Bengal Mart", logo: "/clients/bengal-mart.webp", className: "h-[34px] w-auto sm:h-[38px]" },
   { name: "Zair", logo: "/clients/zair.webp", className: "h-[17px] w-auto sm:h-[18px]" },
-  { name: "ম্যাংগো লাভার", logo: "/clients/mango-lover.webp", className: "h-[27px] w-auto sm:h-[29px]" },
+  { name: "ম্যাংগো লাভার", logo: "/clients/mango-lover.webp", className: "h-[23px] w-auto sm:h-[26px]" },
   {
     name: "Cober Collective",
-    className: "font-[family-name:ui-serif,'New_York','Iowan_Old_Style','Apple_Garamond',Baskerville,Georgia,serif] text-[20px] tracking-[-0.01em]",
+    className: "font-[family-name:ui-serif,'New_York','Iowan_Old_Style','Apple_Garamond',Baskerville,Georgia,serif] text-[17px] tracking-[-0.01em] sm:text-[19px]",
   },
-  { name: "Listen Labs", logo: "/clients/listen-labs.webp", className: "h-[19px] w-auto sm:h-[21px]" },
-  { name: "ARCADE", className: "font-mono text-[15px] font-bold tracking-widest" },
+  { name: "Listen Labs", logo: "/clients/listen-labs.webp", className: "h-[15px] w-auto sm:h-[17px]" },
+  { name: "ARCADE", className: "font-mono text-[14px] font-bold tracking-widest sm:text-[15px]" },
 ]
 
 export default function Page() {
@@ -106,11 +106,30 @@ export default function Page() {
 
           {/* Clients */}
           <div className="mt-9 w-full max-w-[720px] sm:mt-12">
-            <p className="text-[12px] text-stone">Brands we’ve built for</p>
-            <ul className="mt-5 flex flex-wrap sm:mt-6 items-center justify-center gap-x-9 gap-y-4 text-stone">
-              {clients.map((c) => (
-                <li key={c.name} className={c.logo ? undefined : c.className}>
-                  {c.logo ? <img src={c.logo} alt={c.name} className={c.className} /> : c.name}
+            <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
+              <span>Brands we’ve built for</span>
+              <span className="h-px flex-1 bg-line" />
+              <span className="tabular-nums">{String(clients.length).padStart(2, "0")}</span>
+            </div>
+            {/* Hairline grid: the 1px gaps show the line colour through, so every cell gets an even rule */}
+            <ul className="mt-4 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
+              {clients.map((c, i) => (
+                <li
+                  key={c.name}
+                  className="group relative flex h-[76px] items-center justify-center bg-ink px-4 text-stone transition-colors duration-300 hover:text-ivory sm:h-[96px]"
+                >
+                  <span className="absolute top-2 left-2.5 font-mono text-[9px] tabular-nums tracking-[0.15em] text-stone/50">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {c.logo ? (
+                    <img
+                      src={c.logo}
+                      alt={c.name}
+                      className={`${c.className} opacity-80 transition-opacity duration-300 group-hover:opacity-100`}
+                    />
+                  ) : (
+                    <span className={c.className}>{c.name}</span>
+                  )}
                 </li>
               ))}
             </ul>
