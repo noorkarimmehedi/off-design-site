@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "../styles/globals.css"
+import ChatWidget from "@/components/chat-widget"
 import EdgeBlur from "@/components/edge-blur"
 import SmoothScroll from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -203,6 +204,7 @@ html { font-family: var(--font-sans); background: var(--color-ink); }
           {children}
           <EdgeBlur position="top" />
           <EdgeBlur position="bottom" />
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>

@@ -21,7 +21,6 @@ export default function AnimatedButton({
   return (
     <Link href={href} target={target} rel={rel} className="inline-block">
       <button 
-        aria-label="Book a Call"
         className={cn(
           "animated-button",
           "px-6 py-4 text-sm font-mono uppercase relative border-0 leading-tight cursor-pointer",

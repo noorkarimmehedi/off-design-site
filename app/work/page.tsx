@@ -1,12 +1,14 @@
 import type { Metadata } from "next"
-import AnimatedHeading from "@/components/animated-heading"
+import CountUp from "@/components/count-up"
 import FrameGuides from "@/components/frame-guides"
 import ProjectCard from "@/components/project-card"
+import RevealOnView from "@/components/reveal-on-view"
 import ScrollScale from "@/components/scroll-scale"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
 import TransitionLink from "@/components/transition-link"
 import { Testimonial } from "@/components/ui/design-testimonial"
+import { clients } from "@/lib/clients"
 import { projects } from "@/lib/projects"
 
 export const metadata: Metadata = {
@@ -29,8 +31,13 @@ export default function WorkPage() {
         }
       />
 
-      {/* Intro */}
-      <section className="relative z-10 mx-auto w-full max-w-[964px] px-2 pt-24 pb-12 text-center sm:px-10 sm:pt-32">
+      {/* Intro: a counted-up stat in the frame's red, a two-tone subline, then a crosshair rule */}
+      <RevealOnView
+        as="section"
+        intensity="hero"
+        staggerChildren
+        className="relative z-10 mx-auto w-full max-w-[964px] px-2 pt-24 pb-10 text-center sm:px-10 sm:pt-32"
+      >
         <div className="mx-auto flex max-w-[560px] items-center justify-center">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-stone">Archive / Work</span>
           <div className="mx-4 hidden h-px flex-1 bg-line sm:block" />
@@ -38,16 +45,24 @@ export default function WorkPage() {
             Index — {count}
           </span>
         </div>
-        <AnimatedHeading
-          className="mt-8 text-[34px] font-black uppercase leading-[0.95] tracking-tighter sm:text-[48px] lg:text-[60px]"
-          lines={["SELECTED WORK"]}
-          lineClassNames={["whitespace-nowrap"]}
-        />
-        <p className="mx-auto mt-5 max-w-[420px] text-[14px] leading-[1.5] text-stone sm:text-[16px]">
-          <span className="text-ivory">Websites, stores and products</span> we’ve designed and built for brands
-          in Bangladesh and beyond
+        <h1 className="mt-8 text-[34px] font-semibold leading-[1.1] tracking-[-0.04em] sm:text-[50px]">
+          <CountUp value={projects.length} className="text-[var(--frame-accent)]" /> projects shipped
+          <br />
+          for {clients.length}+ brands
+        </h1>
+        <p className="mx-auto mt-4 max-w-[420px] text-[14px] leading-[1.45] text-ivory sm:text-[15px]">
+          We build websites, systems, AI and automation
+          <span className="block text-stone">for businesses in Bangladesh and beyond</span>
         </p>
-      </section>
+        <div className="relative mt-14 h-px w-full bg-line sm:mt-20" aria-hidden="true">
+          {["left-0 -translate-x-1/2", "right-0 translate-x-1/2"].map((side) => (
+            <span key={side} className={`absolute top-1/2 size-[11px] -translate-y-1/2 ${side}`}>
+              <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-ivory/30" />
+              <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-ivory/30" />
+            </span>
+          ))}
+        </div>
+      </RevealOnView>
 
       {/* Projects */}
       <section className="relative z-10 mx-auto w-full max-w-[964px] px-1 pb-16 sm:px-8">

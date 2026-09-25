@@ -4,24 +4,8 @@ import RevealOnView from "@/components/reveal-on-view"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
 import TodayDate from "@/components/today-date"
-import TransitionLink from "@/components/transition-link"
 import { AnnotatedText } from "@/components/ui/annotated-text"
-import { projects } from "@/lib/projects"
-
-// Wordmarks set in type until real client logos are supplied (then add `logo`)
-const clients: { name: string; className: string; logo?: string }[] = [
-  { name: "Gala", className: "font-serif text-[20px] tracking-tight sm:text-[22px]" },
-  { name: "আঙ্গনালয়", logo: "/clients/angonaloy.webp", className: "h-[21px] w-auto sm:h-[23px]" },
-  { name: "Bengal Mart", logo: "/clients/bengal-mart.webp", className: "h-[34px] w-auto sm:h-[38px]" },
-  { name: "Zair", logo: "/clients/zair.webp", className: "h-[17px] w-auto sm:h-[18px]" },
-  { name: "ম্যাংগো লাভার", logo: "/clients/mango-lover.webp", className: "h-[23px] w-auto sm:h-[26px]" },
-  {
-    name: "Cober Collective",
-    className: "font-[family-name:ui-serif,'New_York','Iowan_Old_Style','Apple_Garamond',Baskerville,Georgia,serif] text-[17px] tracking-[-0.01em] sm:text-[19px]",
-  },
-  { name: "Listen Labs", logo: "/clients/listen-labs.webp", className: "h-[15px] w-auto sm:h-[17px]" },
-  { name: "ARCADE", className: "font-mono text-[14px] font-bold tracking-widest sm:text-[15px]" },
-]
+import { clients } from "@/lib/clients"
 
 export default function Page() {
   return (
@@ -90,19 +74,21 @@ export default function Page() {
               aria-hidden="true"
               className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
             />
-            <AnimatedButton href="/call" target="_self" rel="">Book a Call</AnimatedButton>
-            <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">Chat with us</AnimatedButton>
+            <AnimatedButton href="/work" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Explore the Portfolio</AnimatedButton>
+            <AnimatedButton href="/call" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Book a Call</AnimatedButton>
           </div>
 
-          {/* Link to the work page */}
-          <TransitionLink
-            href="/work"
+          {/* WhatsApp chat link */}
+          <a
+            href="https://api.whatsapp.com/send/?phone=8801733670129"
+            target="_blank"
+            rel="noopener noreferrer"
             className="group mt-8 inline-flex items-center gap-3 font-mono text-[12px] font-medium uppercase tracking-[0.2em] text-ivory/75 transition-colors hover:text-ivory sm:mt-10"
           >
             <span className="h-px w-6 bg-ivory/45 transition-all duration-300 group-hover:w-10 group-hover:bg-ivory" />
-            Selected work — {String(projects.length).padStart(2, "0")}
+            Chat with us
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </TransitionLink>
+          </a>
 
           {/* Clients */}
           <div className="mt-9 w-full max-w-[720px] sm:mt-12">
