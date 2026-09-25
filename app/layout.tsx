@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import "../styles/globals.css"
+import BottomBlur from "@/components/bottom-blur"
 import SmoothScroll from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
 
@@ -200,6 +201,7 @@ html { font-family: var(--font-sans); background: var(--color-ink); }
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <SmoothScroll />
           {children}
+          <BottomBlur />
         </ThemeProvider>
       </body>
     </html>
