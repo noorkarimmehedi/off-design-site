@@ -276,25 +276,16 @@ html.dark { color-scheme: dark; }
   overflow: clip;
   pointer-events: none;
   z-index: 1;
-  /* Blend on the clip (its own stacking context) so the inverted black drops into the page */
-  mix-blend-mode: screen;
 }
 .ascii-hand {
   position: absolute;
   max-width: none;
   object-fit: cover;
-  /* Dark glyphs on white → light glyphs on black */
-  filter: invert(1) sepia(0.25);
   pointer-events: none;
   user-select: none;
 }
 
-/* Light mode: keep the footage as shot (dark glyphs on white) and multiply the white away */
-html.light .ascii-clip { mix-blend-mode: multiply; }
-/* No sepia (it tints the white, which shows as a box). Grayscale + brighten so the video's
-   off-white clips to pure #fff — invisible on the white page even where the blend is ignored
-   (iOS Safari can skip mix-blend-mode on video layers) */
-html.light .ascii-hand { filter: grayscale(1) brightness(1.15); }
+/* Canvas glyphs are already transparent and tinted (see ascii-hands.tsx): no blend or filter */
 
 /* Mobile: hands peek in from the top edges as a faint band */
 .ascii-hand { opacity: 0.6; }
