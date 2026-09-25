@@ -63,7 +63,7 @@ export default function CalEmbed({ calLink, className }: { calLink: string; clas
     Cal.ns[NAMESPACE]("inline", {
       elementOrSelector: el,
       calLink,
-      config: { layout: "month_view", theme, useSlotsViewOnSmallScreen: "true" },
+      config: { layout: "month_view", theme },
     })
     Cal.ns[NAMESPACE]("ui", {
       theme,

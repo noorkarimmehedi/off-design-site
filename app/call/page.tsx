@@ -34,7 +34,7 @@ export default function CallPage() {
           <span className="block">And we’ll reach out.</span>
         </h1>
 
-        <CalEmbed calLink="noor-foumnf/15min" className="mt-10 min-h-[560px] w-full overflow-hidden sm:mt-14" />
+        <CalEmbed calLink="noor-foumnf/15min" className="mt-10 min-h-[560px] w-full sm:mt-14" />
       </RevealOnView>
     </main>
   )
