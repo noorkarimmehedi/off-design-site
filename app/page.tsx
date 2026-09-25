@@ -90,7 +90,7 @@ export default function Page() {
               aria-hidden="true"
               className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
             />
-            <AnimatedButton href="https://cal.com/noor-foumnf/15min">Book a Call</AnimatedButton>
+            <AnimatedButton href="/call" target="_self" rel="">Book a Call</AnimatedButton>
             <AnimatedButton href="https://api.whatsapp.com/send/?phone=8801733670129">Chat with us</AnimatedButton>
           </div>
 
