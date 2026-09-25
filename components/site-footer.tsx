@@ -61,14 +61,15 @@ export default function SiteFooter({ hideSignature = false }: { hideSignature?: 
           </div>
         )}
 
-        {/* Cropped: only the top 80% shows, flush with the page bottom */}
+        {/* Cropped: only the top 80% shows, flush with the page bottom.
+            The webp has transparent padding, so it's scaled/offset to size the letters like the old logo */}
         <div className="relative mx-auto aspect-[1398/418] w-[calc(100%-16px)] max-w-[1100px] overflow-hidden sm:w-[88vw]">
           <motion.img
-            src="/arc-logo-dark-lg.webp"
+            src="/arc-footer.webp"
             alt=""
-            width={1398}
-            height={523}
-            className="block h-auto w-full select-none light:brightness-[0.2] light:grayscale"
+            width={1944}
+            height={809}
+            className="-mt-[5.55%] -ml-[12.1%] block h-auto w-[119.9%] max-w-none select-none light:brightness-[0.2] light:grayscale"
             style={{
               y: reduce ? "0%" : logoY,
               opacity: reduce ? 1 : logoOpacity,
