@@ -80,7 +80,7 @@ export default function WorkPage() {
               Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We
               help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
             </p>
-            <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto invert opacity-80" />
+            <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto opacity-80 dark:invert" />
             <p className="text-xs text-stone">© Arc Lab Technology</p>
           </div>
           <Testimonial />

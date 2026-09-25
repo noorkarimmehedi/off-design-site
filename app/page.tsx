@@ -123,7 +123,7 @@ export default function Page() {
               alt="Signature"
               width={256}
               height={236}
-              className="h-12 w-auto invert opacity-80 sm:h-16"
+              className="h-12 w-auto opacity-80 dark:invert sm:h-16"
               draggable={false}
             />
             <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45 sm:text-[11px]" />

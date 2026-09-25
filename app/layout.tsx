@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "../styles/globals.css"
 import SmoothScroll from "@/components/smooth-scroll"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const description =
   "Websites, AI automation, and software — Arc Labs Corporation is built for Bangladeshi businesses that want systems over manual, repetitive work."
@@ -46,7 +47,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    // next-themes swaps the dark/light class before paint; dark stays the default
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -98,6 +100,7 @@ export default function RootLayout({
   font-family: 'DepartureMono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
 }
 
+/* Translucent chip in the foreground colour, so it follows the light/dark palette */
 .animated-button {
   font-family: monospace;
   font-size: 0.875rem;
@@ -106,36 +109,20 @@ export default function RootLayout({
   border: 0;
   line-height: 1;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.04);
-  color: rgba(0, 0, 0, 0.75);
+  background: color-mix(in srgb, var(--color-ivory) 6%, transparent);
+  color: color-mix(in srgb, var(--color-ivory) 80%, transparent);
   transition: all 0.26s ease-out;
 }
 
 .animated-button:focus-visible {
-  outline: rgba(0, 0, 0, 0.3) dashed 1px;
+  outline: color-mix(in srgb, var(--color-ivory) 40%, transparent) dashed 1px;
   outline-offset: 0.5rem;
 }
 
 .animated-button:hover,
 .animated-button:focus-visible {
-  color: rgba(0, 0, 0, 1);
-  background: rgba(0, 0, 0, 0.1);
-}
-
-/* Dark mode: same translucent chip, mirrored to ivory */
-.dark .animated-button {
-  background: rgba(237, 232, 223, 0.06);
-  color: rgba(237, 232, 223, 0.8);
-}
-
-.dark .animated-button:hover,
-.dark .animated-button:focus-visible {
-  color: #ede8df;
-  background: rgba(237, 232, 223, 0.12);
-}
-
-.dark .animated-button:focus-visible {
-  outline-color: rgba(237, 232, 223, 0.4);
+  color: var(--color-ivory);
+  background: color-mix(in srgb, var(--color-ivory) 12%, transparent);
 }
 
 .animated-button .corners {
@@ -206,12 +193,14 @@ export default function RootLayout({
   transform: rotate(360deg);
 }
 
-html { font-family: var(--font-sans); background: #000000; }
+html { font-family: var(--font-sans); background: var(--color-ink); }
         `}</style>
       </head>
       <body>
-        <SmoothScroll />
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+          <SmoothScroll />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

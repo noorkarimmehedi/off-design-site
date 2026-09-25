@@ -53,7 +53,7 @@ export default function SiteFooter({ hideSignature = false }: { hideSignature?: 
                 alt="Signature"
                 width={256}
                 height={236}
-                className="h-14 w-auto invert opacity-80 sm:h-20"
+                className="h-14 w-auto opacity-80 dark:invert sm:h-20"
                 draggable={false}
               />
               <TodayDate className="-mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
@@ -68,7 +68,7 @@ export default function SiteFooter({ hideSignature = false }: { hideSignature?: 
             alt=""
             width={1398}
             height={523}
-            className="block h-auto w-full select-none"
+            className="block h-auto w-full select-none light:brightness-[0.2] light:grayscale"
             style={{
               y: reduce ? "0%" : logoY,
               opacity: reduce ? 1 : logoOpacity,

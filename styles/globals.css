@@ -16,6 +16,7 @@
 }
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
 
 /* Dark luxury palette */
 @theme {
@@ -24,6 +25,21 @@
   --color-stone: #8f887d;
   --color-line: rgb(237 232 223 / 0.09);
 }
+
+/* Light mode: same palette turned over — warm paper, near-black ink, darker stone.
+   Utilities read these variables, so every bg-ink / text-ivory / ivory/25 flips with them. */
+html.light {
+  --color-ink: #f1ede5;
+  --color-ivory: #16140f;
+  --color-stone: #69635a;
+  --color-line: rgb(22 20 15 / 0.1);
+  --background: #f1ede5;
+  --foreground: #16140f;
+  --muted-foreground: #69635a;
+  --border: rgb(22 20 15 / 0.1);
+  color-scheme: light;
+}
+html.dark { color-scheme: dark; }
 
 :root {
   --background: oklch(1 0 0);
@@ -165,8 +181,8 @@
 /* Swiss rule: a quiet 1px hairline (at x = 5px in an 11px strip).
    Desktop adds sparse ticks, a small registration mark and a coordinate label. */
 .frame-guide {
-  --rule: rgb(237 232 223 / 0.09);
-  --tick: rgb(237 232 223 / 0.16);
+  --rule: color-mix(in srgb, var(--color-ivory) 9%, transparent);
+  --tick: color-mix(in srgb, var(--color-ivory) 16%, transparent);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -206,6 +222,7 @@
 
   /* Registration mark where the rule meets the header line */
   .frame-guide__cross {
+    --cross: color-mix(in srgb, var(--color-ivory) 35%, transparent);
     display: block;
     position: absolute;
     top: 99px;
@@ -213,8 +230,8 @@
     width: 9px;
     height: 9px;
     background:
-      linear-gradient(rgb(237 232 223 / 0.35), rgb(237 232 223 / 0.35)) 50% 50% / 9px 1px no-repeat,
-      linear-gradient(rgb(237 232 223 / 0.35), rgb(237 232 223 / 0.35)) 50% 50% / 1px 9px no-repeat;
+      linear-gradient(var(--cross), var(--cross)) 50% 50% / 9px 1px no-repeat,
+      linear-gradient(var(--cross), var(--cross)) 50% 50% / 1px 9px no-repeat;
   }
 
   /* Vertical coordinate label beside the rule */
@@ -227,7 +244,7 @@
     letter-spacing: 0.3em;
     text-transform: uppercase;
     white-space: nowrap;
-    color: rgb(237 232 223 / 0.2);
+    color: color-mix(in srgb, var(--color-ivory) 20%, transparent);
     writing-mode: vertical-rl;
   }
   .frame-guide--left .frame-guide__label { left: 18px; }
@@ -246,7 +263,7 @@
     inset: auto;
     height: 40vw;
     margin: 12px 8px 0;
-    border: 1px solid rgb(237 232 223 / 0.25);
+    border: 1px solid color-mix(in srgb, var(--color-ivory) 25%, transparent);
     overflow: clip;
   }
   .ascii-stage .ascii-hand--left { top: -6px; }
@@ -271,6 +288,11 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* Light mode: keep the footage as shot (dark glyphs on white) and multiply the white away */
+html.light .ascii-clip { mix-blend-mode: multiply; }
+/* No sepia here: it tints the white yellow, which multiply shows as a box. Brighten so near-white clips to white */
+html.light .ascii-hand { filter: brightness(1.06); }
 
 /* Mobile: hands peek in from the top edges as a faint band */
 .ascii-hand { opacity: 0.6; }
