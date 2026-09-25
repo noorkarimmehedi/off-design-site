@@ -74,8 +74,8 @@ export default function Page() {
               aria-hidden="true"
               className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
             />
-            <AnimatedButton href="/work" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Our Portfolio</AnimatedButton>
-            <AnimatedButton href="/call" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Book a Call</AnimatedButton>
+            <AnimatedButton href="/work" target="_self" rel="">Our Portfolio</AnimatedButton>
+            <AnimatedButton href="/call" target="_self" rel="">Book a Call</AnimatedButton>
           </div>
 
           {/* WhatsApp chat link */}
@@ -83,9 +83,8 @@ export default function Page() {
             href="https://api.whatsapp.com/send/?phone=8801733670129"
             target="_blank"
             rel="noopener noreferrer"
-            className="group mt-8 inline-flex items-center gap-3 font-mono text-[12px] font-medium uppercase tracking-[0.2em] text-ivory/75 transition-colors hover:text-ivory sm:mt-10"
+            className="group mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
           >
-            <span className="h-px w-6 bg-ivory/45 transition-all duration-300 group-hover:w-10 group-hover:bg-ivory" />
             Chat with us
             <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
           </a>
