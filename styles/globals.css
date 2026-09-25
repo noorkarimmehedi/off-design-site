@@ -26,14 +26,14 @@
   --color-line: rgb(237 232 223 / 0.09);
 }
 
-/* Light mode: same palette turned over — warm paper, near-black ink, darker stone.
+/* Light mode: same palette turned over — pure white, near-black ink, darker stone.
    Utilities read these variables, so every bg-ink / text-ivory / ivory/25 flips with them. */
 html.light {
-  --color-ink: #f1ede5;
+  --color-ink: #ffffff;
   --color-ivory: #16140f;
   --color-stone: #69635a;
   --color-line: rgb(22 20 15 / 0.1);
-  --background: #f1ede5;
+  --background: #ffffff;
   --foreground: #16140f;
   --muted-foreground: #69635a;
   --border: rgb(22 20 15 / 0.1);
@@ -291,8 +291,10 @@ html.dark { color-scheme: dark; }
 
 /* Light mode: keep the footage as shot (dark glyphs on white) and multiply the white away */
 html.light .ascii-clip { mix-blend-mode: multiply; }
-/* No sepia here: it tints the white yellow, which multiply shows as a box. Brighten so near-white clips to white */
-html.light .ascii-hand { filter: brightness(1.06); }
+/* No sepia (it tints the white, which shows as a box). Grayscale + brighten so the video's
+   off-white clips to pure #fff — invisible on the white page even where the blend is ignored
+   (iOS Safari can skip mix-blend-mode on video layers) */
+html.light .ascii-hand { filter: grayscale(1) brightness(1.15); }
 
 /* Mobile: hands peek in from the top edges as a faint band */
 .ascii-hand { opacity: 0.6; }

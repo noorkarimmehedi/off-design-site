@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useTheme } from "next-themes"
 import { flushSync } from "react-dom"
 
-const THEME_COLOR = { dark: "#000000", light: "#f1ede5" } as const
+const THEME_COLOR = { dark: "#000000", light: "#ffffff" } as const
 
 // Mono "Dark / Light" switch for the header. The active word is lit by CSS
 // (dark:/light: variants), so the server HTML is right before hydration.
