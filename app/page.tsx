@@ -74,7 +74,7 @@ export default function Page() {
               aria-hidden="true"
               className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
             />
-            <AnimatedButton href="/work" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Explore the Portfolio</AnimatedButton>
+            <AnimatedButton href="/work" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Our Portfolio</AnimatedButton>
             <AnimatedButton href="/call" target="_self" rel="" className="whitespace-nowrap px-4 max-sm:!text-[12px] sm:px-6">Book a Call</AnimatedButton>
           </div>
 
