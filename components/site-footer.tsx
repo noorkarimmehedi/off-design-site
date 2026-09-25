@@ -69,7 +69,7 @@ export default function SiteFooter({ hideSignature = false }: { hideSignature?: 
             alt=""
             width={1944}
             height={809}
-            className="-mt-[5.55%] -ml-[12.1%] block h-auto w-[119.9%] max-w-none select-none light:brightness-[0.2] light:grayscale"
+            className="-mt-[5.55%] -ml-[12.1%] block h-auto w-[119.9%] max-w-none select-none"
             style={{
               y: reduce ? "0%" : logoY,
               opacity: reduce ? 1 : logoOpacity,
