@@ -42,7 +42,17 @@ export default function Page() {
               </span>
               {/* Mobile: the ampersand gets its own line between the words; sm+: it leads "development" */}
               <span className="flex flex-col self-stretch whitespace-nowrap text-[14vw] sm:-mt-[0.02em] sm:block sm:self-end sm:pl-[0.5em] sm:text-[96px] lg:text-[112px]">
-                <span className="relative block self-center text-[1.5em] leading-[0.62] tracking-[-0.06em] text-ivory/90 sm:my-0 sm:inline-block sm:text-[1.32em] sm:leading-[0]">&amp;</span>
+                {/* Custom chrome ampersand (transparent webp) in place of the type glyph */}
+                <span className="relative z-10 block self-center -mt-[0.2em] -mb-[0.4em] sm:m-0 sm:inline-block sm:pr-[0.08em] sm:align-[-0.1em]">
+                  <img
+                    src="/ampersand-chrome-2.webp"
+                    alt=""
+                    width={1019}
+                    height={1012}
+                    className="h-[1.4em] w-auto select-none sm:h-[1.12em]"
+                    draggable={false}
+                  />
+                </span>
                 <span className="self-end">development</span>
               </span>
             </span>
