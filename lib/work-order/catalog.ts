@@ -38,10 +38,10 @@ export const CATALOG: FeatureGroup[] = [
     title: "Grow & protect",
     note: "New in Merchant Suite",
     features: [
-      { id: "protection", name: "Fake order protection", detail: "Risk score on every order, IP record, held-order review, repeat-attempt tracking and advance payment proof.", price: 10000, compareAt: 16000 },
-      { id: "campaign-links", name: "Campaign links", detail: "A tracked link per ad or post with automatic UTM tags — clicks, orders and delivered revenue per link.", price: 8000, compareAt: 12000 },
-      { id: "analytics", name: "Website analytics", detail: "Your own visitor tracking: visitors, sessions, entry pages, nightly reports and retention.", price: 8000, compareAt: 12000 },
-      { id: "business-report", name: "Business report", detail: "P&L, order value, delivery outcomes, product weight and hourly sales against the previous period.", price: 10000, compareAt: 15000 },
+      { id: "protection", name: "Fake order protection", detail: "Risk score on every order, IP record, held-order review, repeat-attempt tracking and advance payment proof.", price: 6000, compareAt: 16000 },
+      { id: "campaign-links", name: "Campaign links", detail: "A tracked link per ad or post with automatic UTM tags — clicks, orders and delivered revenue per link.", price: 5000, compareAt: 12000 },
+      { id: "analytics", name: "Website analytics", detail: "Your own visitor tracking: visitors, sessions, entry pages, nightly reports and retention.", price: 5000, compareAt: 12000 },
+      { id: "business-report", name: "Business report", detail: "P&L, order value, delivery outcomes, product weight and hourly sales against the previous period.", price: 6000, compareAt: 15000 },
     ],
   },
   {
@@ -49,11 +49,11 @@ export const CATALOG: FeatureGroup[] = [
     title: "Sell & talk",
     note: "Turn chats into orders",
     features: [
-      { id: "inbox", name: "Social inbox", detail: "Facebook, Instagram and WhatsApp messages in one inbox.", price: 15000, compareAt: 22000 },
-      { id: "ai-capture", name: "AI order capture", detail: "Turns chat messages into orders automatically.", price: 12000, compareAt: 18000 },
-      { id: "payments", name: "bKash / Nagad payments", detail: "Online payment at checkout.", price: 8000, compareAt: 12000 },
-      { id: "sms", name: "SMS order updates", detail: "Automatic confirmation and delivery messages.", price: 5000, compareAt: 8000 },
-      { id: "abandoned", name: "Abandoned checkout recovery", detail: "See who left at checkout and follow up.", price: 6000, compareAt: 9000 },
+      { id: "inbox", name: "Social inbox", detail: "Facebook, Instagram and WhatsApp messages in one inbox.", price: 9000, compareAt: 22000 },
+      { id: "ai-capture", name: "AI order capture", detail: "Turns chat messages into orders automatically.", price: 7000, compareAt: 18000 },
+      { id: "payments", name: "bKash / Nagad payments", detail: "Online payment at checkout.", price: 5000, compareAt: 12000 },
+      { id: "sms", name: "SMS order updates", detail: "Automatic confirmation and delivery messages.", price: 3000, compareAt: 8000 },
+      { id: "abandoned", name: "Abandoned checkout recovery", detail: "See who left at checkout and follow up.", price: 4000, compareAt: 9000 },
     ],
   },
   {
@@ -61,10 +61,10 @@ export const CATALOG: FeatureGroup[] = [
     title: "Operations",
     note: "Run the back office",
     features: [
-      { id: "courier", name: "Courier integration", detail: "Pathao and Steadfast dispatch and tracking from the dashboard.", price: 8000, compareAt: 12000 },
-      { id: "warehouses", name: "Multi-warehouse stock", detail: "Stock tracked per warehouse.", price: 6000, compareAt: 9000 },
-      { id: "returns", name: "Returns management", detail: "Log and track returns and refunds.", price: 5000, compareAt: 8000 },
-      { id: "team", name: "Team roles & activity log", detail: "Staff accounts, permissions and a log of who did what.", price: 4000, compareAt: 6000 },
+      { id: "courier", name: "Courier integration", detail: "Pathao and Steadfast dispatch and tracking from the dashboard.", price: 5000, compareAt: 12000 },
+      { id: "warehouses", name: "Multi-warehouse stock", detail: "Stock tracked per warehouse.", price: 4500, compareAt: 9000 },
+      { id: "returns", name: "Returns management", detail: "Log and track returns and refunds.", price: 3000, compareAt: 8000 },
+      { id: "team", name: "Team roles & activity log", detail: "Staff accounts, permissions and a log of who did what.", price: 2500, compareAt: 6000 },
     ],
   },
 ]
