@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState, type ReactNode } from "react"
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
 import {
   BANK,
@@ -29,11 +29,14 @@ export default function OrderBuilder({
   slug,
   clientName,
   preset,
+  nameLocked = false,
   header,
 }: {
   slug: string
   clientName?: string
   preset?: Selection
+  /** Name came from a saved client entry, so the client can't edit it */
+  nameLocked?: boolean
   /** Site header, rendered inside the hero so the ASCII hands sit relative to it */
   header: ReactNode
 }) {
@@ -53,6 +56,24 @@ export default function OrderBuilder({
   const [slipError, setSlipError] = useState("")
   const padRef = useRef<SignatureFieldHandle>(null)
   const signRef = useRef<HTMLElement>(null)
+  const asideRef = useRef<HTMLElement>(null)
+
+  // Desktop: the sticky work order sits in the vertical middle of the screen, never above 32px
+  useEffect(() => {
+    const aside = asideRef.current
+    if (!aside) return
+    const place = () => {
+      aside.style.setProperty("--sticky-top", `${Math.max(32, (window.innerHeight - aside.offsetHeight) / 2)}px`)
+    }
+    place()
+    const ro = new ResizeObserver(place)
+    ro.observe(aside)
+    window.addEventListener("resize", place)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener("resize", place)
+    }
+  }, [])
 
   const order = useMemo(() => priceSelection(selection), [selection])
   const locked = Boolean(result)
@@ -198,9 +219,10 @@ export default function OrderBuilder({
             {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
             <span className="font-display text-[1.3em] font-black lowercase leading-[0.8] tracking-[-0.035em]">arc</span>
             <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.3em] w-auto self-center light:invert" />
-            {clientName ? (
-              <span className={`${isBangla(clientName) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
-                {clientName}
+            {/* Follows the Business name field, so a corrected spelling shows here too */}
+            {business.trim() ? (
+              <span className={`${isBangla(business) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
+                {business.trim()}
               </span>
             ) : (
               <span className="font-display font-black lowercase leading-none tracking-[-0.035em] text-stone">you</span>
@@ -307,7 +329,7 @@ export default function OrderBuilder({
           </div>
 
           {/* Live work order */}
-          <aside className="lg:sticky lg:top-8 lg:self-start">
+          <aside ref={asideRef} className="lg:sticky lg:top-[var(--sticky-top,2rem)] lg:self-start">
             <RevealOnView className="border border-line" delay={0.5}>
               <div className="border-b border-line px-5 py-4">
                 <div className="font-display text-[30px] font-black lowercase leading-none tracking-[-0.035em]">work order.</div>
@@ -393,7 +415,7 @@ export default function OrderBuilder({
               <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1fr]">
                 {/* Desktop: centred against the taller signature column */}
                 <div className="flex flex-col gap-4 lg:self-center">
-                  <Field label="Business name" value={business} onChange={setBusiness} disabled={Boolean(clientName)} autoComplete="organization" />
+                  <Field label="Business name" value={business} onChange={setBusiness} disabled={nameLocked} autoComplete="organization" />
                   <Field label="Your full name" value={signer} onChange={setSigner} autoComplete="name" />
                   <Field label="Phone / WhatsApp" value={phone} onChange={setPhone} type="tel" autoComplete="tel" />
                   <Field label="Email (optional)" value={email} onChange={setEmail} type="email" autoComplete="email" />
