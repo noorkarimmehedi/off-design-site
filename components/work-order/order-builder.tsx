@@ -23,6 +23,10 @@ const WHATSAPP = "+880 1733-670129"
 const isBangla = (s: string) => /[ঀ-৿]/.test(s)
 const pad = (i: number) => String(i + 1).padStart(2, "0")
 
+const BTN =
+  "w-full py-4 font-mono text-[12px] uppercase tracking-[0.2em] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
+const LINK = "self-start text-left text-[13px] text-stone underline decoration-stone/40 underline-offset-4 transition-colors hover:text-ivory"
+
 type Result = { number: string; total: number; advance: number; signedAt: string }
 
 export default function OrderBuilder({
@@ -45,17 +49,21 @@ export default function OrderBuilder({
   const [signer, setSigner] = useState("")
   const [phone, setPhone] = useState("")
   const [email, setEmail] = useState("")
-  const [agreed, setAgreed] = useState(false)
+  const [showEmail, setShowEmail] = useState(false)
   const [signed, setSigned] = useState(false)
+  // Accept flow: 1 details → 2 review & sign → 3 pay the advance. Done steps fold to one line.
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle")
   const [error, setError] = useState("")
   const [result, setResult] = useState<Result | null>(null)
   const [signaturePng, setSignaturePng] = useState<string | null>(null)
   const [reference, setReference] = useState("")
+  const [showRef, setShowRef] = useState(false)
   const [slip, setSlip] = useState<{ url: string; name: string } | null>(null)
   const [slipError, setSlipError] = useState("")
   const padRef = useRef<SignatureFieldHandle>(null)
   const signRef = useRef<HTMLElement>(null)
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([])
   const asideRef = useRef<HTMLElement>(null)
 
   // Desktop: the sticky work order sits in the vertical middle of the screen, never above 32px
@@ -78,13 +86,21 @@ export default function OrderBuilder({
   const order = useMemo(() => priceSelection(selection), [selection])
   const locked = Boolean(result)
   const paid = Boolean(reference.trim() || slip)
-  const ready = business.trim() && signer.trim() && phone.trim() && agreed && signed && paid
-  const missing = [
-    !(business.trim() && signer.trim() && phone.trim()) && "your details",
-    !signed && "your signature",
-    !paid && "a payment screenshot or reference",
-    !agreed && "the acceptance tick",
-  ].filter(Boolean) as string[]
+  const detailsDone = Boolean(business.trim() && signer.trim() && phone.trim())
+  const ready = detailsDone && signaturePng && paid
+
+  // Opening a step scrolls its header into view — on phones the next step starts below the fold
+  const goTo = (n: 1 | 2 | 3) => {
+    setStep(n)
+    requestAnimationFrame(() => stepRefs.current[n - 1]?.scrollIntoView({ behavior: "smooth", block: "start" }))
+  }
+  const sign = async () => {
+    const png = await padRef.current?.toPng()
+    if (!png) return
+    setSignaturePng(png)
+    goTo(3)
+  }
+  const scrollToFlow = () => (stepRefs.current[step - 1] ?? signRef.current)?.scrollIntoView({ behavior: "smooth", block: "start" })
 
   const toggle = (f: Feature) => {
     if (f.required || locked) return
@@ -98,21 +114,16 @@ export default function OrderBuilder({
   async function accept() {
     if (!ready || status === "saving") return
     setStatus("saving")
-    const signature = await padRef.current?.toPng()
-    if (!signature) {
-      setStatus("idle")
-      return
-    }
+    const signature = signaturePng
     setError("")
     try {
       const res = await fetch("/api/work-orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business, slug, signer, phone, email, selection, signature, agreed, reference, slip: slip?.url }),
+        body: JSON.stringify({ business, slug, signer, phone, email, selection, signature, agreed: true, reference, slip: slip?.url }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.")
-      setSignaturePng(signature)
       setResult(json)
       setStatus("idle")
       requestAnimationFrame(() => signRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
@@ -377,7 +388,7 @@ export default function OrderBuilder({
             {!result && (
               <button
                 type="button"
-                onClick={() => signRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                onClick={scrollToFlow}
                 className="mt-3 hidden w-full bg-ivory py-3.5 font-mono text-[12px] uppercase tracking-[0.2em] text-ink transition-opacity hover:opacity-90 lg:block"
               >
                 Review & sign ↓
@@ -386,107 +397,140 @@ export default function OrderBuilder({
           </aside>
         </div>
 
-        {/* Terms + signature */}
+        {/* Accept: details → review & sign → pay the advance, in one card */}
         <section ref={signRef} className="mt-20 scroll-mt-8" aria-labelledby="sign-heading">
           {result ? (
             <Confirmation result={result} business={business} reference={reference} hasSlip={Boolean(slip)} />
           ) : (
             <>
               <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-                <span>Terms & signature</span>
+                <span>Sign & pay</span>
                 <span className="h-px flex-1 bg-line" />
                 <TakaFlow value={order.total} />
               </div>
-              <h2 id="sign-heading" className="font-display mt-6 text-[40px] font-black lowercase leading-[0.95] tracking-[-0.035em] sm:text-[64px]">
-                the terms.
-              </h2>
-              <div className="mt-8 grid gap-x-10 sm:grid-cols-2">
-                {TERMS.map(([k, v], i) => (
-                  <div key={k} className="grid grid-cols-[32px_1fr] border-t border-line py-4">
-                    <span className={`font-mono text-[10px] tracking-[0.15em] ${CORAL} pt-1`}>{pad(i)}</span>
-                    <div>
-                      <div className="text-[15px] font-medium">{k}</div>
-                      <p className="mt-1 text-[13.5px] leading-relaxed text-stone">{v}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1fr]">
-                {/* Desktop: centred against the taller signature column */}
-                <div className="flex flex-col gap-4 lg:self-center">
-                  <Field label="Business name" value={business} onChange={setBusiness} disabled={nameLocked} autoComplete="organization" />
-                  <Field label="Your full name" value={signer} onChange={setSigner} autoComplete="name" />
-                  <Field label="Phone / WhatsApp" value={phone} onChange={setPhone} type="tel" autoComplete="tel" />
-                  <Field label="Email (optional)" value={email} onChange={setEmail} type="email" autoComplete="email" />
+              {/* Desktop: heading on the left, centred against the steps on the right — together the full width of the builder above */}
+              <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,620px)] lg:gap-12">
+                <div className="lg:self-center">
+                  <h2 id="sign-heading" className="font-display text-[40px] font-black lowercase leading-[0.95] tracking-[-0.035em] sm:text-[56px] lg:text-[72px]">
+                    sign & start.
+                  </h2>
+                  <p className="mt-3 max-w-[420px] text-[15px] leading-relaxed text-stone lg:mt-5">Three short steps. Work starts once the advance is confirmed.</p>
                 </div>
-                <div className="flex min-w-0 flex-col">
-                  <SignatureField ref={padRef} defaultText={signer} onChange={setSigned} />
-                </div>
-              </div>
 
-              {/* Pay the advance — required before the order can be accepted */}
-              <div className="mt-16 flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-                <span>Advance payment</span>
-                <span className="h-px flex-1 bg-line" />
-                <TakaFlow value={order.advance} />
-              </div>
-              <h2 className="font-display mt-6 text-center text-[40px] font-black lowercase leading-[0.95] tracking-[-0.035em] sm:text-left sm:text-[64px]">
-                pay the advance.
-              </h2>
-              <p className="mx-auto mt-4 max-w-[620px] text-center text-[15px] leading-relaxed text-stone sm:mx-0 sm:text-left">
-                Send <span className="text-ivory">{taka(order.advance)}</span> (50%) to the account below, then add your payment
-                screenshot or transaction reference. <span className="text-ivory">Orders without payment proof aren’t accepted.</span>
-              </p>
-
-              <div className="mt-8 grid border border-line lg:grid-cols-2">
-                <dl className="grid grid-cols-[auto_1fr] content-start gap-x-6 gap-y-3 p-6">
-                  {BANK.map(([k, v]) => (
-                    <div key={k} className="contents">
-                      <dt className="pt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-stone">{k}</dt>
-                      <dd className="font-mono text-[14px] tracking-[0.02em]">{v}</dd>
-                    </div>
-                  ))}
-                  <dt className="pt-0.5 font-mono text-[10px] uppercase tracking-[0.18em] text-[#ff5941]">Amount</dt>
-                  <dd className="font-mono text-[14px] tracking-[0.02em]">{taka(order.advance)}</dd>
-                </dl>
-                <div className="flex flex-col gap-4 border-t border-line p-6 lg:border-l lg:border-t-0">
-                  <SlipUpload slip={slip} onChange={setSlip} error={slipError} onError={setSlipError} />
-                  <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-stone">
-                    <span className="h-px flex-1 bg-line" />
-                    or
-                    <span className="h-px flex-1 bg-line" />
-                  </div>
-                  <Field label="Transaction reference number" value={reference} onChange={setReference} />
-                </div>
-              </div>
-
-              {/* Accept */}
-              <div className="mx-auto mt-10 max-w-[620px]">
-                <label className="flex cursor-pointer items-start gap-3 text-[13.5px] leading-relaxed text-stone">
-                  <input
-                    type="checkbox"
-                    checked={agreed}
-                    onChange={(e) => setAgreed(e.target.checked)}
-                    className="mt-1 h-4 w-4 shrink-0 accent-[#ff5941]"
-                  />
-                  <span>
-                    I accept this work order for <span className="text-ivory">{taka(order.total)}</span> and the terms above, and I’ve
-                    sent the <span className="text-ivory">{taka(order.advance)}</span> advance.
-                  </span>
-                </label>
-                <button
-                  type="button"
-                  onClick={accept}
-                  disabled={!ready || status === "saving"}
-                  className="mt-5 w-full bg-[#ff5941] py-4 font-mono text-[12px] uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
+              <div className="border border-line bg-ivory/[0.015]">
+                {/* 1 — details */}
+                <Step
+                  n={1}
+                  step={step}
+                  title="Your details"
+                  summary={`${signer.trim()} · ${phone.trim()}`}
+                  onEdit={() => goTo(1)}
+                  stepRef={(el) => { stepRefs.current[0] = el }}
                 >
-                  {status === "saving" ? "Saving…" : `Accept & sign — ${taka(order.total)}`}
-                </button>
-                {status === "error" && <p className={`mt-3 text-center text-[13px] ${CORAL}`}>{error}</p>}
-                {!ready && status !== "saving" && (
-                  <p className="mt-3 text-center text-[12.5px] text-stone">Still needed: {missing.join(", ")}.</p>
-                )}
+                  <Field label="Business name" value={business} onChange={setBusiness} disabled={nameLocked} autoComplete="organization" />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Your full name" value={signer} onChange={setSigner} autoComplete="name" />
+                    <Field label="Phone / WhatsApp" value={phone} onChange={setPhone} type="tel" autoComplete="tel" />
+                  </div>
+                  {showEmail ? (
+                    <Field label="Email" value={email} onChange={setEmail} type="email" autoComplete="email" />
+                  ) : (
+                    <button type="button" onClick={() => setShowEmail(true)} className={LINK}>
+                      + Add email for a copy (optional)
+                    </button>
+                  )}
+                  <button type="button" onClick={() => goTo(2)} disabled={!detailsDone} className={`${BTN} bg-ivory text-ink`}>
+                    Continue
+                  </button>
+                </Step>
+
+                {/* 2 — review & sign */}
+                <Step
+                  n={2}
+                  step={step}
+                  title="Review & sign"
+                  summary={`Signed by ${signer.trim()}`}
+                  onEdit={() => goTo(2)}
+                  stepRef={(el) => { stepRefs.current[1] = el }}
+                >
+                  <dl className="border border-line text-[13.5px]">
+                    {[
+                      ["Total", <TakaFlow key="t" value={order.total} />],
+                      [
+                        "Payment",
+                        <span key="p">
+                          <TakaFlow value={order.advance} /> now · <TakaFlow value={order.total - order.advance} /> at handover
+                        </span>,
+                      ],
+                      ["Delivery", "7–15 days after the advance"],
+                    ].map(([k, v], i) => (
+                      <div key={i} className="flex justify-between gap-4 border-b border-line px-4 py-2.5 last:border-b-0">
+                        <dt className="text-stone">{k}</dt>
+                        <dd className="text-right tabular-nums">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <details className="group text-[13px] text-stone">
+                    <summary className={`${LINK} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}>
+                      <span className="group-open:hidden">Read all {TERMS.length} terms</span>
+                      <span className="hidden group-open:inline">Hide terms</span>
+                    </summary>
+                    <ol className="mt-3 flex flex-col gap-2.5">
+                      {TERMS.map(([k, v], i) => (
+                        <li key={k} className="grid grid-cols-[28px_1fr] leading-relaxed">
+                          <span className={`font-mono text-[10px] tracking-[0.15em] ${CORAL} pt-1`}>{pad(i)}</span>
+                          <span>
+                            <span className="text-ivory">{k}.</span> {v}
+                          </span>
+                        </li>
+                      ))}
+                    </ol>
+                  </details>
+                  <SignatureField ref={padRef} name={signer} onChange={setSigned} />
+                  <button type="button" onClick={sign} disabled={!signed} className={`${BTN} bg-ivory text-ink`}>
+                    Sign & continue
+                  </button>
+                  <p className="-mt-1 text-center text-[12.5px] text-stone">Signing means you accept this work order and its terms.</p>
+                </Step>
+
+                {/* 3 — pay the advance; required before the order can be accepted */}
+                <Step n={3} step={step} title={<>Pay the <TakaFlow value={order.advance} /> advance</>} stepRef={(el) => { stepRefs.current[2] = el }}>
+                  <div className="flex items-center justify-between gap-4 border border-[#ff5941] px-4 py-3.5">
+                    <div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Send exactly</div>
+                      <TakaFlow value={order.advance} className="text-[26px] font-semibold tracking-[-0.02em]" />
+                    </div>
+                    <CopyButton value={String(order.advance)} label="advance amount" />
+                  </div>
+                  <dl className="border border-line">
+                    {BANK.map(([k, v]) => (
+                      <div key={k} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-b border-line py-2 pl-4 pr-2 last:border-b-0 sm:grid-cols-[130px_minmax(0,1fr)_auto]">
+                        <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone sm:col-auto">{k}</dt>
+                        <dd className="col-start-1 font-mono text-[14px] tracking-[0.02em] [overflow-wrap:anywhere] sm:col-start-auto">{v}</dd>
+                        <CopyButton value={v} label={k.toLowerCase()} className="col-start-2 row-span-2 row-start-1 sm:col-start-auto sm:row-span-1 sm:row-start-auto" />
+                      </div>
+                    ))}
+                  </dl>
+                  <SlipUpload slip={slip} onChange={setSlip} error={slipError} onError={setSlipError} />
+                  {showRef ? (
+                    <Field label="Transaction ID" value={reference} onChange={setReference} />
+                  ) : (
+                    <button type="button" onClick={() => setShowRef(true)} className={LINK}>
+                      No screenshot? Enter the transaction ID
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={accept}
+                    disabled={!ready || status === "saving"}
+                    className={`${BTN} bg-[#ff5941] text-black`}
+                  >
+                    {status === "saving" ? "Submitting…" : "Submit order"}
+                  </button>
+                  {status === "error" && <p className={`-mt-1 text-center text-[13px] ${CORAL}`}>{error}</p>}
+                  <p className="-mt-1 text-center text-[12.5px] text-stone">We check the payment and confirm on WhatsApp.</p>
+                </Step>
+              </div>
               </div>
             </>
           )}
@@ -519,10 +563,10 @@ export default function OrderBuilder({
             </a>
             <button
               type="button"
-              onClick={() => signRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              onClick={scrollToFlow}
               className="liquid-glass-button relative h-[46px] shrink-0 rounded-[20px] px-5 font-mono text-[11px] uppercase tracking-[0.2em] transition-transform active:scale-95"
             >
-              Sign ↓
+              {step === 3 ? "Pay ↓" : "Sign ↓"}
             </button>
           </div>
         </div>
@@ -535,6 +579,85 @@ export default function OrderBuilder({
           document.body,
         )}
     </>
+  )
+}
+
+// One step of the accept flow: open shows its body, done folds to a single summary line
+function Step({
+  n,
+  step,
+  title,
+  summary,
+  onEdit,
+  stepRef,
+  children,
+}: {
+  n: 1 | 2 | 3
+  step: 1 | 2 | 3
+  title: ReactNode
+  summary?: string
+  onEdit?: () => void
+  stepRef: (el: HTMLDivElement | null) => void
+  children: ReactNode
+}) {
+  const open = step === n
+  const done = step > n
+  return (
+    <div ref={stepRef} className="scroll-mt-6 border-b border-line last:border-b-0">
+      <div className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
+        <span
+          aria-hidden="true"
+          className={`flex h-6 w-6 items-center justify-center border font-mono text-[11px] ${
+            done ? "border-ivory bg-ivory text-ink" : open ? "border-ivory text-ivory" : "border-line text-stone"
+          }`}
+        >
+          {done ? "✓" : n}
+        </span>
+        <div className="min-w-0">
+          <h3 className={`text-[15px] font-medium ${open || done ? "" : "text-stone"}`}>
+            <span className="sr-only">Step {n}: </span>
+            {title}
+          </h3>
+          {done && summary && <p className={`truncate text-[13px] text-stone ${isBangla(summary) ? "bn" : ""}`}>{summary}</p>}
+        </div>
+        {done && onEdit ? (
+          <button
+            type="button"
+            onClick={onEdit}
+            className="px-1 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
+          >
+            Edit
+          </button>
+        ) : (
+          <span />
+        )}
+      </div>
+      {open && <div className="flex flex-col gap-4 px-4 pb-6 sm:pb-7 sm:pl-[64px] sm:pr-6">{children}</div>}
+    </div>
+  )
+}
+
+function CopyButton({ value, label, className = "" }: { value: string; label: string; className?: string }) {
+  const [copied, setCopied] = useState(false)
+  return (
+    <button
+      type="button"
+      aria-label={`Copy ${label}`}
+      onClick={() =>
+        navigator.clipboard
+          ?.writeText(value)
+          .then(() => {
+            setCopied(true)
+            setTimeout(() => setCopied(false), 1400)
+          })
+          .catch(() => {})
+      }
+      className={`h-9 min-w-[72px] shrink-0 border px-3 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
+        copied ? "border-[#ff5941]/50 text-[#ff5941]" : "border-line text-stone hover:border-ivory/40 hover:text-ivory"
+      } ${className}`}
+    >
+      {copied ? "Copied" : "Copy"}
+    </button>
   )
 }
 
@@ -632,11 +755,13 @@ function SlipUpload({
 }) {
   return (
     <div className="flex flex-col gap-2">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Payment screenshot</span>
       {slip ? (
         <div className="flex items-center gap-4 border border-line p-3">
-          <img src={slip.url} alt="Payment screenshot" className="h-16 w-16 shrink-0 object-cover" />
-          <span className="min-w-0 flex-1 truncate text-[13.5px]">{slip.name}</span>
+          <img src={slip.url} alt="Payment screenshot" className="h-12 w-12 shrink-0 object-cover" />
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[14px]">{slip.name}</span>
+            <span className="block text-[12.5px] text-stone">Screenshot added</span>
+          </span>
           <button
             type="button"
             onClick={() => onChange(null)}
@@ -646,9 +771,14 @@ function SlipUpload({
           </button>
         </div>
       ) : (
-        <label className="flex cursor-pointer flex-col items-center justify-center gap-1 border border-dashed border-ivory/25 px-4 py-6 text-center transition-colors hover:border-ivory/50">
-          <span className="text-[14px]">Upload screenshot</span>
-          <span className="text-[12px] text-stone">Bank app or transfer slip · JPG or PNG</span>
+        <label className="flex cursor-pointer items-center gap-4 border border-dashed border-ivory/30 p-3 transition-colors hover:border-ivory/60 focus-within:border-ivory/60">
+          <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center border border-line text-[22px] font-light text-stone">
+            +
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[14px]">Add payment screenshot</span>
+            <span className="block text-[12.5px] text-stone">From your bank app, after you send it</span>
+          </span>
           <input
             type="file"
             accept="image/*"
