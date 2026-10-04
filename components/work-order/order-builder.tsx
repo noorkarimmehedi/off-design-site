@@ -15,7 +15,7 @@ import {
 } from "@/lib/work-order/catalog"
 import RevealOnView from "@/components/reveal-on-view"
 import { TakaFlow } from "@/components/ui/number-flow"
-import SignaturePad, { type SignaturePadHandle } from "./signature-pad"
+import SignatureField, { type SignatureFieldHandle } from "./signature-field"
 
 const CORAL = "text-[#ff5941]"
 const WHATSAPP = "+880 1733-670129"
@@ -36,7 +36,7 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
   const [error, setError] = useState("")
   const [result, setResult] = useState<Result | null>(null)
   const [signaturePng, setSignaturePng] = useState<string | null>(null)
-  const padRef = useRef<SignaturePadHandle>(null)
+  const padRef = useRef<SignatureFieldHandle>(null)
   const signRef = useRef<HTMLElement>(null)
 
   const order = useMemo(() => priceSelection(selection), [selection])
@@ -54,9 +54,12 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
 
   async function accept() {
     if (!ready || status === "saving") return
-    const signature = padRef.current?.toPng()
-    if (!signature) return
     setStatus("saving")
+    const signature = await padRef.current?.toPng()
+    if (!signature) {
+      setStatus("idle")
+      return
+    }
     setError("")
     try {
       const res = await fetch("/api/work-orders", {
@@ -361,18 +364,8 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
                   <Field label="Phone / WhatsApp" value={phone} onChange={setPhone} type="tel" autoComplete="tel" />
                   <Field label="Email (optional)" value={email} onChange={setEmail} type="email" autoComplete="email" />
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex items-baseline justify-between">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Signature</span>
-                    <button
-                      type="button"
-                      onClick={() => padRef.current?.clear()}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <SignaturePad ref={padRef} onChange={setSigned} className="mt-2 h-[180px] border border-line bg-ivory/[0.02]" />
+                <div className="flex min-w-0 flex-col">
+                  <SignatureField ref={padRef} defaultText={signer} onChange={setSigned} />
                   <label className="mt-5 flex cursor-pointer items-start gap-3 text-[13.5px] leading-relaxed text-stone">
                     <input
                       type="checkbox"
@@ -473,7 +466,8 @@ function Field({
         disabled={disabled}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
-        className={`border border-line bg-transparent px-4 py-3 text-[15px] outline-none transition-colors placeholder:text-stone/50 focus:border-ivory/50 disabled:text-ivory/70 ${isBangla(value) ? "bn" : ""}`}
+        // 16px: iOS Safari zooms the page into inputs with smaller text
+        className={`border border-line bg-transparent px-4 py-3 text-[16px] outline-none transition-colors placeholder:text-stone/50 focus:border-ivory/50 disabled:text-ivory/70 ${isBangla(value) ? "bn" : ""}`}
       />
     </label>
   )
