@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   BANK,
   CATALOG,
@@ -11,10 +12,12 @@ import {
   taka,
   TERMS,
   type Feature,
+  type Line,
   type Selection,
 } from "@/lib/work-order/catalog"
 import AsciiHands from "@/components/ascii-hands"
 import RevealOnView from "@/components/reveal-on-view"
+import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
 import { TakaFlow } from "@/components/ui/number-flow"
 import SignatureField, { type SignatureFieldHandle } from "./signature-field"
 
@@ -64,6 +67,7 @@ export default function OrderBuilder({
   const padRef = useRef<SignatureFieldHandle>(null)
   const signRef = useRef<HTMLElement>(null)
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
+  const scrollOnOpen = useRef(false)
   const asideRef = useRef<HTMLElement>(null)
 
   // Desktop: the sticky work order sits in the vertical middle of the screen, never above 32px
@@ -89,10 +93,19 @@ export default function OrderBuilder({
   const detailsDone = Boolean(business.trim() && signer.trim() && phone.trim())
   const ready = detailsDone && signaturePng && paid
 
-  // Opening a step scrolls its header into view — on phones the next step starts below the fold
+  // Opening a step scrolls its header into view once it has expanded — on phones the next step starts below the fold
   const goTo = (n: 1 | 2 | 3) => {
+    scrollOnOpen.current = true
     setStep(n)
-    requestAnimationFrame(() => stepRefs.current[n - 1]?.scrollIntoView({ behavior: "smooth", block: "start" }))
+  }
+  const onStepOpened = (n: number) => {
+    if (!scrollOnOpen.current) return
+    scrollOnOpen.current = false
+    const el = stepRefs.current[n - 1]
+    // Only scroll when the step's header has gone off screen
+    if (el && (el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().top > window.innerHeight * 0.6)) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
   }
   const sign = async () => {
     const png = await padRef.current?.toPng()
@@ -342,18 +355,16 @@ export default function OrderBuilder({
           {/* Live work order */}
           <aside ref={asideRef} className="lg:sticky lg:top-[var(--sticky-top,2rem)] lg:self-start">
             <RevealOnView className="border border-line" delay={0.5}>
-              <div className="border-b border-line px-5 py-4">
-                <div className="font-display text-[30px] font-black lowercase leading-none tracking-[-0.035em]">work order.</div>
-                <div className={`mt-2 text-[13px] text-stone ${isBangla(name) ? "bn" : ""}`}>For {name}</div>
+              <div className="flex items-end justify-between gap-4 border-b border-line px-5 py-4">
+                <div className="min-w-0">
+                  <div className="font-display text-[30px] font-black lowercase leading-none tracking-[-0.035em]">work order.</div>
+                  <div className={`mt-2 truncate text-[13px] text-stone ${isBangla(name) ? "bn" : ""}`}>For {name}</div>
+                </div>
+                <span className="shrink-0 border border-line px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-stone tabular-nums">
+                  {order.lines.length} {order.lines.length === 1 ? "item" : "items"}
+                </span>
               </div>
-              <ul className="max-h-[300px] overflow-y-auto px-5 py-3" data-lenis-prevent>
-                {order.lines.map((l) => (
-                  <li key={l.feature.id} className="flex items-baseline justify-between gap-3 py-1.5 text-[13.5px]">
-                    <span className="text-ivory/85">{lineLabel(l)}</span>
-                    <TakaFlow value={l.price} className="shrink-0" />
-                  </li>
-                ))}
-              </ul>
+              <OrderLines lines={order.lines} locked={locked} onRemove={toggle} />
               <div className="border-t border-line px-5 py-4">
                 <div className="flex items-baseline justify-between text-[13px] text-stone">
                   <span>Compare-at</span>
@@ -422,6 +433,7 @@ export default function OrderBuilder({
                 <Step
                   n={1}
                   step={step}
+                  onOpened={onStepOpened}
                   title="Your details"
                   summary={`${signer.trim()} · ${phone.trim()}`}
                   onEdit={() => goTo(1)}
@@ -448,6 +460,7 @@ export default function OrderBuilder({
                 <Step
                   n={2}
                   step={step}
+                  onOpened={onStepOpened}
                   title="Review & sign"
                   summary={`Signed by ${signer.trim()}`}
                   onEdit={() => goTo(2)}
@@ -494,7 +507,7 @@ export default function OrderBuilder({
                 </Step>
 
                 {/* 3 — pay the advance; required before the order can be accepted */}
-                <Step n={3} step={step} title={<>Pay the <TakaFlow value={order.advance} /> advance</>} stepRef={(el) => { stepRefs.current[2] = el }}>
+                <Step n={3} step={step} onOpened={onStepOpened} title={<>Pay the <TakaFlow value={order.advance} /> advance</>} stepRef={(el) => { stepRefs.current[2] = el }}>
                   <div className="flex items-center justify-between gap-4 border border-[#ff5941] px-4 py-3.5">
                     <div>
                       <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Send exactly</div>
@@ -519,14 +532,11 @@ export default function OrderBuilder({
                       No screenshot? Enter the transaction ID
                     </button>
                   )}
-                  <button
-                    type="button"
+                  <LiquidMetalButton
+                    label={status === "saving" ? "Submitting…" : "Submit order"}
                     onClick={accept}
                     disabled={!ready || status === "saving"}
-                    className={`${BTN} bg-[#ff5941] text-black`}
-                  >
-                    {status === "saving" ? "Submitting…" : "Submit order"}
-                  </button>
+                  />
                   {status === "error" && <p className={`-mt-1 text-center text-[13px] ${CORAL}`}>{error}</p>}
                   <p className="-mt-1 text-center text-[12.5px] text-stone">We check the payment and confirm on WhatsApp.</p>
                 </Step>
@@ -582,6 +592,66 @@ export default function OrderBuilder({
   )
 }
 
+// The live work order's line items, grouped by catalogue section. Add-ons can be removed
+// right here; lines slide in and out as the selection changes.
+function OrderLines({ lines, locked, onRemove }: { lines: Line[]; locked: boolean; onRemove: (f: Feature) => void }) {
+  const reduce = useReducedMotion()
+  const ease = [0.22, 1, 0.36, 1] as const
+  const groups = CATALOG.map((g) => ({ group: g, lines: lines.filter((l) => g.features.includes(l.feature)) })).filter((g) => g.lines.length)
+  const fold = {
+    initial: { opacity: 0, height: 0 },
+    animate: { opacity: 1, height: "auto" },
+    exit: { opacity: 0, height: 0 },
+    transition: { duration: reduce ? 0 : 0.35, ease },
+  }
+  return (
+    <div className="max-h-[360px] overflow-y-auto px-5 pb-4 pt-1" data-lenis-prevent>
+      <AnimatePresence initial={false}>
+        {groups.map(({ group, lines }) => (
+          <motion.section key={group.id} {...fold} className="overflow-hidden" aria-label={group.title}>
+            <h3 className="pb-1 pt-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-stone">{group.title}</h3>
+            <ul>
+              <AnimatePresence initial={false}>
+                {lines.map((l) => {
+                  const f = l.feature
+                  const removable = !f.required && !locked
+                  return (
+                    <motion.li key={f.id} {...fold} className="overflow-hidden">
+                      <div className="group/line -mx-2 flex items-center gap-2.5 px-2 py-1.5 transition-colors hover:bg-ivory/[0.035]">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[13.5px] leading-snug text-ivory/90">{f.name}</div>
+                          {f.perUnit && (
+                            <div className="text-[12px] tabular-nums text-stone">
+                              {l.qty} {f.perUnit.label} × {taka(f.price)}
+                            </div>
+                          )}
+                        </div>
+                        {/* Core items say "Included"; add-ons get a remove button in the same spot, so prices stay flush right */}
+                        {f.required && <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone">Included</span>}
+                        {removable && (
+                          <button
+                            type="button"
+                            onClick={() => onRemove(f)}
+                            aria-label={`Remove ${f.name}`}
+                            className="flex size-6 shrink-0 items-center justify-center text-[15px] leading-none text-stone transition-[opacity,color] hover:text-[#ff5941] focus-visible:opacity-100 lg:opacity-0 lg:group-hover/line:opacity-100"
+                          >
+                            ×
+                          </button>
+                        )}
+                        <TakaFlow value={l.price} className="min-w-[68px] shrink-0 text-right text-[13.5px] tabular-nums" />
+                      </div>
+                    </motion.li>
+                  )
+                })}
+              </AnimatePresence>
+            </ul>
+          </motion.section>
+        ))}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 // One step of the accept flow: open shows its body, done folds to a single summary line
 function Step({
   n,
@@ -589,6 +659,7 @@ function Step({
   title,
   summary,
   onEdit,
+  onOpened,
   stepRef,
   children,
 }: {
@@ -597,28 +668,44 @@ function Step({
   title: ReactNode
   summary?: string
   onEdit?: () => void
+  onOpened?: (n: number) => void
   stepRef: (el: HTMLDivElement | null) => void
   children: ReactNode
 }) {
   const open = step === n
   const done = step > n
+  const reduce = useReducedMotion()
+  const ease = [0.22, 1, 0.36, 1] as const
   return (
     <div ref={stepRef} className="scroll-mt-6 border-b border-line last:border-b-0">
       <div className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
         <span
           aria-hidden="true"
-          className={`flex h-6 w-6 items-center justify-center border font-mono text-[11px] ${
+          className={`flex h-6 w-6 items-center justify-center border font-mono text-[11px] transition-colors duration-300 ${
             done ? "border-ivory bg-ivory text-ink" : open ? "border-ivory text-ivory" : "border-line text-stone"
           }`}
         >
           {done ? "✓" : n}
         </span>
         <div className="min-w-0">
-          <h3 className={`text-[15px] font-medium ${open || done ? "" : "text-stone"}`}>
+          <h3 className={`text-[15px] font-medium transition-colors duration-300 ${open || done ? "" : "text-stone"}`}>
             <span className="sr-only">Step {n}: </span>
             {title}
           </h3>
-          {done && summary && <p className={`truncate text-[13px] text-stone ${isBangla(summary) ? "bn" : ""}`}>{summary}</p>}
+          <AnimatePresence initial={false}>
+            {done && summary && (
+              <motion.p
+                key="summary"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: reduce ? 0 : 0.35, ease }}
+                className={`truncate text-[13px] text-stone ${isBangla(summary) ? "bn" : ""}`}
+              >
+                {summary}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
         {done && onEdit ? (
           <button
@@ -632,7 +719,29 @@ function Step({
           <span />
         )}
       </div>
-      {open && <div className="flex flex-col gap-4 px-4 pb-6 sm:pb-7 sm:pl-[64px] sm:pr-6">{children}</div>}
+      {/* Height animates to the content; the body rises in a beat behind it */}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ height: { duration: reduce ? 0 : 0.5, ease }, opacity: { duration: reduce ? 0 : 0.3 } }}
+            onAnimationComplete={(def) => (def as { height?: unknown }).height === "auto" && onOpened?.(n)}
+            className="overflow-hidden"
+          >
+            <motion.div
+              initial={{ y: reduce ? 0 : 14 }}
+              animate={{ y: 0 }}
+              transition={{ duration: reduce ? 0 : 0.5, ease, delay: reduce ? 0 : 0.08 }}
+              className="flex flex-col gap-4 px-4 pb-6 sm:pb-7 sm:pl-[64px] sm:pr-6"
+            >
+              {children}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
