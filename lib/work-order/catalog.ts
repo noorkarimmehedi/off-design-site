@@ -21,8 +21,8 @@ export const CATALOG: FeatureGroup[] = [
     title: "Core",
     note: "Always included",
     features: [
-      { id: "storefront", name: "Online storefront", detail: "Mobile-first store in Bangla & English, product catalogue, cart and checkout.", price: 30000, compareAt: 45000, required: true },
-      { id: "admin", name: "Admin portal", detail: "Orders, products, stock and customers in one dashboard.", price: 30000, compareAt: 45000, required: true },
+      { id: "storefront", name: "Online storefront", detail: "Mobile-first store in Bangla & English, product catalogue, cart and checkout.", price: 25000, compareAt: 45000, required: true },
+      { id: "admin", name: "Admin portal", detail: "Orders, products, stock and customers in one dashboard.", price: 25000, compareAt: 45000, required: true },
     ],
   },
   {

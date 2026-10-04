@@ -15,6 +15,7 @@ export default function ChatWidget() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with us on WhatsApp"
+      data-chat-widget
       initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(6px)" }}
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       transition={{ duration: 0.7, ease: EASE, delay: 0.8 }}

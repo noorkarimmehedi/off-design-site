@@ -13,6 +13,7 @@ import {
   type Feature,
   type Selection,
 } from "@/lib/work-order/catalog"
+import RevealOnView from "@/components/reveal-on-view"
 import { TakaFlow } from "@/components/ui/number-flow"
 import SignaturePad, { type SignaturePadHandle } from "./signature-pad"
 
@@ -82,8 +83,8 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" precedence="default" />
       <style>{`
         .bn { font-family: 'Hind Siliguri', var(--font-sans); }
-        /* Phones: the glass dock replaces the site's bottom fade, so it refracts real content */
-        @media (max-width: 1023px) { [data-edge-blur="bottom"] { display: none; } }
+        /* Phones: the glass dock replaces the site's bottom fade and carries the Chat button */
+        @media (max-width: 1023px) { [data-edge-blur="bottom"], [data-chat-widget] { display: none !important; } }
         /* Liquid glass: frosted + saturated backdrop, a light rim brighter at the top-left, inner sheen, soft drop shadow */
         .liquid-glass {
           position: relative;
@@ -153,37 +154,39 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
       `}</style>
 
       <div className="relative z-10 mx-auto w-full max-w-[1120px] px-4 pb-40 pt-10 sm:px-10 sm:pt-20 lg:pb-24 print:hidden">
-        {/* Hero */}
-        <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-          <span>Work order</span>
-          <span className="h-px flex-1 bg-line" />
-          <span>{result ? result.number : "Draft"}</span>
-        </div>
-        <h1 className="font-display mt-6 text-center text-[44px] sm:text-left font-black lowercase leading-[0.9] tracking-[-0.035em] sm:text-[84px]">
-          build your order.
-        </h1>
-        <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:justify-start sm:text-[48px]">
-          {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
-          <span className="font-display text-[1.3em] font-black lowercase leading-[0.8] tracking-[-0.035em]">arc</span>
-          <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.3em] w-auto self-center light:invert" />
-          {clientName ? (
-            <span className={`${isBangla(clientName) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
-              {clientName}
-            </span>
-          ) : (
-            <span className="font-display font-black lowercase leading-none tracking-[-0.035em] text-stone">you</span>
-          )}
-        </div>
-        <p className="mx-auto mt-6 max-w-[560px] text-center text-[15px] leading-relaxed text-stone sm:mx-0 sm:text-left sm:text-[16px]">
-          <span className="text-ivory">Pick what your business needs.</span> Your price updates as you go — when it looks right, sign
-          below and we start as soon as the advance is confirmed.
-        </p>
+        {/* Hero — staggers in on load, like the home page */}
+        <RevealOnView intensity="hero" staggerChildren>
+          <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
+            <span>Work order</span>
+            <span className="h-px flex-1 bg-line" />
+            <span>{result ? result.number : "Draft"}</span>
+          </div>
+          <h1 className="font-display mt-6 text-center text-[44px] sm:text-left font-black lowercase leading-[0.9] tracking-[-0.035em] sm:text-[84px]">
+            build your order.
+          </h1>
+          <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:justify-start sm:text-[48px]">
+            {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
+            <span className="font-display text-[1.3em] font-black lowercase leading-[0.8] tracking-[-0.035em]">arc</span>
+            <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.3em] w-auto self-center light:invert" />
+            {clientName ? (
+              <span className={`${isBangla(clientName) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
+                {clientName}
+              </span>
+            ) : (
+              <span className="font-display font-black lowercase leading-none tracking-[-0.035em] text-stone">you</span>
+            )}
+          </div>
+          <p className="mx-auto mt-6 max-w-[560px] text-center text-[15px] leading-relaxed text-stone sm:mx-0 sm:text-left sm:text-[16px]">
+            <span className="text-ivory">Pick what your business needs.</span> Your price updates as you go — when it looks right, sign
+            below and we start as soon as the advance is confirmed.
+          </p>
+        </RevealOnView>
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_360px] lg:gap-12">
           {/* Feature picker */}
           <div className="flex flex-col gap-10">
             {CATALOG.map((group, gi) => (
-              <section key={group.id} aria-labelledby={`g-${group.id}`}>
+              <RevealOnView as="section" key={group.id} delay={gi < 2 ? 0.35 + gi * 0.12 : 0}>
                 <div className="flex items-baseline justify-between border-b border-line pb-3">
                   <h2 id={`g-${group.id}`} className="font-mono text-[11px] uppercase tracking-[0.22em] text-ivory">
                     <span className={group.id === "grow" ? CORAL : "text-stone"}>{pad(gi)}</span> / {group.title}
@@ -263,13 +266,13 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
                     )
                   })}
                 </ul>
-              </section>
+              </RevealOnView>
             ))}
           </div>
 
           {/* Live work order */}
           <aside className="lg:sticky lg:top-8 lg:self-start">
-            <div className="border border-line">
+            <RevealOnView className="border border-line" delay={0.5}>
               <div className="border-b border-line px-5 py-4">
                 <div className="font-display text-[30px] font-black lowercase leading-none tracking-[-0.035em]">work order.</div>
                 <div className={`mt-2 text-[13px] text-stone ${isBangla(name) ? "bn" : ""}`}>For {name}</div>
@@ -302,7 +305,8 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
                   <div className={`font-mono text-[10px] uppercase tracking-[0.18em] ${CORAL}`}>Advance 50%</div>
                   <TakaFlow value={order.advance} className="mt-1 text-[18px] font-semibold" />
                 </div>
-                <div className="border-l border-line px-5 py-4">
+                {/* Right-aligned on phones so it lines up with the prices above */}
+                <div className="border-l border-line px-5 py-4 text-right lg:text-left">
                   <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone">Final 50%</div>
                   <TakaFlow value={order.total - order.advance} className="mt-1 text-[18px] font-semibold" />
                 </div>
@@ -311,7 +315,7 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
                 <span>Delivery</span>
                 <span className="text-ivory">7–15 days</span>
               </div>
-            </div>
+            </RevealOnView>
             {!result && (
               <button
                 type="button"
@@ -400,10 +404,10 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
         </section>
       </div>
 
-      {/* Mobile dock: floating liquid-glass pill, above the edge blur (z-30) and stacked over the Chat button */}
+      {/* Mobile dock: floating liquid-glass pill with the total, Chat (WhatsApp) and Sign */}
       {!result && (
-        <div className="fixed inset-x-3 bottom-[calc(max(1rem,env(safe-area-inset-bottom))+3.5rem)] z-[35] lg:hidden print:hidden">
-          <div className="liquid-glass flex items-center justify-between gap-4 rounded-[26px] py-2 pl-5 pr-2">
+        <div className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[45] lg:hidden print:hidden">
+          <div className="liquid-glass flex items-center gap-2 rounded-[26px] py-2 pl-5 pr-2">
             <div className="relative min-w-0">
               <div className="flex items-baseline gap-2">
                 <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ivory/60">Total</span>
@@ -411,10 +415,23 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
               </div>
               <TakaFlow value={order.total} className="block text-[22px] font-semibold leading-tight tracking-[-0.02em]" />
             </div>
+            <a
+              href="https://api.whatsapp.com/send/?phone=8801733670129"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat with us on WhatsApp"
+              className="liquid-glass ml-auto flex h-[46px] shrink-0 items-center gap-2 rounded-[20px] px-3.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-transform active:scale-95"
+            >
+              <span aria-hidden="true" className="relative flex size-1.5">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff5941] opacity-60 motion-reduce:animate-none" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-[#ff5941]" />
+              </span>
+              Chat
+            </a>
             <button
               type="button"
               onClick={() => signRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })}
-              className="liquid-glass-button relative shrink-0 rounded-[20px] px-6 py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-transform active:scale-95"
+              className="liquid-glass-button relative h-[46px] shrink-0 rounded-[20px] px-5 font-mono text-[11px] uppercase tracking-[0.2em] transition-transform active:scale-95"
             >
               Sign ↓
             </button>
