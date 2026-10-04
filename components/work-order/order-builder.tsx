@@ -166,7 +166,7 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
         }
       `}</style>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1120px] px-4 pb-40 pt-10 sm:px-10 sm:pt-20 lg:pb-24 print:hidden">
+      <div className="relative z-10 mx-auto w-full max-w-[1120px] px-2 pb-40 pt-10 sm:px-10 sm:pt-20 lg:pb-24 print:hidden">
         {/* Hero — staggers in on load, like the home page */}
         <RevealOnView intensity="hero" staggerChildren>
           <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
@@ -450,7 +450,7 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
 
       {/* Mobile dock: floating liquid-glass pill with the total, Chat (WhatsApp) and Sign */}
       {!result && (
-        <div className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[45] lg:hidden print:hidden">
+        <div className="fixed inset-x-2 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[45] lg:hidden print:hidden">
           <div className="liquid-glass flex items-center gap-2 rounded-[26px] py-2 pl-5 pr-2">
             <div className="relative min-w-0">
               <div className="flex items-baseline gap-2">
