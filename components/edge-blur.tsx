@@ -44,6 +44,7 @@ export default function EdgeBlur({ position }: { position: "top" | "bottom" }) {
   return (
     <div
       ref={ref}
+      data-edge-blur={position}
       className={`pointer-events-none fixed inset-x-0 z-30 ${position === "top" ? "top-0" : "bottom-0"} ${HEIGHT[position]}`}
     >
       <ProgressiveBlur position={position} height="100%" blurAmount="4px" backgroundColor="var(--color-ink)" />
