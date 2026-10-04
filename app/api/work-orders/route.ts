@@ -14,6 +14,10 @@ type Body = {
   selection?: Selection
   signature?: string
   agreed?: boolean
+  /** Bank transaction reference for the advance */
+  reference?: string
+  /** Payment screenshot as a data URL (JPEG/PNG) */
+  slip?: string
 }
 
 const clean = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "")
@@ -34,10 +38,10 @@ async function notion(path: string, body: unknown) {
 }
 
 // Two-step Notion file upload: create the upload, then send the bytes
-async function uploadSignature(png: Buffer, filename: string) {
-  const upload = await notion("/file_uploads", { mode: "single_part", filename, content_type: "image/png" })
+async function uploadImage(bytes: Buffer, filename: string, type: string) {
+  const upload = await notion("/file_uploads", { mode: "single_part", filename, content_type: type })
   const form = new FormData()
-  form.append("file", new Blob([new Uint8Array(png)], { type: "image/png" }), filename)
+  form.append("file", new Blob([new Uint8Array(bytes)], { type }), filename)
   const res = await fetch(`${NOTION}/file_uploads/${upload.id}/send`, { method: "POST", headers: notionHeaders(), body: form })
   if (!res.ok) throw new Error(`Notion file send ${res.status}`)
   return upload.id as string
@@ -78,6 +82,15 @@ export async function POST(req: Request) {
   const png = Buffer.from(match[1], "base64")
   if (png.length > 600_000) return NextResponse.json({ error: "Signature image is too large." }, { status: 400 })
 
+  // No order is accepted without proof of the advance: a payment screenshot or a transaction reference
+  const reference = clean(body.reference, 80)
+  const slipMatch = typeof body.slip === "string" ? body.slip.match(/^data:(image\/(?:jpeg|png));base64,([A-Za-z0-9+/=]+)$/) : null
+  if (!reference && !slipMatch) {
+    return NextResponse.json({ error: "Add your payment screenshot or transaction reference number." }, { status: 400 })
+  }
+  const slip = slipMatch ? { type: slipMatch[1], bytes: Buffer.from(slipMatch[2], "base64") } : null
+  if (slip && slip.bytes.length > 2_000_000) return NextResponse.json({ error: "Payment screenshot is too large." }, { status: 400 })
+
   // Prices always come from the catalogue, never from the browser
   const order = priceSelection(body.selection ?? {})
   const now = new Date()
@@ -85,7 +98,8 @@ export async function POST(req: Request) {
   const origin = new URL(req.url).origin
 
   try {
-    const fileId = await uploadSignature(png, `${number}-signature.png`)
+    const fileId = await uploadImage(png, `${number}-signature.png`, "image/png")
+    const slipId = slip ? await uploadImage(slip.bytes, `${number}-payment.${slip.type === "image/png" ? "png" : "jpg"}`, slip.type) : null
 
     const page = await notion("/pages", {
       parent: { type: "data_source_id", data_source_id: process.env.NOTION_DATA_SOURCE_ID },
@@ -93,7 +107,9 @@ export async function POST(req: Request) {
       properties: {
         Client: { title: [{ text: { content: business } }] },
         "Work order": { rich_text: [{ text: { content: number } }] },
-        Status: { select: { name: "Signed" } },
+        Status: { select: { name: "Payment review" } },
+        "Payment ref": { rich_text: reference ? [{ text: { content: reference } }] : [] },
+        "Payment slip": { checkbox: Boolean(slip) },
         Features: { multi_select: order.lines.map((l) => ({ name: l.feature.name.replace(/,/g, "") })) },
         Total: { number: order.total },
         "Compare-at": { number: order.compareAt },
@@ -110,6 +126,9 @@ export async function POST(req: Request) {
         ...order.lines.map((l) => bullet(text(`${lineLabel(l)} — `), text(taka(l.price), true), text(`  (was ${taka(l.compareAt)})`))),
         para(text("Total "), text(taka(order.total), true), text(` · compare-at ${taka(order.compareAt)} · saving ${taka(order.savings)}`)),
         para(text("Advance due (50%) "), text(taka(order.advance), true), text(` · final ${taka(order.total - order.advance)}`)),
+        h2("Advance payment"),
+        para(text("Advance due "), text(taka(order.advance), true), text(` · reference ${reference || "—"}`)),
+        ...(slipId ? [{ object: "block", type: "image", image: { type: "file_upload", file_upload: { id: slipId } } }] : [para(text("No screenshot uploaded."))]),
         h2("Terms accepted"),
         ...TERMS.map(([k, v]) => bullet(text(`${k}: `, true), text(v))),
         h2("Signature"),
