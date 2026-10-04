@@ -38,10 +38,10 @@ export const CATALOG: FeatureGroup[] = [
     title: "Grow & protect",
     note: "New in Merchant Suite",
     features: [
-      { id: "protection", name: "Fake order protection", detail: "Risk score on every order, IP record, held-order review, repeat-attempt tracking and advance payment proof.", price: 6000, compareAt: 16000 },
-      { id: "campaign-links", name: "Campaign links", detail: "A tracked link per ad or post with automatic UTM tags — clicks, orders and delivered revenue per link.", price: 5000, compareAt: 12000 },
-      { id: "analytics", name: "Website analytics", detail: "Your own visitor tracking: visitors, sessions, entry pages, nightly reports and retention.", price: 5000, compareAt: 12000 },
-      { id: "business-report", name: "Business report", detail: "P&L, order value, delivery outcomes, product weight and hourly sales against the previous period.", price: 6000, compareAt: 15000 },
+      { id: "protection", name: "Fake order protection", detail: "Risk score on every order, IP record, held-order review, repeat-attempt tracking and advance payment proof.", price: 4000, compareAt: 16000 },
+      { id: "campaign-links", name: "Campaign links", detail: "A tracked link per ad or post with automatic UTM tags — clicks, orders and delivered revenue per link.", price: 3000, compareAt: 12000 },
+      { id: "analytics", name: "Website analytics", detail: "Your own visitor tracking: visitors, sessions, entry pages, nightly reports and retention.", price: 3000, compareAt: 12000 },
+      { id: "business-report", name: "Business report", detail: "P&L, order value, delivery outcomes, product weight and hourly sales against the previous period.", price: 4000, compareAt: 15000 },
     ],
   },
   {

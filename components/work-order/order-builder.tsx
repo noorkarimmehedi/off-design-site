@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
 import {
   BANK,
@@ -13,6 +13,7 @@ import {
   type Feature,
   type Selection,
 } from "@/lib/work-order/catalog"
+import AsciiHands from "@/components/ascii-hands"
 import RevealOnView from "@/components/reveal-on-view"
 import { TakaFlow } from "@/components/ui/number-flow"
 import SignatureField, { type SignatureFieldHandle } from "./signature-field"
@@ -24,7 +25,18 @@ const pad = (i: number) => String(i + 1).padStart(2, "0")
 
 type Result = { number: string; total: number; advance: number; signedAt: string }
 
-export default function OrderBuilder({ slug, clientName, preset }: { slug: string; clientName?: string; preset?: Selection }) {
+export default function OrderBuilder({
+  slug,
+  clientName,
+  preset,
+  header,
+}: {
+  slug: string
+  clientName?: string
+  preset?: Selection
+  /** Site header, rendered inside the hero so the ASCII hands sit relative to it */
+  header: ReactNode
+}) {
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(preset))
   const [business, setBusiness] = useState(clientName ?? "")
   const [signer, setSigner] = useState("")
@@ -166,18 +178,23 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
         }
       `}</style>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1120px] px-2 pb-40 pt-10 sm:px-10 sm:pt-20 lg:pb-24 print:hidden">
-        {/* Hero — staggers in on load, like the home page */}
-        <RevealOnView intensity="hero" staggerChildren>
-          <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-            <span>Work order</span>
-            <span className="h-px flex-1 bg-line" />
-            <span>{result ? result.number : "Draft"}</span>
-          </div>
-          <h1 className="font-display mt-6 text-center text-[44px] sm:text-left font-black lowercase leading-[0.9] tracking-[-0.035em] sm:text-[84px]">
+      {/* Hero: a shorter take on the home page — header, ASCII hands and a centred headline */}
+      <section className="relative flex flex-col sm:min-h-[62svh] print:hidden">
+        {header}
+        <AsciiHands />
+        <RevealOnView
+          as="div"
+          intensity="hero"
+          staggerChildren
+          className="relative z-10 mx-2 mt-2 flex flex-col items-center border border-ivory/25 px-3 pt-8 pb-8 text-center sm:mx-auto sm:mt-0 sm:w-full sm:max-w-[964px] sm:flex-1 sm:justify-center sm:border-0 sm:px-10 sm:pt-28 sm:pb-6 lg:pt-10"
+        >
+          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
+            Work order · <span className="text-ivory">{result ? result.number : "Draft"}</span>
+          </span>
+          <h1 className="font-display mt-5 text-[13vw] font-black lowercase leading-[0.85] tracking-[-0.035em] sm:text-[88px] lg:text-[104px]">
             build your order.
           </h1>
-          <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:justify-start sm:text-[48px]">
+          <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:text-[48px]">
             {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
             <span className="font-display text-[1.3em] font-black lowercase leading-[0.8] tracking-[-0.035em]">arc</span>
             <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.3em] w-auto self-center light:invert" />
@@ -189,13 +206,19 @@ export default function OrderBuilder({ slug, clientName, preset }: { slug: strin
               <span className="font-display font-black lowercase leading-none tracking-[-0.035em] text-stone">you</span>
             )}
           </div>
-          <p className="mx-auto mt-6 max-w-[560px] text-center text-[15px] leading-relaxed text-stone sm:mx-0 sm:text-left sm:text-[16px]">
+          <p className="mx-auto mt-6 max-w-[560px] text-[15px] leading-relaxed text-stone sm:text-[16px]">
             <span className="text-ivory">Pick what your business needs.</span> Your price updates as you go — when it looks right, sign
             below and we start as soon as the advance is confirmed.
           </p>
+          <span aria-hidden="true" className="mt-8 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
+            Scroll to build ↓
+          </span>
         </RevealOnView>
+      </section>
 
-        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_360px] lg:gap-12">
+      <div className="relative z-10 mx-auto w-full max-w-[1120px] px-2 pb-40 pt-0 sm:px-10 lg:pb-24 print:hidden">
+
+        <div className="mt-4 grid gap-10 sm:mt-4 lg:grid-cols-[1fr_360px] lg:gap-12">
           {/* Feature picker */}
           <div className="flex flex-col gap-10">
             {CATALOG.map((group, gi) => (
