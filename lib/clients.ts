@@ -10,5 +10,5 @@ export const clients: { name: string; className: string; logo?: string }[] = [
     className: "font-[family-name:ui-serif,'New_York','Iowan_Old_Style','Apple_Garamond',Baskerville,Georgia,serif] text-[17px] tracking-[-0.01em] sm:text-[19px]",
   },
   { name: "Listen Labs", logo: "/clients/listen-labs.webp", className: "h-[15px] w-auto sm:h-[17px]" },
-  { name: "ARCADE", className: "font-mono text-[14px] font-bold tracking-widest sm:text-[15px]" },
+  { name: "Sera Khabar", logo: "/clients/sera-khabar.webp", className: "h-[36px] w-auto sm:h-[42px]" },
 ]
