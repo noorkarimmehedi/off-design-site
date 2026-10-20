@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises"
 import { join } from "node:path"
 import { ImageResponse } from "next/og"
-import { priceSelection, taka } from "@/lib/work-order/catalog"
+import { getCatalog, priceSelection, taka } from "@/lib/work-order/catalog"
 import { shapedTextSvg } from "@/lib/og/shaped-text"
 import { resolveClient } from "@/lib/work-order/clients"
 
@@ -20,7 +20,8 @@ const FRAME = "#2a2824"
 const CORAL = "#ff5941"
 
 export default async function OrderPreview({ params }: { params: Promise<{ slug: string }> }) {
-  const { name } = resolveClient((await params).slug)
+  const { name, catalog: catalogId } = resolveClient((await params).slug)
+  const catalog = getCatalog(catalogId)
   const [playfair, geist, mono, hind, amp, logo] = await Promise.all([
     asset("PlayfairDisplay-900.ttf"),
     asset("Geist-400.ttf"),
@@ -30,7 +31,7 @@ export default async function OrderPreview({ params }: { params: Promise<{ slug:
     asset("logo.png"),
   ])
   const src = (b: Buffer) => `data:image/png;base64,${b.toString("base64")}`
-  const from = taka(priceSelection({}).total)
+  const from = taka(priceSelection({}, catalog).total)
   const brand = name ?? "your business"
   const long = brand.length > 16
   const nameSize = long ? 92 : 120
@@ -97,7 +98,7 @@ export default async function OrderPreview({ params }: { params: Promise<{ slug:
             <span style={{ ...label, color: CORAL }}>Ready to sign</span>
             <div style={{ flex: 1 }} />
             <span style={{ ...label, color: IVORY }}>From {from}</span>
-            <span style={label}>· 7–15 days</span>
+            <span style={label}>· {catalog.delivery}</span>
           </div>
         </div>
       </div>

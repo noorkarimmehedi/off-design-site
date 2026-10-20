@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { lineLabel, priceSelection, taka, TERMS, type Selection } from "@/lib/work-order/catalog"
+import { getCatalog, lineLabel, priceSelection, taka, type Selection } from "@/lib/work-order/catalog"
 
 // Signed work orders are stored as rows in the Notion "Signed Work Orders" data source.
 const NOTION = "https://api.notion.com/v1"
@@ -8,6 +8,8 @@ const NOTION_VERSION = "2025-09-03"
 type Body = {
   business?: string
   slug?: string
+  /** Which price list the order was built from */
+  catalog?: string
   signer?: string
   phone?: string
   email?: string
@@ -92,7 +94,8 @@ export async function POST(req: Request) {
   if (slip && slip.bytes.length > 2_000_000) return NextResponse.json({ error: "Payment screenshot is too large." }, { status: 400 })
 
   // Prices always come from the catalogue, never from the browser
-  const order = priceSelection(body.selection ?? {})
+  const catalog = getCatalog(body.catalog)
+  const order = priceSelection(body.selection ?? {}, catalog)
   const now = new Date()
   const number = workOrderNumber(now)
   const origin = new URL(req.url).origin
@@ -122,6 +125,7 @@ export async function POST(req: Request) {
       },
       children: [
         para(text(`${business} × Arc Labs Corporation — work order ${number}`, true)),
+        para(text("Package "), text(catalog.name, true)),
         h2("Selected features"),
         ...order.lines.map((l) => bullet(text(`${lineLabel(l)} — `), text(taka(l.price), true), text(`  (was ${taka(l.compareAt)})`))),
         para(text("Total "), text(taka(order.total), true), text(` · compare-at ${taka(order.compareAt)} · saving ${taka(order.savings)}`)),
@@ -130,7 +134,7 @@ export async function POST(req: Request) {
         para(text("Advance due "), text(taka(order.advance), true), text(` · reference ${reference || "—"}`)),
         ...(slipId ? [{ object: "block", type: "image", image: { type: "file_upload", file_upload: { id: slipId } } }] : [para(text("No screenshot uploaded."))]),
         h2("Terms accepted"),
-        ...TERMS.map(([k, v]) => bullet(text(`${k}: `, true), text(v))),
+        ...catalog.terms.map(([k, v]) => bullet(text(`${k}: `, true), text(v))),
         h2("Signature"),
         { object: "block", type: "image", image: { type: "file_upload", file_upload: { id: fileId } } },
         para(text(`Signed by ${signer} · ${phone}${email ? ` · ${email}` : ""} · ${now.toISOString()}`)),

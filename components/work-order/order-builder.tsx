@@ -1,17 +1,18 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react"
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   BANK,
-  CATALOG,
   defaultSelection,
   lineLabel,
   priceSelection,
   taka,
-  TERMS,
+  type Catalog,
   type Feature,
+  type FeatureGroup,
+  type FeaturePointGroup,
   type Line,
   type Selection,
 } from "@/lib/work-order/catalog"
@@ -36,18 +37,21 @@ export default function OrderBuilder({
   slug,
   clientName,
   preset,
+  catalog,
   nameLocked = false,
   header,
 }: {
   slug: string
   clientName?: string
   preset?: Selection
+  /** Price list this order is built from */
+  catalog: Catalog
   /** Name came from a saved client entry, so the client can't edit it */
   nameLocked?: boolean
   /** Site header, rendered inside the hero so the ASCII hands sit relative to it */
   header: ReactNode
 }) {
-  const [selection, setSelection] = useState<Selection>(() => defaultSelection(preset))
+  const [selection, setSelection] = useState<Selection>(() => defaultSelection(catalog, preset))
   const [business, setBusiness] = useState(clientName ?? "")
   const [signer, setSigner] = useState("")
   const [phone, setPhone] = useState("")
@@ -87,7 +91,7 @@ export default function OrderBuilder({
     }
   }, [])
 
-  const order = useMemo(() => priceSelection(selection), [selection])
+  const order = useMemo(() => priceSelection(selection, catalog), [selection, catalog])
   const locked = Boolean(result)
   const paid = Boolean(reference.trim() || slip)
   const detailsDone = Boolean(business.trim() && signer.trim() && phone.trim())
@@ -133,7 +137,19 @@ export default function OrderBuilder({
       const res = await fetch("/api/work-orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business, slug, signer, phone, email, selection, signature, agreed: true, reference, slip: slip?.url }),
+        body: JSON.stringify({
+          business,
+          slug,
+          catalog: catalog.id,
+          signer,
+          phone,
+          email,
+          selection,
+          signature,
+          agreed: true,
+          reference,
+          slip: slip?.url,
+        }),
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.")
@@ -153,6 +169,27 @@ export default function OrderBuilder({
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" precedence="default" />
       <style>{`
         .bn { font-family: 'Hind Siliguri', var(--font-sans); }
+        .feature-disclosure { --feature-ease: cubic-bezier(0.23, 1, 0.32, 1); }
+        .feature-disclosure-panel {
+          overflow: hidden;
+          transition: height 250ms var(--feature-ease), opacity 200ms var(--feature-ease);
+        }
+        .feature-scope-group {
+          opacity: 0;
+          transform: translateY(8px);
+          transition: opacity 160ms var(--feature-ease), transform 200ms var(--feature-ease);
+        }
+        .feature-disclosure[data-open="true"] .feature-scope-group { opacity: 1; transform: translateY(0); }
+        .feature-disclosure[data-open="true"] .feature-scope-group:nth-child(2) { transition-delay: 40ms; }
+        .feature-disclosure[data-open="true"] .feature-scope-group:nth-child(n+3) { transition-delay: 80ms; }
+        .feature-toggle-stem { transform-origin: center; transition: transform 200ms var(--feature-ease); }
+        .feature-disclosure[data-open="true"] .feature-toggle-stem { transform: scaleY(0); }
+        @media (prefers-reduced-motion: reduce) {
+          .feature-disclosure-panel { transition: opacity 120ms ease; }
+          .feature-scope-group { transform: none; transition: opacity 120ms ease; }
+          .feature-disclosure[data-open="true"] .feature-scope-group { transform: none; transition-delay: 0ms; }
+          .feature-toggle-stem { transition: none; }
+        }
         /* Phones: the glass dock replaces the site's bottom fade and carries the Chat button */
         @media (max-width: 1023px) { [data-edge-blur="bottom"], [data-chat-widget] { display: none !important; } }
         /* Liquid glass: frosted + saturated backdrop, a light rim brighter at the top-left, inner sheen, soft drop shadow */
@@ -234,10 +271,10 @@ export default function OrderBuilder({
           className="relative z-10 mx-2 mt-2 flex flex-col items-center border border-ivory/25 px-3 pt-8 pb-8 text-center sm:mx-auto sm:mt-0 sm:w-full sm:max-w-[964px] sm:flex-1 sm:justify-center sm:border-0 sm:px-10 sm:pt-28 sm:pb-6 lg:pt-10"
         >
           <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-            Work order · <span className="text-ivory">{result ? result.number : "Draft"}</span>
+            Work order · <span className="text-ivory">{result ? result.number : "Final"}</span>
           </span>
           <h1 className="font-display mt-5 text-[13vw] font-black lowercase leading-[0.85] tracking-[-0.035em] sm:text-[88px] lg:text-[104px]">
-            build your order.
+            {catalog.headline}
           </h1>
           <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:text-[48px]">
             {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
@@ -253,11 +290,10 @@ export default function OrderBuilder({
             )}
           </div>
           <p className="mx-auto mt-6 max-w-[560px] text-[15px] leading-relaxed text-stone sm:text-[16px]">
-            <span className="text-ivory">Pick what your business needs.</span> Your price updates as you go — when it looks right, sign
-            below and we start as soon as the advance is confirmed.
+            <span className="text-ivory">{catalog.lead}</span> {catalog.blurb}
           </p>
           <span aria-hidden="true" className="mt-8 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
-            Scroll to build ↓
+            {catalog.mode === "quote" ? "Scroll to review ↓" : "Scroll to build ↓"}
           </span>
         </RevealOnView>
       </section>
@@ -267,13 +303,13 @@ export default function OrderBuilder({
         <div className="mt-4 grid gap-10 sm:mt-4 lg:grid-cols-[1fr_360px] lg:gap-12">
           {/* Feature picker */}
           <div className="flex flex-col gap-10">
-            {CATALOG.map((group, gi) => (
+            {catalog.groups.map((group, gi) => (
               <RevealOnView as="section" key={group.id} delay={gi < 2 ? 0.35 + gi * 0.12 : 0}>
                 <div className="flex items-baseline justify-between border-b border-line pb-3">
                   <h2 id={`g-${group.id}`} className="font-mono text-[11px] uppercase tracking-[0.22em] text-ivory">
-                    <span className={group.id === "grow" ? CORAL : "text-stone"}>{pad(gi)}</span> / {group.title}
+                    <span className={group.accent ? CORAL : "text-stone"}>{pad(gi)}</span> / {group.title}
                   </h2>
-                  <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${group.id === "grow" ? CORAL : "text-stone"}`}>
+                  <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${group.accent ? CORAL : "text-stone"}`}>
                     {group.note}
                   </span>
                 </div>
@@ -290,7 +326,7 @@ export default function OrderBuilder({
                           tabIndex={f.required || locked ? -1 : 0}
                           onClick={() => toggle(f)}
                           onKeyDown={(e) => (e.key === " " || e.key === "Enter") && (e.preventDefault(), toggle(f))}
-                          className={`group grid grid-cols-[20px_1fr] gap-x-4 gap-y-2 border px-4 py-4 transition-colors sm:grid-cols-[20px_1fr_auto] sm:px-5 ${
+                          className={`group grid grid-cols-[20px_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 border px-4 py-4 transition-colors sm:gap-x-4 sm:px-5 ${
                             on ? "border-ivory/30 bg-ivory/[0.04]" : "border-line hover:border-ivory/20"
                           } ${f.required || locked ? "cursor-default" : "cursor-pointer"} outline-none focus-visible:border-ivory/60`}
                         >
@@ -302,14 +338,18 @@ export default function OrderBuilder({
                           >
                             {on && "✓"}
                           </span>
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className="text-[16px] font-medium tracking-[-0.01em]">{f.name}</span>
+                          <div className="col-start-2 row-start-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                              <span className="text-[16px] font-medium leading-snug tracking-[-0.01em]">{f.name}</span>
                               {f.required && (
                                 <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-stone">Included</span>
                               )}
                             </div>
-                            <p className="mt-1 text-[13.5px] leading-relaxed text-stone">{f.detail}</p>
+                          </div>
+                          <div className="col-span-3 col-start-1 row-start-2 min-w-0 sm:col-span-1 sm:col-start-2">
+                            {f.detail && <p className="mt-1 text-[13.5px] leading-relaxed text-stone">{f.detail}</p>}
+                            {f.points && f.points.length > 0 && <FeaturePoints points={f.points} />}
+                            {f.pointGroups && f.pointGroups.length > 0 && <FeaturePointGroups groups={f.pointGroups} />}
                             {f.perUnit && (
                               <div className="mt-3 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
                                 <button
@@ -336,12 +376,12 @@ export default function OrderBuilder({
                               </div>
                             )}
                           </div>
-                          <div className="col-start-2 flex items-baseline gap-2 sm:col-start-3 sm:flex-col sm:items-end sm:gap-0.5">
-                            <span className="text-[16px] font-medium tabular-nums">
+                          <div className="col-start-3 row-start-1 flex shrink-0 flex-col items-end gap-0.5 text-right">
+                            <span className="text-[15px] font-medium leading-snug tabular-nums sm:text-[16px]">
                               {taka(f.price)}
                               {f.perUnit && <span className="text-[12px] text-stone"> each</span>}
                             </span>
-                            <span className="text-[12.5px] tabular-nums text-stone line-through decoration-stone/60">{taka(f.compareAt)}</span>
+                            <span className="text-[11px] tabular-nums text-stone line-through decoration-stone/60 sm:text-[12.5px]">{taka(f.compareAt)}</span>
                           </div>
                         </div>
                       </li>
@@ -364,7 +404,7 @@ export default function OrderBuilder({
                   {order.lines.length} {order.lines.length === 1 ? "item" : "items"}
                 </span>
               </div>
-              <OrderLines lines={order.lines} locked={locked} onRemove={toggle} />
+              <OrderLines lines={order.lines} groups={catalog.groups} locked={locked} onRemove={toggle} />
               <div className="border-t border-line px-5 py-4">
                 <div className="flex items-baseline justify-between text-[13px] text-stone">
                   <span>Compare-at</span>
@@ -393,7 +433,7 @@ export default function OrderBuilder({
               </div>
               <div className="flex items-center justify-between border-t border-line px-5 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-stone">
                 <span>Delivery</span>
-                <span className="text-ivory">7–15 days</span>
+                <span className="text-ivory">{catalog.delivery}</span>
               </div>
             </RevealOnView>
             {!result && (
@@ -475,7 +515,7 @@ export default function OrderBuilder({
                           <TakaFlow value={order.advance} /> now · <TakaFlow value={order.total - order.advance} /> at handover
                         </span>,
                       ],
-                      ["Delivery", "7–15 days after the advance"],
+                      ["Delivery", `${catalog.delivery} after the advance`],
                     ].map(([k, v], i) => (
                       <div key={i} className="flex justify-between gap-4 border-b border-line px-4 py-2.5 last:border-b-0">
                         <dt className="text-stone">{k}</dt>
@@ -485,11 +525,11 @@ export default function OrderBuilder({
                   </dl>
                   <details className="group text-[13px] text-stone">
                     <summary className={`${LINK} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}>
-                      <span className="group-open:hidden">Read all {TERMS.length} terms</span>
+                      <span className="group-open:hidden">Read all {catalog.terms.length} terms</span>
                       <span className="hidden group-open:inline">Hide terms</span>
                     </summary>
                     <ol className="mt-3 flex flex-col gap-2.5">
-                      {TERMS.map(([k, v], i) => (
+                      {catalog.terms.map(([k, v], i) => (
                         <li key={k} className="grid grid-cols-[28px_1fr] leading-relaxed">
                           <span className={`font-mono text-[10px] tracking-[0.15em] ${CORAL} pt-1`}>{pad(i)}</span>
                           <span>
@@ -585,7 +625,17 @@ export default function OrderBuilder({
       {/* Rendered straight into <body> so print can hide everything else */}
       {result &&
         createPortal(
-          <PrintOrder result={result} business={business} signer={signer} phone={phone} order={order} signature={signaturePng} reference={reference} hasSlip={Boolean(slip)} />,
+          <PrintOrder
+            result={result}
+            business={business}
+            signer={signer}
+            phone={phone}
+            order={order}
+            catalog={catalog}
+            signature={signaturePng}
+            reference={reference}
+            hasSlip={Boolean(slip)}
+          />,
           document.body,
         )}
     </>
@@ -594,10 +644,20 @@ export default function OrderBuilder({
 
 // The live work order's line items, grouped by catalogue section. Add-ons can be removed
 // right here; lines slide in and out as the selection changes.
-function OrderLines({ lines, locked, onRemove }: { lines: Line[]; locked: boolean; onRemove: (f: Feature) => void }) {
+function OrderLines({
+  lines,
+  groups,
+  locked,
+  onRemove,
+}: {
+  lines: Line[]
+  groups: FeatureGroup[]
+  locked: boolean
+  onRemove: (f: Feature) => void
+}) {
   const reduce = useReducedMotion()
   const ease = [0.22, 1, 0.36, 1] as const
-  const groups = CATALOG.map((g) => ({ group: g, lines: lines.filter((l) => g.features.includes(l.feature)) })).filter((g) => g.lines.length)
+  const grouped = groups.map((g) => ({ group: g, lines: lines.filter((l) => g.features.includes(l.feature)) })).filter((g) => g.lines.length)
   const fold = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
@@ -607,7 +667,7 @@ function OrderLines({ lines, locked, onRemove }: { lines: Line[]; locked: boolea
   return (
     <div className="max-h-[360px] overflow-y-auto px-5 pb-4 pt-1" data-lenis-prevent>
       <AnimatePresence initial={false}>
-        {groups.map(({ group, lines }) => (
+        {grouped.map(({ group, lines }) => (
           <motion.section key={group.id} {...fold} className="overflow-hidden" aria-label={group.title}>
             <h3 className="pb-1 pt-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-stone">{group.title}</h3>
             <ul>
@@ -649,6 +709,117 @@ function OrderLines({ lines, locked, onRemove }: { lines: Line[]; locked: boolea
         ))}
       </AnimatePresence>
     </div>
+  )
+}
+
+// The scope under a deliverable is long, so it stays folded behind a toggle until it's asked for.
+// The row it sits in is clickable (it toggles the line item), so the button stops the click.
+function FeaturePoints({ points }: { points: string[] }) {
+  return (
+    <FeatureDisclosure count={points.length}>
+      <ul className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+        {points.map((p) => (
+          <li key={p} className="feature-scope-group grid grid-cols-[10px_1fr] gap-2 text-[12.5px] leading-[1.45] text-stone/90">
+            <span aria-hidden="true" className="mt-[7px] h-[3px] w-[3px] shrink-0 bg-[#ff5941]" />
+            <span>{p}</span>
+          </li>
+        ))}
+      </ul>
+    </FeatureDisclosure>
+  )
+}
+
+// The scope, split under the catalogue's own section headings.
+function FeaturePointGroups({ groups }: { groups: FeaturePointGroup[] }) {
+  const count = groups.reduce((n, g) => n + g.points.length, 0)
+  return (
+    <FeatureDisclosure count={count}>
+      <div className="flex flex-col gap-3">
+        {groups.map((g) => (
+          <div key={g.title} className="feature-scope-group">
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-stone">{g.title}</div>
+            <ul className="mt-1.5 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+              {g.points.map((p) => (
+                <li key={p} className="grid grid-cols-[10px_1fr] gap-2 text-[12.5px] leading-[1.45] text-stone/90">
+                  <span aria-hidden="true" className="mt-[7px] h-[3px] w-[3px] shrink-0 bg-[#ff5941]" />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </FeatureDisclosure>
+  )
+}
+
+// Keep the content mounted so CSS transitions can reverse smoothly, even mid-toggle.
+function FeatureDisclosure({ count, children }: { count: number; children: ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const [height, setHeight] = useState(0)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const panelId = useId()
+
+  useEffect(() => {
+    const content = contentRef.current
+    if (!content) return
+    setHeight(content.offsetHeight)
+    // Layout measurements must ignore the parent section's reveal transform.
+    const observer = new ResizeObserver(([entry]) => {
+      setHeight(entry.borderBoxSize[0]?.blockSize ?? content.offsetHeight)
+    })
+    observer.observe(content)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <div className="feature-disclosure mt-2" data-open={open}>
+      <Toggle open={open} count={count} panelId={panelId} onToggle={() => setOpen((o) => !o)} />
+      <div
+        id={panelId}
+        aria-hidden={!open}
+        inert={!open}
+        className="feature-disclosure-panel"
+        style={{ height: open ? height : 0, opacity: open ? 1 : 0 }}
+      >
+        <div ref={contentRef} className="pb-1 pt-2">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+// The square stays aligned; only the SVG's vertical stroke folds into a minus.
+function Toggle({ open, count, panelId, onToggle }: { open: boolean; count: number; panelId: string; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation()
+        onToggle()
+      }}
+      onKeyDown={(e) => {
+        if (e.key === " " || e.key === "Enter") e.stopPropagation()
+      }}
+      aria-expanded={open}
+      aria-controls={panelId}
+      className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-left font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-stone transition-colors duration-150 hover:text-ivory focus-visible:text-ivory focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff5941]"
+    >
+      <span
+        aria-hidden="true"
+        className={`flex size-5 shrink-0 items-center justify-center border transition-colors duration-150 ${
+          open ? "border-[#ff5941] text-[#ff5941]" : "border-ivory/25"
+        }`}
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M2 6h8" />
+          <path d="M6 2v8" className="feature-toggle-stem" />
+        </svg>
+      </span>
+      <span className="grid">
+        <span className={`col-start-1 row-start-1 ${open ? "invisible" : ""}`} aria-hidden={open}>{count} features included</span>
+        <span className={`col-start-1 row-start-1 ${open ? "" : "invisible"}`} aria-hidden={!open}>Hide features</span>
+      </span>
+    </button>
   )
 }
 
@@ -918,6 +1089,7 @@ function PrintOrder({
   signer,
   phone,
   order,
+  catalog,
   signature,
   reference,
   hasSlip,
@@ -927,6 +1099,7 @@ function PrintOrder({
   signer: string
   phone: string
   order: ReturnType<typeof priceSelection>
+  catalog: Catalog
   signature: string | null
   reference: string
   hasSlip: boolean
@@ -947,7 +1120,7 @@ function PrintOrder({
         </div>
         <div className="mt-[6mm] flex gap-[10mm] font-mono text-[8pt] uppercase tracking-[0.2em] text-[#8f887d]">
           <span>Signed {date}</span>
-          <span>Delivery 7–15 days</span>
+          <span>Delivery {catalog.delivery}</span>
           <span>Total {taka(order.total)}</span>
         </div>
       </div>
@@ -962,7 +1135,24 @@ function PrintOrder({
         <tbody>
           {order.lines.map((l) => (
             <tr key={l.feature.id}>
-              <td className="border-b border-[#dcd6cc] py-[1.6mm]">{lineLabel(l)}</td>
+              <td className="border-b border-[#dcd6cc] py-[1.6mm]">
+                {lineLabel(l)}
+                {l.feature.points?.map((p) => (
+                  <div key={p} className="text-[8pt] leading-[1.35] text-[#6f6a62]">
+                    — {p}
+                  </div>
+                ))}
+                {l.feature.pointGroups?.map((g) => (
+                  <div key={g.title}>
+                    <div className="mt-[1mm] font-mono text-[7pt] uppercase tracking-[0.16em] text-[#141210]">{g.title}</div>
+                    {g.points.map((p) => (
+                      <div key={p} className="text-[8pt] leading-[1.35] text-[#6f6a62]">
+                        — {p}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </td>
               <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right text-[#6f6a62] line-through">{taka(l.compareAt)}</td>
               <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right">{taka(l.price)}</td>
             </tr>
@@ -995,7 +1185,7 @@ function PrintOrder({
         </span>
       </div>
       <div className="mt-[5mm] grid grid-cols-2 gap-x-[8mm]">
-        {TERMS.map(([k, v]) => (
+        {catalog.terms.map(([k, v]) => (
           <div key={k} className="border-t border-[#dcd6cc] py-[1.6mm] text-[8.5pt] leading-[1.4]">
             <b className="font-medium">{k}</b> — <span className="text-[#6f6a62]">{v}</span>
           </div>
