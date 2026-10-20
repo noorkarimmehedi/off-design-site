@@ -16,6 +16,8 @@ type RevealOnViewProps = {
   intensity?: "soft" | "hero"
   /** If true, will animate immediate children in a staggered sequence */
   staggerChildren?: boolean
+  /** Keep above-the-fold mobile content visible through hydration, without blur layers. */
+  mobileStatic?: boolean
 }
 
 export default function RevealOnView({
@@ -26,6 +28,7 @@ export default function RevealOnView({
   style,
   intensity = "soft",
   staggerChildren = false,
+  mobileStatic = false,
 }: RevealOnViewProps) {
   const Tag = as as any
   const ref = useRef<HTMLElement | null>(null)
@@ -33,6 +36,7 @@ export default function RevealOnView({
   useEffect(() => {
     const element = ref.current
     if (!element) return
+    if (mobileStatic && window.matchMedia("(max-width: 639px)").matches) return
 
     const startTranslate = intensity === "hero" ? 28 : 18
     const startBlur = intensity === "hero" ? 16 : 10
@@ -79,7 +83,7 @@ export default function RevealOnView({
     })
 
     return () => cleanup()
-  }, [delay, intensity, staggerChildren])
+  }, [delay, intensity, staggerChildren, mobileStatic])
 
   return (
     <Tag ref={ref} className={className} style={style}>

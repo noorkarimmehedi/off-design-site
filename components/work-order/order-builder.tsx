@@ -268,6 +268,7 @@ export default function OrderBuilder({
           as="div"
           intensity="hero"
           staggerChildren
+          mobileStatic
           className="relative z-10 mx-2 mt-2 flex flex-col items-center border border-ivory/25 px-3 pt-8 pb-8 text-center sm:mx-auto sm:mt-0 sm:w-full sm:max-w-[964px] sm:flex-1 sm:justify-center sm:border-0 sm:px-10 sm:pt-28 sm:pb-6 lg:pt-10"
         >
           <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
@@ -276,10 +277,12 @@ export default function OrderBuilder({
           <h1 className="font-display mt-5 text-[13vw] font-black lowercase leading-[0.85] tracking-[-0.035em] sm:text-[88px] lg:text-[104px]">
             {catalog.headline}
           </h1>
-          <div className="mt-5 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-[32px] sm:text-[48px]">
-            {/* Playfair's low x-height reads small beside Bangla, so "arc" runs larger than the line */}
-            <span className="font-display text-[1.3em] font-black lowercase leading-[0.8] tracking-[-0.035em]">arc</span>
-            <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.3em] w-auto self-center light:invert" />
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[clamp(22px,7vw,32px)] sm:gap-x-3 sm:text-[48px]">
+            <span className="flex shrink-0 items-center self-center">
+              <img src="/arc-logo-dark.webp" alt="Arc Lab Technology" width={600} height={224} className="h-[0.8em] w-auto light:hidden" />
+              <img src="/arc-logo.webp" alt="Arc Lab Technology" width={600} height={217} className="hidden h-[0.8em] w-auto light:block" />
+            </span>
+            <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.1em] w-auto self-center light:invert" />
             {/* Follows the Business name field, so a corrected spelling shows here too */}
             {business.trim() ? (
               <span className={`${isBangla(business) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
