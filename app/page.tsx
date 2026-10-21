@@ -139,7 +139,15 @@ export default function Page() {
                 return (
                   <li
                     key={c.name}
-                    className={wide ? "col-span-2" : i >= clients.length - 2 ? "last:col-span-2 sm:col-span-3" : "sm:col-span-2"}
+                    className={
+                      wide
+                        ? "col-span-2"
+                        : i === clients.length - 1
+                          ? "col-span-2 sm:col-span-3"
+                          : i === clients.length - 2
+                            ? "sm:col-span-3"
+                            : "sm:col-span-2"
+                    }
                   >
                     {c.href ? (
                       <a href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.label} (opens in a new tab)`} className={tile}>
