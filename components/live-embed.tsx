@@ -85,7 +85,7 @@ export default function LiveEmbed({ url, title, gradientFrom = "#111827", gradie
             </a>
           </div>
 
-          <div ref={ref} className="relative aspect-[3/4] w-full bg-white sm:aspect-[16/10] dark:bg-black">
+          <div ref={ref} className="relative aspect-[2/3] w-full bg-white sm:aspect-[3/2] dark:bg-black">
             {!loaded && (
               <div className="absolute inset-0 z-[1] flex items-center justify-center bg-white dark:bg-black">
                 <div className="flex flex-col items-center gap-2">

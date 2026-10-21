@@ -14,7 +14,7 @@ import { clients } from "@/lib/clients"
 import { projects } from "@/lib/projects"
 
 export const metadata: Metadata = {
-  title: "Selected Work — Arc Labs Corporation",
+  title: "Selected Work — Arc Labs & Co.",
 }
 
 export default function WorkPage() {

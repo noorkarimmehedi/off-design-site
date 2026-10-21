@@ -6,7 +6,7 @@ import SiteHeader from "@/components/site-header"
 import TransitionLink from "@/components/transition-link"
 
 export const metadata: Metadata = {
-  title: "Book a call — Arc Labs Corporation",
+  title: "Book a call — Arc Labs & Co.",
 }
 
 export default function CallPage() {

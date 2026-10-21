@@ -106,37 +106,51 @@ export default function Page() {
               <span className="h-px flex-1 bg-line" />
               <span className="tabular-nums">{String(clients.length).padStart(2, "0")}</span>
             </div>
-            {/* Tiers: the featured brands large and linked out, the rest smaller beneath an "Also" rule */}
-            <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 sm:mt-10 sm:gap-x-20">
-              {clients.filter((c) => c.featured).map((c) => (
-                <li key={c.name}>
-                  <a
-                    href={c.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`${c.label} (opens in a new tab)`}
-                    className="block opacity-95 transition-[opacity,transform] duration-200 ease-out hover:opacity-100 active:scale-[0.97]"
+            {/* Bento: the first three brands in large tiles, the rest beneath (rows of three, then two); linked brands open their site.
+                The 1px gaps show the line colour through, so every cell gets an even rule */}
+            <ul className="mt-4 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-6">
+              {clients.map((c, i) => {
+                const wide = i < 3
+                const tile = `group relative flex items-center justify-center bg-ink px-5 ${
+                  wide ? "h-[150px] sm:h-[220px]" : "h-[110px] sm:h-[140px]"
+                }`
+                const body = (
+                  <>
+                    <span className="absolute top-2 left-2.5 font-mono text-[9px] tabular-nums tracking-[0.15em] text-stone/50">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    {c.href && (
+                      <span className="absolute right-2.5 bottom-2 font-mono text-[9px] uppercase tracking-[0.2em] text-stone/60 transition-colors duration-200 ease-out group-hover:text-ivory">
+                        {c.label} ↗
+                      </span>
+                    )}
+                    {c.logo ? (
+                      <img
+                        src={c.logo}
+                        alt={c.href ? "" : c.name}
+                        draggable={false}
+                        className={`block h-auto max-w-full select-none opacity-85 transition-opacity duration-200 ease-out group-hover:opacity-100 ${c.className}`}
+                      />
+                    ) : (
+                      <span className={`block text-ivory/65 transition-colors duration-200 ease-out group-hover:text-ivory ${c.className}`}>{c.name}</span>
+                    )}
+                  </>
+                )
+                return (
+                  <li
+                    key={c.name}
+                    className={wide ? "col-span-2" : i >= clients.length - 2 ? "last:col-span-2 sm:col-span-3" : "sm:col-span-2"}
                   >
-                    <img src={c.logo} alt="" draggable={false} className={`block h-auto max-w-full select-none ${c.className}`} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <div className="mx-auto mt-9 flex max-w-[640px] items-center gap-4 font-mono text-[9px] uppercase tracking-[0.25em] text-stone/60 sm:mt-12">
-              <span className="h-px flex-1 bg-line" />
-              <span>Also</span>
-              <span className="h-px flex-1 bg-line" />
-            </div>
-            <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-9 gap-y-6 sm:gap-x-12">
-              {clients.filter((c) => !c.featured).map((c) => (
-                <li key={c.name} className="opacity-55 transition-opacity duration-200 ease-out hover:opacity-100">
-                  {c.logo ? (
-                    <img src={c.logo} alt={c.name} draggable={false} className={`block h-auto max-w-full select-none ${c.className}`} />
-                  ) : (
-                    <span className={`block text-ivory/65 ${c.className}`}>{c.name}</span>
-                  )}
-                </li>
-              ))}
+                    {c.href ? (
+                      <a href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.label} (opens in a new tab)`} className={tile}>
+                        {body}
+                      </a>
+                    ) : (
+                      <div className={tile}>{body}</div>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </div>
 

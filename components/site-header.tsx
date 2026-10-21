@@ -13,7 +13,7 @@ export default function SiteHeader({ left }: { left?: ReactNode }) {
       <div className="flex flex-col items-center">
         <TransitionLink href="/" aria-label="Arc Lab Technology — home" className="-mt-1 block">
           <img src="/arc-logo-dark.webp" alt="Arc Lab Technology" width={600} height={224} className="h-7 w-auto sm:h-10 light:hidden" />
-          <img src="/arc-logo.webp" alt="Arc Lab Technology" width={600} height={217} className="hidden h-7 w-auto sm:h-10 light:block" />
+          <img src="/arc-logo-black.webp" alt="Arc Lab Technology" width={600} height={215} className="hidden h-7 w-auto sm:h-10 light:block" />
         </TransitionLink>
         <LiveClock
           timeZone="Asia/Dhaka"

@@ -19,7 +19,7 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Arc Labs Corporation",
+  title: "Arc Labs & Co.",
   description,
   openGraph: {
     type: "website",
@@ -35,9 +35,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      // SVG swaps to the dark tile under prefers-color-scheme: dark (Chrome/Firefox); Safari falls back to the .ico
+      // The "arc." mark on plain white, the same in light and dark browser themes
       { url: "/favicon.ico", sizes: "32x32" },
-      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/icon-32.png", type: "image/png", sizes: "32x32" },
       { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
     ],
@@ -52,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     // next-themes swaps the dark/light class before paint; dark stays the default
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -201,7 +200,7 @@ html { font-family: var(--font-sans); background: var(--color-ink); }
         `}</style>
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <SmoothScroll />
           {children}
           <EdgeBlur position="top" />
