@@ -5,24 +5,28 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion"
 
+// Founder quotes for the featured clients. Drafts: each founder signs off on their line before this ships.
 const testimonials = [
     {
-        quote: "Transformed our entire creative process overnight.",
-        author: "Sarah Chen",
-        role: "Design Director",
-        company: "Linear",
+        quote: "Arc Labs built everything we run on, from the storefront to the back office. The manual work we did every day is just gone.",
+        author: "Jahidul Islam",
+        role: "Founder",
+        company: "Sera Khabar",
+        href: "https://www.serakhabar.com/",
     },
     {
-        quote: "The most elegant solution we've ever implemented.",
-        author: "Marcus Webb",
-        role: "Creative Lead",
-        company: "Vercel",
+        quote: "Mango season is short, so everything has to work the day it opens. They built us a system that handles the rush without us.",
+        author: "Murad Parvej",
+        role: "Founder",
+        company: "Mango Lover",
+        href: "https://www.mangolover.com.bd/",
     },
     {
-        quote: "Pure craftsmanship in every single detail.",
-        author: "Elena Frost",
-        role: "Head of Product",
-        company: "Stripe",
+        quote: "They took our Shopify store from a template to something that finally feels like Zair, and it’s easy for us to run.",
+        author: "Ishtiaque Bari",
+        role: "Founder",
+        company: "Zair",
+        href: "https://zairbd.com/",
     },
 ]
 
@@ -96,7 +100,7 @@ export function Testimonial() {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.3 }}
                             >
-                                Info
+                                Clients
                             </motion.span>
                             <div className="relative h-8 w-px bg-border mt-2">
                                 <motion.div
@@ -119,10 +123,16 @@ export function Testimonial() {
                                     exit={{ opacity: 0, x: 10 }}
                                     transition={{ duration: 0.4 }}
                                 >
-                                    <span className="inline-flex items-center gap-1.5 text-[9px] font-mono text-muted-foreground border border-border rounded-full px-1.5 py-0">
+                                    <a
+                                        href={current.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 text-[9px] font-mono text-muted-foreground border border-border rounded-full px-1.5 py-0 transition-colors hover:text-foreground"
+                                    >
                                         <span className="w-1 h-1 rounded-full bg-accent" />
                                         {current.company}
-                                    </span>
+                                        <span aria-hidden="true">↗</span>
+                                    </a>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
@@ -131,7 +141,7 @@ export function Testimonial() {
                     {/* Quote */}
                     <div className="relative min-h-[70px]">
                         <AnimatePresence mode="wait">
-                            <motion.blockquote
+                            <motion.p
                                 key={activeIndex}
                                 className="text-lg font-light text-foreground leading-tight tracking-tight"
                                 initial="hidden"
@@ -164,7 +174,7 @@ export function Testimonial() {
                                         {word}
                                     </motion.span>
                                 ))}
-                            </motion.blockquote>
+                            </motion.p>
                         </AnimatePresence>
                     </div>
 

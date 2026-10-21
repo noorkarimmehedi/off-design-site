@@ -100,30 +100,40 @@ export default function Page() {
           </a>
 
           {/* Clients */}
-          <div className="mt-9 w-full max-w-[720px] sm:mt-12">
+          <div className="mt-9 w-full max-w-[920px] sm:mt-12">
             <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
               <span>Brands we’ve built for</span>
               <span className="h-px flex-1 bg-line" />
               <span className="tabular-nums">{String(clients.length).padStart(2, "0")}</span>
             </div>
-            {/* Hairline grid: the 1px gaps show the line colour through, so every cell gets an even rule */}
-            <ul className="mt-4 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
-              {clients.map((c, i) => (
-                <li
-                  key={c.name}
-                  className="group relative flex h-[76px] items-center justify-center bg-ink px-4 text-stone transition-colors duration-300 hover:text-ivory sm:h-[96px]"
-                >
-                  <span className="absolute top-2 left-2.5 font-mono text-[9px] tabular-nums tracking-[0.15em] text-stone/50">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+            {/* Tiers: the featured brands large and linked out, the rest smaller beneath an "Also" rule */}
+            <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 sm:mt-10 sm:gap-x-20">
+              {clients.filter((c) => c.featured).map((c) => (
+                <li key={c.name}>
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${c.label} (opens in a new tab)`}
+                    className="block opacity-95 transition-[opacity,transform] duration-200 ease-out hover:opacity-100 active:scale-[0.97]"
+                  >
+                    <img src={c.logo} alt="" draggable={false} className={`block h-auto max-w-full select-none ${c.className}`} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className="mx-auto mt-9 flex max-w-[640px] items-center gap-4 font-mono text-[9px] uppercase tracking-[0.25em] text-stone/60 sm:mt-12">
+              <span className="h-px flex-1 bg-line" />
+              <span>Also</span>
+              <span className="h-px flex-1 bg-line" />
+            </div>
+            <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-9 gap-y-6 sm:gap-x-12">
+              {clients.filter((c) => !c.featured).map((c) => (
+                <li key={c.name} className="opacity-55 transition-opacity duration-200 ease-out hover:opacity-100">
                   {c.logo ? (
-                    <img
-                      src={c.logo}
-                      alt={c.name}
-                      className={`${c.className} opacity-80 transition-opacity duration-300 group-hover:opacity-100`}
-                    />
+                    <img src={c.logo} alt={c.name} draggable={false} className={`block h-auto max-w-full select-none ${c.className}`} />
                   ) : (
-                    <span className={c.className}>{c.name}</span>
+                    <span className={`block text-ivory/65 ${c.className}`}>{c.name}</span>
                   )}
                 </li>
               ))}

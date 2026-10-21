@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import CountUp from "@/components/count-up"
 import FrameGuides from "@/components/frame-guides"
+import LiveEmbed from "@/components/live-embed"
 import ProjectCard from "@/components/project-card"
 import RevealOnView from "@/components/reveal-on-view"
 import ScrollScale from "@/components/scroll-scale"
 import SiteFooter from "@/components/site-footer"
 import SiteHeader from "@/components/site-header"
+import TodayDate from "@/components/today-date"
 import TransitionLink from "@/components/transition-link"
 import { Testimonial } from "@/components/ui/design-testimonial"
 import { clients } from "@/lib/clients"
@@ -67,6 +69,15 @@ export default function WorkPage() {
       {/* Projects */}
       <section className="relative z-10 mx-auto w-full max-w-[964px] px-1 pb-16 sm:px-8">
         <div className="space-y-6">
+          <ScrollScale>
+            <LiveEmbed url="https://www.serakhabar.com/step/am-sotto-achar" title="Sera Khabar — Am Sotto Achar" />
+          </ScrollScale>
+          <ScrollScale>
+            <LiveEmbed url="https://www.mangolover.com.bd/step/homemade-pumpkin-bori" title="Mango Lover — Homemade Pumpkin Bori" />
+          </ScrollScale>
+          <ScrollScale>
+            <LiveEmbed url="https://www.mangolover.com.bd/step/katimon-mango" title="Mango Lover — Katimon Mango" />
+          </ScrollScale>
           {projects.map((p, idx) => (
             <ScrollScale key={`${p.title}-${idx}`}>
               <ProjectCard
@@ -92,17 +103,28 @@ export default function WorkPage() {
         <div className="mt-16 grid gap-8 border-t border-line pt-8 sm:grid-cols-2">
           <div className="space-y-4">
             <p className="text-[12px] leading-relaxed text-stone">
-              Arc Lab Technology — a Bangladesh’s D2C e-commerce growth & Shopify Partner Based in Dhaka, Bangladesh. We
-              help creators and brands launch, build, and scale D2C businesses using AI and Shopify.
+              <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
+              built for Bangladeshi businesses that want systems over manual, repetitive work.
             </p>
-            <img src="/imgi_11_image.webp" alt="Signature" className="h-10 w-auto opacity-80 dark:invert" />
-            <p className="text-xs text-stone">© Arc Lab Technology</p>
+            {/* Signature + today's date, as the home page signs off its hero */}
+            <div className="flex flex-col items-start">
+              <img
+                src="/imgi_11_image.webp"
+                alt="Signature"
+                width={256}
+                height={236}
+                className="h-12 w-auto opacity-80 dark:invert sm:h-14"
+                draggable={false}
+              />
+              <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45" />
+            </div>
+            <p className="text-xs text-stone">© Arc Labs Corporation</p>
           </div>
           <Testimonial />
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter hideSignature />
     </main>
   )
 }
