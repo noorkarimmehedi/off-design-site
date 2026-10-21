@@ -4,7 +4,7 @@ import { bookingSubject, renderBookingHtml, renderBookingText, type Booking } fr
 
 // Cal.com booking webhook → branded confirmation email from hello@ via Resend.
 // Cal's own attendee emails should be switched off so people don't get two.
-const FROM = "Arc <hello@arc-bangladesh.com>"
+const FROM = "arc <hello@arc-bangladesh.com>"
 const REPLY_TO = "hello@arc-bangladesh.com"
 
 type Attendee = { name?: string; email?: string; timeZone?: string }
