@@ -14,10 +14,13 @@ type Props = {
 
 // A client's live page in a browser-window frame, framed like ProjectCard.
 // The iframe only gets its src once the card nears the viewport, so the page doesn't load a whole site upfront.
+// It stays inert until clicked: a cross-origin iframe swallows wheel and touch scrolling and never hands it back,
+// which traps the page (worse under Lenis). Leaving the card, scrolling it away, or "Done" locks it again.
 export default function LiveEmbed({ url, title, gradientFrom = "#111827", gradientTo = "#6b7280", className }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const [active, setActive] = useState(false)
   const display = url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")
 
   useEffect(() => {
@@ -35,8 +38,19 @@ export default function LiveEmbed({ url, title, gradientFrom = "#111827", gradie
     return () => observer.disconnect()
   }, [])
 
+  // Lock again once the card is mostly scrolled away
+  useEffect(() => {
+    if (!active || !ref.current) return
+    const observer = new IntersectionObserver(([entry]) => !entry.isIntersecting && setActive(false), { threshold: 0.25 })
+    observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [active])
+
   return (
-    <article className={cn("group relative", className)}>
+    <article
+      className={cn("group relative", className)}
+      onPointerLeave={(e) => e.pointerType === "mouse" && setActive(false)}
+    >
       <RevealOnView
         className="border border-ivory/10 p-1 shadow-[0_10px_60px_-10px_rgba(0,0,0,0.6)]"
         style={{ backgroundImage: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})` }}
@@ -52,6 +66,15 @@ export default function LiveEmbed({ url, title, gradientFrom = "#111827", gradie
             <div className="min-w-0 flex-1 truncate rounded-full bg-black/[0.05] px-3 py-1 text-center font-mono text-[10px] tracking-[0.05em] text-black/50 dark:bg-white/[0.06] dark:text-white/50">
               {display}
             </div>
+            {active && (
+              <button
+                type="button"
+                onClick={() => setActive(false)}
+                className="shrink-0 font-mono text-[10px] uppercase tracking-[0.2em] text-black/50 transition-colors hover:text-black dark:text-white/50 dark:hover:text-white"
+              >
+                Done
+              </button>
+            )}
             <a
               href={url}
               target="_blank"
@@ -79,8 +102,24 @@ export default function LiveEmbed({ url, title, gradientFrom = "#111827", gradie
                 sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
                 referrerPolicy="strict-origin-when-cross-origin"
                 // The embedded page reads its prefers-color-scheme from this, so a theme-aware site follows ours
-                className="absolute inset-0 h-full w-full border-0 [color-scheme:light] dark:[color-scheme:dark]"
+                className={cn(
+                  "absolute inset-0 h-full w-full border-0 [color-scheme:light] dark:[color-scheme:dark]",
+                  !active && "pointer-events-none",
+                )}
               />
+            )}
+            {loaded && !active && (
+              <button
+                type="button"
+                onClick={() => setActive(true)}
+                aria-label={`Browse ${title}`}
+                className="absolute inset-0 z-[2] flex cursor-pointer items-end justify-center pb-4"
+              >
+                <span className="rounded-full bg-black/75 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm transition-transform duration-150 ease-out active:scale-[0.97]">
+                  <span className="[@media(hover:hover)]:hidden">Tap to browse</span>
+                  <span className="hidden [@media(hover:hover)]:inline">Click to browse</span>
+                </span>
+              </button>
             )}
           </div>
         </div>
