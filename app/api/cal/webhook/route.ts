@@ -81,15 +81,20 @@ export async function POST(req: Request) {
   }
 
   const raw = await req.text()
-  if (!verify(raw, req.headers.get("x-cal-signature-256"), secret)) {
-    return NextResponse.json({ error: "Invalid signature." }, { status: 401 })
-  }
-
   let body: { triggerEvent?: string; payload?: CalPayload }
   try {
     body = JSON.parse(raw)
   } catch {
     return NextResponse.json({ error: "Invalid request." }, { status: 400 })
+  }
+
+  // Cal's dashboard "Ping test" may be sent unsigned; a ping triggers nothing, so it needs no signature
+  if (body.triggerEvent === "PING") return NextResponse.json({ ok: true })
+
+  const signature = req.headers.get("x-cal-signature-256")
+  if (!verify(raw, signature, secret)) {
+    console.warn("cal webhook rejected", body.triggerEvent, signature ? (signature === "no-secret-provided" ? "unsigned" : "mismatch") : "missing")
+    return NextResponse.json({ error: "Invalid signature." }, { status: 401 })
   }
 
   const kind = KINDS[body.triggerEvent ?? ""]
