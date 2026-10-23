@@ -66,14 +66,9 @@ export default function Page() {
           </p>
 
           {/* Two-tone subline. Mobile: exactly two lines, edge to edge in the box */}
-          <p className="-mx-3 mt-6 self-stretch text-[2.6vw] leading-[1.65] text-stone sm:mx-0 sm:mt-10 sm:max-w-[560px] sm:self-auto sm:text-balance sm:text-[14px] sm:leading-[1.6]">
-            <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">
-              <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
-              built for{" "}
-            </span>
-            <span className="block whitespace-nowrap sm:inline sm:whitespace-normal">
-              Bangladeshi businesses that want systems over manual, repetitive work.
-            </span>
+          <p className="-mx-3 mt-6 self-stretch text-[3.2vw] leading-[1.65] text-stone sm:mx-0 sm:mt-10 sm:max-w-[560px] sm:self-auto sm:text-balance sm:text-[14px] sm:leading-[1.6]">
+            <span className="text-ivory">Arc is an AI automation & software company for Bangladesh&apos;s industries</span>
+            {" "}— FMCG, food, pharma, agri, manufacturing & retail. Systems over manual work.
           </p>
 
           {/* CTAs (unchanged buttons) */}

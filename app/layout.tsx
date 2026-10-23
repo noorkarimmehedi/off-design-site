@@ -7,7 +7,7 @@ import SmoothScroll from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
 
 const description =
-  "Websites, AI automation, and software — Arc Labs Corporation is built for Bangladeshi businesses that want systems over manual, repetitive work."
+  "Arc is an AI automation & software company for Bangladesh's industries — FMCG, food, pharma, agri, manufacturing & retail. Systems over manual work."
 
 // Absolute base for link-preview image URLs. Set NEXT_PUBLIC_SITE_URL to the live
 // domain; on Vercel it falls back to the production URL automatically.

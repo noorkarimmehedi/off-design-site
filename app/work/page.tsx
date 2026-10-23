@@ -103,8 +103,8 @@ export default function WorkPage() {
         <div className="mt-16 grid gap-8 border-t border-line pt-8 sm:grid-cols-2">
           <div className="space-y-4">
             <p className="text-[12px] leading-relaxed text-stone">
-              <span className="text-ivory">Websites, AI automation, and Software</span>&nbsp;— Arc Labs Corporation is
-              built for Bangladeshi businesses that want systems over manual, repetitive work.
+              <span className="text-ivory">Arc is an AI automation & software company for Bangladesh&apos;s industries</span>
+              {" "}— FMCG, food, pharma, agri, manufacturing & retail. Systems over manual work.
             </p>
             {/* Signature + today's date, as the home page signs off its hero */}
             <div className="flex flex-col items-start">
