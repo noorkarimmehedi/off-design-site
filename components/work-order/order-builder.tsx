@@ -228,29 +228,93 @@ export default function OrderBuilder({
           pointer-events: none;
           z-index: -1;
         }
-        .liquid-glass-button {
-          color: #141210;
-          background: linear-gradient(to bottom, rgb(255 255 255 / 0.96), rgb(237 232 223 / 0.88));
-          box-shadow:
-            inset 0 1px 0 rgb(255 255 255 / 0.9),
-            inset 0 -1px 1px rgb(0 0 0 / 0.08),
-            0 6px 16px -6px rgb(0 0 0 / 0.5);
-        }
+        /* Light: "clear" liquid glass — barely tinted, so the page stays visible through it. Thickness comes
+           from inner light on every edge; a soft white glow behind the text keeps it readable over busy content */
         html.light .liquid-glass {
-          background: rgb(255 255 255 / 0.5);
+          background: rgb(255 255 255 / 0.16);
+          -webkit-backdrop-filter: blur(2px) saturate(190%) brightness(1.08) contrast(0.92);
+          backdrop-filter: blur(2px) saturate(190%) brightness(1.08) contrast(0.92);
+          text-shadow: 0 0 10px #fff, 0 0 2px rgb(255 255 255 / 0.9);
           box-shadow:
-            inset 0 1px 0.5px rgb(255 255 255 / 0.9),
-            inset 0 -1px 1px rgb(0 0 0 / 0.04),
-            0 1px 2px rgb(0 0 0 / 0.08),
-            0 18px 40px -16px rgb(0 0 0 / 0.28);
+            inset 0 0 0 0.5px rgb(255 255 255 / 0.6),
+            inset 2px 3px 6px -2px rgb(255 255 255 / 0.95),
+            inset -2px -3px 8px -3px rgb(255 255 255 / 0.7),
+            inset 0 -10px 18px -12px rgb(0 0 0 / 0.12),
+            0 1px 1px rgb(0 0 0 / 0.06),
+            0 14px 34px -14px rgb(0 0 0 / 0.3);
         }
         html.light .liquid-glass::before {
-          background: linear-gradient(135deg, rgb(255 255 255 / 1), rgb(0 0 0 / 0.06) 40%, rgb(0 0 0 / 0.04) 70%, rgb(255 255 255 / 0.9));
+          background: linear-gradient(135deg, #fff 0%, rgb(255 255 255 / 0.35) 22%, rgb(0 0 0 / 0.07) 50%, rgb(255 255 255 / 0.3) 78%, #fff 100%);
         }
-        html.light .liquid-glass-button {
+        html.light .liquid-glass::after {
+          inset: 1px 1px 52% 1px;
+          border-bottom-left-radius: 50% 26%;
+          border-bottom-right-radius: 50% 26%;
+          background: linear-gradient(to bottom, rgb(255 255 255 / 0.45), rgb(255 255 255 / 0));
+        }
+        /* Segmented actions: Chat and Sign share one glass capsule; Sign is the filled half */
+        .dock-seg {
+          --feature-ease: cubic-bezier(0.23, 1, 0.32, 1);
+          display: flex;
+          align-items: center;
+          height: 46px;
+          padding: 3px;
+          border-radius: 23px;
+          background: rgb(255 255 255 / 0.07);
+          box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.16), inset 0 1px 0.5px rgb(255 255 255 / 0.22), inset 0 -6px 10px -8px rgb(0 0 0 / 0.4);
+        }
+        .dock-seg-btn {
+          position: relative;
+          height: 40px;
+          border-radius: 20px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          -webkit-tap-highlight-color: transparent;
+          transition: transform 160ms var(--feature-ease), box-shadow 160ms var(--feature-ease), background-color 160ms ease;
+        }
+        .dock-seg-btn:active { transform: scale(0.96); }
+        .dock-seg-chat:active { background-color: rgb(255 255 255 / 0.08); }
+        .dock-seg-sign {
+          color: #141210;
+          background: linear-gradient(to bottom, rgb(255 255 255 / 0.96), rgb(237 232 223 / 0.88));
+          box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -1px 1px rgb(0 0 0 / 0.08), 0 4px 10px -4px rgb(0 0 0 / 0.5);
+        }
+        .dock-seg-sign:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.18), 0 1px 2px rgb(0 0 0 / 0.3); }
+        /* Curved shine on the top half; dims and settles a pixel when pressed */
+        .dock-shine {
+          position: absolute;
+          inset: 1px 1px 52% 1px;
+          border-radius: inherit;
+          border-bottom-left-radius: 50% 30%;
+          border-bottom-right-radius: 50% 30%;
+          background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0));
+          pointer-events: none;
+          transition: opacity 160ms ease, transform 160ms var(--feature-ease);
+        }
+        .dock-seg-sign:active .dock-shine { opacity: 0.45; transform: translateY(1px); }
+        html.light .dock-seg {
+          background: rgb(255 255 255 / 0.28);
+          box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.8), inset 0 1px 1px #fff, inset 0 -1px 2px rgb(0 0 0 / 0.06), 0 2px 6px -2px rgb(0 0 0 / 0.15);
+        }
+        html.light .dock-seg-chat:active { background-color: rgb(0 0 0 / 0.05); }
+        /* Sign: pure black, so it anchors the clear dock */
+        html.light .dock-seg-sign {
           color: #fff;
-          background: linear-gradient(to bottom, #2a2620, #141210);
-          box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 6px 16px -6px rgb(0 0 0 / 0.4);
+          text-shadow: none;
+          background: #000;
+          box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 6px 14px -6px rgb(0 0 0 / 0.45);
+        }
+        html.light .dock-seg-sign:active { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 2px 8px rgb(0 0 0 / 0.5), 0 1px 2px rgb(0 0 0 / 0.3); }
+        html.light .dock-seg-sign .dock-shine { display: none; }
+        /* Sign ↔ Pay: both labels share one grid cell and crossfade with a little blur */
+        .dock-label { display: inline-grid; }
+        .dock-label > span { grid-area: 1 / 1; transition: opacity 180ms ease, filter 180ms ease, transform 220ms var(--feature-ease); }
+        .dock-label > span[data-on="false"] { opacity: 0; filter: blur(3px); transform: translateY(5px); }
+        .dock-label > span[data-on="false"]:first-child { transform: translateY(-5px); }
+        @media (prefers-reduced-motion: reduce) {
+          .dock-seg-btn, .dock-seg-btn:active { transform: none; }
+          .dock-label > span, .dock-label > span[data-on="false"] { transform: none; filter: none; transition: opacity 150ms ease; }
         }
         @media print {
           @page { size: A4; margin: 0; }
@@ -601,26 +665,33 @@ export default function OrderBuilder({
               </div>
               <TakaFlow value={order.total} className="block text-[22px] font-semibold leading-tight tracking-[-0.02em]" />
             </div>
-            <a
-              href="https://api.whatsapp.com/send/?phone=8801733670129"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat with us on WhatsApp"
-              className="liquid-glass ml-auto flex h-[46px] shrink-0 items-center gap-2 rounded-[20px] px-3.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-transform active:scale-95"
-            >
-              <span aria-hidden="true" className="relative flex size-1.5">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff5941] opacity-60 motion-reduce:animate-none" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-[#ff5941]" />
-              </span>
-              Chat
-            </a>
-            <button
-              type="button"
-              onClick={scrollToFlow}
-              className="liquid-glass-button relative h-[46px] shrink-0 rounded-[20px] px-5 font-mono text-[11px] uppercase tracking-[0.2em] transition-transform active:scale-95"
-            >
-              {step === 3 ? "Pay ↓" : "Sign ↓"}
-            </button>
+            <div className="dock-seg ml-auto shrink-0">
+              <a
+                href="https://api.whatsapp.com/send/?phone=8801733670129"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Chat with us on WhatsApp"
+                className="dock-seg-btn dock-seg-chat pl-[13px] pr-3 font-mono text-[10px] uppercase tracking-[0.2em]"
+              >
+                <span aria-hidden="true" className="relative flex size-1.5">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff5941] opacity-60 motion-reduce:animate-none" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-[#ff5941]" />
+                </span>
+                Chat
+              </a>
+              <button
+                type="button"
+                onClick={scrollToFlow}
+                aria-label={step === 3 ? "Pay the advance" : "Review and sign"}
+                className="dock-seg-btn dock-seg-sign px-4 font-mono text-[11px] uppercase tracking-[0.2em]"
+              >
+                <span aria-hidden="true" className="dock-shine" />
+                <span aria-hidden="true" className="dock-label">
+                  <span data-on={step !== 3}>Sign ↓</span>
+                  <span data-on={step === 3}>Pay ↓</span>
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       )}

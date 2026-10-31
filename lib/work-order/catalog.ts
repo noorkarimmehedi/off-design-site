@@ -1,5 +1,6 @@
 import { MERCHANT_CATALOG } from "./catalogs/merchant"
 import { WEB_BOT_CATALOG } from "./catalogs/web-bot"
+import { WEB_ADMIN_LANDING_CATALOG } from "./catalogs/web-admin-landing"
 import type { Catalog, Feature, Line, Selection } from "./types"
 
 export type { Catalog, Feature, FeatureGroup, FeaturePointGroup, Line, Selection } from "./types"
@@ -8,6 +9,7 @@ export type { Catalog, Feature, FeatureGroup, FeaturePointGroup, Line, Selection
 export const CATALOGS: Record<string, Catalog> = {
   [MERCHANT_CATALOG.id]: MERCHANT_CATALOG,
   [WEB_BOT_CATALOG.id]: WEB_BOT_CATALOG,
+  [WEB_ADMIN_LANDING_CATALOG.id]: WEB_ADMIN_LANDING_CATALOG,
 }
 
 export const DEFAULT_CATALOG_ID = MERCHANT_CATALOG.id

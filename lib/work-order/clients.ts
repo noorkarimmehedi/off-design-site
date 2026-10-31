@@ -10,6 +10,10 @@ export type ClientPreset = {
   selection?: Selection
   /** Name the client can't edit (default true for saved clients) */
   locked?: boolean
+  /** Link-preview artwork; omitted uses the default dark Arc card */
+  preview?: "garden"
+  /** Brand logo in assets/og, shown beside the arc logo in the preview */
+  logo?: string
 }
 
 export const CLIENTS: Record<string, ClientPreset> = {
@@ -19,6 +23,13 @@ export const CLIENTS: Record<string, ClientPreset> = {
     name: "Mr.Mahir Khan",
     catalog: "web-bot",
     locked: false,
+  },
+  // Website + admin panel + 5 landing pages — fixed scope, ৳65,000.
+  "rajshahi-aambari": {
+    name: "রাজশাহী আমবাড়ী",
+    catalog: "web-admin-landing",
+    preview: "garden",
+    logo: "rajshahi-aambari.png",
   },
 }
 
@@ -39,6 +50,8 @@ export function resolveClient(slug: string): {
   selection?: Selection
   catalog?: string
   locked: boolean
+  preview?: ClientPreset["preview"]
+  logo?: string
 } {
   const saved = CLIENTS[slug] ?? CLIENTS[safeDecode(slug)]
   if (saved) return { ...saved, locked: saved.locked ?? true }
