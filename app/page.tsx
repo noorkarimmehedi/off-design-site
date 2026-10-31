@@ -1,178 +1,191 @@
-import AnimatedButton from "@/components/animated-button"
-import AsciiHands from "@/components/ascii-hands"
-import RevealOnView from "@/components/reveal-on-view"
-import SiteFooter from "@/components/site-footer"
-import SiteHeader from "@/components/site-header"
-import TodayDate from "@/components/today-date"
-import { AnnotatedText } from "@/components/ui/annotated-text"
-import { clients } from "@/lib/clients"
+import type { Viewport } from "next"
+import localFont from "next/font/local"
+import CursorDot from "@/components/home/cursor-dot"
+import FaqList from "@/components/home/faq-list"
+import HomeHeader from "@/components/home/home-header"
+import { Roll, RollLink } from "@/components/home/roll"
+import ScrollReveal from "@/components/home/scroll-reveal"
+import ServiceTiles from "@/components/home/service-tiles"
+import WorkRail from "@/components/home/work-rail"
+import { clientLogos, EMAIL, fanImages, PHONE, WHATSAPP } from "@/lib/home"
+import "./home.css"
+
+const satoshi = localFont({
+  src: [
+    { path: "./fonts/satoshi-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/satoshi-500.woff2", weight: "500", style: "normal" },
+  ],
+  variable: "--font-satoshi",
+  display: "swap",
+})
+
+// Paints the phone's status bar / browser bar in the hero grey
+export const viewport: Viewport = { themeColor: "#ededed" }
+
+const TALK = "Let's Talk"
+
+function Arrow({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 124 104" fill="none" stroke="currentColor" strokeWidth="13" aria-hidden="true">
+      <path d="M0 52h112M66 6l46 46-46 46" />
+    </svg>
+  )
+}
 
 export default function Page() {
   return (
-    <main className="frame relative overflow-x-clip bg-ink text-ivory">
-      {/* HERO: one full screen, centred in the content column */}
-      <section className="relative flex min-h-svh flex-col">
-        <SiteHeader />
-        <AsciiHands />
+    <main className={`ah ${satoshi.variable}`}>
+      <HomeHeader />
 
-        <RevealOnView
-          as="div"
-          intensity="hero"
-          staggerChildren
-          className="relative z-10 mx-2 mt-2 mb-10 flex max-w-[964px] flex-none flex-col items-center justify-center rounded-none border border-ivory/25 px-3 pt-10 pb-0 text-center sm:mx-auto sm:mt-0 sm:mb-0 sm:w-full sm:flex-1 sm:border-0 sm:px-10 sm:pt-48 sm:pb-16 lg:pt-16"
-        >
-          {/* Headline: heavy Didone lowercase, a giant ampersand bridging the two lines,
-              and a small italic aside in the gap (after Hole & Corner) */}
-          {/* Bottom padding keeps the "p" descender inside the box (the reveal's blur layer clips
-              to it on iOS Safari); the negative margin cancels it so the layout doesn't move */}
-          <h1
-            aria-label="The bespoke automation & development for your business"
-            className="font-display -mx-3 mb-[calc(0.5rem-4.5vw)] self-stretch pb-[4.5vw] font-black lowercase sm:mx-0 sm:-mb-[18px] sm:self-auto sm:pb-[30px] lg:-mb-[22px] lg:pb-[34px] leading-[0.82] tracking-[-0.035em] text-ivory"
-          >
-            <span aria-hidden="true" className="flex flex-col items-start">
-              <span className="flex items-end gap-[0.35em] text-[14vw] sm:text-[96px] lg:text-[112px]">
-                <span>automation</span>
-                <span className="hidden pb-[0.32em] text-left font-display text-[13px] font-normal italic leading-[1.35] tracking-normal text-stone normal-case sm:block">
-                  “The <AnnotatedText variant="circle" color="text-ivory" delay={1.2}>bespoke</AnnotatedText> —
-                  <br />
-                  for your business.”
-                  <br />
-                  <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
-                </span>
-              </span>
-              {/* Mobile: the ampersand gets its own line between the words; sm+: it leads "development" */}
-              <span className="flex flex-col self-stretch whitespace-nowrap text-[14vw] sm:-mt-[0.02em] sm:block sm:self-end sm:pl-[0.5em] sm:text-[96px] lg:text-[112px]">
-                {/* Custom chrome ampersand (transparent webp) in place of the type glyph */}
-                <span className="relative z-10 block self-center -mt-[0.2em] -mb-[0.4em] sm:m-0 sm:inline-block sm:pr-[0.08em] sm:align-[-0.1em]">
-                  <img
-                    src="/ampersand-chrome-2.webp"
-                    alt=""
-                    width={1019}
-                    height={1012}
-                    className="h-[1.4em] w-auto select-none sm:h-[1.12em]"
-                    draggable={false}
-                  />
-                </span>
-                <span className="self-end">development</span>
-              </span>
-            </span>
-          </h1>
-
-          {/* Mobile: the aside sits under the headline */}
-          <p className="mt-4 self-end pr-3 text-right font-display text-[12px] italic leading-[1.35] text-stone sm:hidden">
-            “The <AnnotatedText variant="circle" color="text-ivory" delay={1.2}>bespoke</AnnotatedText> — for your business.”
-            <br />
-            <span className="font-normal not-italic text-ivory/60">– Arc Labs Corporation</span>
-          </p>
-
-          {/* Two-tone subline. Mobile: exactly two lines, edge to edge in the box */}
-          <p className="-mx-3 mt-6 self-stretch text-[3.2vw] leading-[1.65] text-stone sm:mx-0 sm:mt-10 sm:max-w-[560px] sm:self-auto sm:text-balance sm:text-[14px] sm:leading-[1.6]">
-            <span className="text-ivory">Arc is an AI automation & software company for Bangladesh&apos;s industries</span>
-            {" "}— FMCG, food, pharma, agri, manufacturing & retail. Systems over manual work.
-          </p>
-
-          {/* CTAs (unchanged buttons) */}
-          <div className="relative mt-8 flex items-center gap-2 sm:mt-12">
-            <img
-              src="/download.svg"
-              alt=""
-              aria-hidden="true"
-              className="pointer-events-none absolute -left-[150px] -top-[64px] hidden w-[130px] lg:block"
-            />
-            <AnimatedButton href="/work" target="_self" rel="">Our Portfolio</AnimatedButton>
-            <AnimatedButton href="/call" target="_self" rel="">Book a Call</AnimatedButton>
-          </div>
-
-          {/* WhatsApp chat link */}
-          <a
-            href="https://api.whatsapp.com/send/?phone=8801733670129"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group mt-4 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
-          >
-            Chat with us
-            <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-          </a>
-
-          {/* Clients */}
-          <div className="mt-9 w-full max-w-[920px] sm:mt-12">
-            <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
-              <span>Brands we’ve built for</span>
-              <span className="h-px flex-1 bg-line" />
-              <span className="tabular-nums">{String(clients.length).padStart(2, "0")}</span>
-            </div>
-            {/* Bento: the first three brands in large tiles, the rest beneath (rows of three, then two); linked brands open their site.
-                The 1px gaps show the line colour through, so every cell gets an even rule */}
-            <ul className="mt-4 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-6">
-              {clients.map((c, i) => {
-                const wide = i < 3
-                const tile = `group relative flex items-center justify-center bg-ink px-5 ${
-                  wide ? "h-[150px] sm:h-[220px]" : "h-[110px] sm:h-[140px]"
-                }`
-                const body = (
-                  <>
-                    <span className="absolute top-2 left-2.5 font-mono text-[9px] tabular-nums tracking-[0.15em] text-stone/50">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    {c.href && (
-                      <span className="absolute right-2.5 bottom-2 font-mono text-[9px] uppercase tracking-[0.2em] text-stone/60 transition-colors duration-200 ease-out group-hover:text-ivory">
-                        {c.label} ↗
-                      </span>
-                    )}
-                    {c.logo ? (
-                      <img
-                        src={c.logo}
-                        alt={c.href ? "" : c.name}
-                        draggable={false}
-                        className={`block h-auto max-w-full select-none opacity-85 transition-opacity duration-200 ease-out group-hover:opacity-100 ${c.className}`}
-                      />
-                    ) : (
-                      <span className={`block text-ivory/65 transition-colors duration-200 ease-out group-hover:text-ivory ${c.className}`}>{c.name}</span>
-                    )}
-                  </>
-                )
-                return (
-                  <li
-                    key={c.name}
-                    className={
-                      wide
-                        ? "col-span-2"
-                        : i === clients.length - 1
-                          ? "col-span-2 sm:col-span-3"
-                          : i === clients.length - 2
-                            ? "sm:col-span-3"
-                            : "sm:col-span-2"
-                    }
-                  >
-                    {c.href ? (
-                      <a href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.label} (opens in a new tab)`} className={tile}>
-                        {body}
-                      </a>
-                    ) : (
-                      <div className={tile}>{body}</div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-
-          {/* Signature + today's date sign off the box, bottom right (desktop: the frame-guide column) */}
-          <div className="mt-8 flex flex-col items-end self-end sm:absolute sm:right-6 sm:bottom-6 sm:mt-0">
-            <img
-              src="/imgi_11_image.webp"
-              alt="Signature"
-              width={256}
-              height={236}
-              className="h-12 w-auto opacity-80 dark:invert sm:h-16"
-              draggable={false}
-            />
-            <TodayDate className="-mt-1 font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-ivory/45 sm:text-[11px]" />
-          </div>
-        </RevealOnView>
+      <section className="hero" aria-label="Intro">
+        <h1>
+          <span className="line">
+            <span>Arc Labs Corporation.</span>
+          </span>
+          <span className="line">
+            <span>Systems over manual work.</span>
+          </span>
+        </h1>
+        <WorkRail />
       </section>
 
-      <SiteFooter hideSignature />
+      <section className="split" id="about">
+        <h2 className="label rv">About</h2>
+        <div className="copy rv">
+          <p>
+            Arc is an AI automation and software company for Bangladesh&apos;s industries. We work with FMCG, food, pharma,
+            agri, manufacturing and retail teams that still run on spreadsheets, phone calls and paper, and we replace that
+            manual work with systems that run on their own.
+          </p>
+          <p>
+            Every project starts on the floor, not in a deck. We map how orders, stock and approvals actually move, then
+            build the automation, internal tools and websites around them. We judge the work by fewer errors, faster cash
+            and teams that get their evenings back.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="ah-services">
+        <div className="svc-head">
+          <h2 className="label rv" id="ah-services">
+            Services
+          </h2>
+          <p className="rv">Five ways we take manual work off your team, from the factory floor to the checkout page.</p>
+        </div>
+        <ServiceTiles />
+      </section>
+
+      <section className="split" aria-labelledby="ah-clients">
+        <h2 className="label rv" id="ah-clients">
+          Clients
+        </h2>
+        <ul className="clients rv">
+          {clientLogos.map((c) => {
+            const mark =
+              "logo" in c ? (
+                <img
+                  className="logo"
+                  src={`/home/logos/${c.logo}.webp`}
+                  alt={c.name}
+                  style={{ ["--h" as string]: `${c.height}px` }}
+                  draggable={false}
+                />
+              ) : (
+                <span className={`wordmark ${c.wordmark}`}>{c.name}</span>
+              )
+            // On phones each client becomes a tile like the Services cards: name, logo, website.
+            // Desktop hides the name and website and keeps the plain logo grid.
+            const site = c.href ? new URL(c.href).hostname.replace(/^www\./, "") : null
+            const body = (
+              <>
+                <span className="cl-name" aria-hidden="true">
+                  {c.name}
+                </span>
+                <span className="cl-mark">{mark}</span>
+                <span className="cl-site" aria-hidden="true">
+                  {site ? `${site} ↗` : "Private work"}
+                </span>
+              </>
+            )
+            return (
+              <li key={c.name}>
+                {c.href ? (
+                  <a className="cl" href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.name} (opens in a new tab)`}>
+                    {body}
+                  </a>
+                ) : (
+                  <span className="cl mark">{body}</span>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+
+      <section className="split" aria-labelledby="ah-faq">
+        <h2 className="label rv" id="ah-faq">
+          Frequently Asked Questions
+        </h2>
+        <FaqList />
+      </section>
+
+      {/* The template's card fan: a tilted box spinning on its vertical axis, eight blades hinged
+          45° apart, each card turned another 45° about its own centre */}
+      <div className="fan-box" aria-hidden="true">
+        <div className="fan-tilt">
+          <div className="fan-spin">
+            {fanImages.map((src, i) => (
+              <div className="blade" key={src} style={{ ["--a" as string]: `${i * 45}deg` }}>
+                <div className="blade-card">
+                  <img src={src} alt="" loading="lazy" draggable={false} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <a className="talk" href="/call" id="contact" aria-label="Let's talk: book a call">
+        <Arrow className="a-in" />
+        <span className="word" aria-hidden="true">
+          {[...TALK].map((c, i) =>
+            c === " " ? (
+              " "
+            ) : (
+              <span className="ch" key={i} style={{ ["--i" as string]: i }}>
+                {c}
+              </span>
+            ),
+          )}
+        </span>
+        <Arrow className="a-out" />
+      </a>
+
+      <footer className="foot">
+        <nav aria-label="Footer">
+          <RollLink href="/">Home</RollLink>
+          <RollLink href="/work">Work</RollLink>
+          <RollLink href="#about">About</RollLink>
+          <RollLink href="/call">Call</RollLink>
+          <RollLink href="#contact">Contact</RollLink>
+        </nav>
+        <div className="col">
+          <a href={`mailto:${EMAIL}`}>
+            <Roll>{EMAIL}</Roll>
+          </a>
+          <a href={`tel:${PHONE.replace(/[^+\d]/g, "")}`}>
+            <Roll>{PHONE}</Roll>
+          </a>
+        </div>
+        <div className="col">
+          <RollLink href={WHATSAPP}>WhatsApp</RollLink>
+          <RollLink href="/call">Book a call</RollLink>
+        </div>
+        <p className="fine l">Arc Labs Corporation. All Rights Reserved.</p>
+      </footer>
+
+      <CursorDot />
+      <ScrollReveal />
     </main>
   )
 }

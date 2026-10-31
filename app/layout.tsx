@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import "../styles/globals.css"
 import ChatWidget from "@/components/chat-widget"
 import EdgeBlur from "@/components/edge-blur"
@@ -16,6 +16,9 @@ const siteUrl =
   (process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : "http://localhost:3000")
+
+// Browser chrome colour; pages can override it (the homepage uses its grey)
+export const viewport: Viewport = { themeColor: "#000000" }
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -53,7 +56,6 @@ export default function RootLayout({
     // next-themes swaps the dark/light class before paint; dark stays the default
     <html lang="en" className="light" suppressHydrationWarning>
       <head>
-        <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
