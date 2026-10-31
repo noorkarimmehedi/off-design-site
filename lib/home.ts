@@ -29,11 +29,11 @@ export const work: WorkCard[] = [
 export type AsciiKind = "flow" | "ledger" | "bars" | "web" | "ring"
 
 export const services: { name: string; body: string; ascii: AsciiKind }[] = [
-  { name: "Web Design & Development", ascii: "web", body: "Brand sites and online shops that load fast on a phone and take orders by bKash or cash on delivery." },
-  { name: "Internal Tools & Dashboards", ascii: "bars", body: "Approval flows, field-sales apps and live numbers for the people who make decisions every morning." },
-  { name: "AI Automation", ascii: "flow", body: "Order intake, invoicing, follow-ups and daily reports that run without anyone copying data between apps." },
-  { name: "Custom Software & ERP", ascii: "ledger", body: "Stock, production, distribution and accounts in one system, built around how your factory and depots already work." },
-  { name: "Brand & Product Design", ascii: "ring", body: "Identity, packaging and product screens for brands that sell on shop shelves and on screens." },
+  { name: "Web Design & Development", ascii: "web", body: "Custom websites and online stores, designed and built from scratch for your brand, fast on every device." },
+  { name: "Internal Tools & Dashboards", ascii: "bars", body: "Admin panels, dashboards and internal apps built around how your team already works." },
+  { name: "AI Automation", ascii: "flow", body: "AI agents and workflows that take repetitive work off your team, connected to the tools you already use." },
+  { name: "Custom Software & ERP", ascii: "ledger", body: "Bespoke web and mobile apps and business systems, designed, built and maintained for your company alone." },
+  { name: "Brand & Product Design", ascii: "ring", body: "Identity, interfaces and product design, so your brand and your software look and feel like one." },
 ]
 
 // Logo heights are tuned by eye so tall and wide marks carry the same weight.
@@ -47,7 +47,7 @@ export const clientLogos: ClientLogo[] = [
   { name: "Mango Lover", logo: "mango-lover", height: 30, href: "https://www.mangolover.com.bd/" },
   { name: "Gala", wordmark: "gala" },
   { name: "Angonaloy", logo: "angonaloy", height: 30, href: "https://angonaloy.shop/" },
-  { name: "Bengal Mart", logo: "bengal-mart", height: 56, href: "https://bengal-mart.shop/" },
+  { name: "Tar", logo: "tar", height: 64, href: "https://tar-storefront.tarbd.workers.dev/" },
   { name: "Cober Collective", wordmark: "cober" },
   { name: "Listen Labs", logo: "listen-labs", height: 22 },
 ]

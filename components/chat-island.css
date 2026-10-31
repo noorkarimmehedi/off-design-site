@@ -1,0 +1,156 @@
+/* Site-wide chat launcher: a black capsule that springs open into a bar with two actions
+   (WhatsApp, Book a call), after the iPhone's Dynamic Island.
+   The open bar is drawn once and revealed by animating clip-path, so nothing on the page shifts.
+   The shadow (and a faint light edge for dark pages) lives on the dock as drop-shadow so it follows the clip. */
+
+.ci-dock {
+  --W: 336px; /* open bar */
+  --H: 56px;
+  --w: 116px; /* capsule */
+  --h: 44px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  /* damped spring, ~8% overshoot, settles in ~650ms */
+  --spring: linear(0, 0.0188, 0.069, 0.1417, 0.2292, 0.3252, 0.4243, 0.5222, 0.6156, 0.7022, 0.7803, 0.849, 0.9079, 0.9571, 0.9969, 1.0279, 1.0511, 1.0672, 1.0774, 1.0825, 1.0834, 1.0812, 1.0765, 1.0701, 1.0625, 1.0544, 1.0461, 1.038, 1.0304, 1.0233, 1.0169, 1.0114, 1.0067, 1.0027, 0.9996, 0.9972, 0.9954, 0.9941, 0.9934, 0.9931, 0.9931, 0.9933, 0.9937, 0.9943, 0.9949, 0.9956, 0.9963, 0.997, 1);
+
+  position: fixed;
+  z-index: 40;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  max-width: calc(100vw - 32px);
+  pointer-events: none; /* only the visible island takes clicks */
+  filter: drop-shadow(0 0 0.75px rgb(255 255 255 / 0.32)) drop-shadow(0 14px 22px rgb(0 0 0 / 0.28));
+  font-family: var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  animation: ci-enter 700ms var(--ease-out) 800ms both;
+}
+@media (min-width: 640px) {
+  .ci-dock {
+    right: max(24px, env(safe-area-inset-right, 0px));
+    bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  }
+}
+@keyframes ci-enter {
+  from { opacity: 0; transform: translateY(10px); }
+}
+
+.ci-isl {
+  position: relative;
+  width: var(--W);
+  max-width: 100%;
+  height: var(--H);
+  margin-left: auto;
+  background: #0b0b0b;
+  color: #f4f4f4;
+  clip-path: inset(calc(var(--H) - var(--h)) 0 0 calc(100% - var(--w)) round calc(var(--h) / 2));
+  transition: clip-path 420ms var(--ease-out);
+  pointer-events: auto;
+}
+.ci-isl[data-open] {
+  clip-path: inset(0 0 0 0 round calc(var(--H) / 2));
+  transition: clip-path 650ms var(--spring);
+}
+
+/* capsule: arc. mark + "Chat", pinned to the bottom-right corner */
+.ci-mini {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--w);
+  height: var(--h);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 16px 0 7px;
+  border: 0;
+  border-radius: calc(var(--h) / 2);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 180ms ease, filter 180ms ease, transform 160ms var(--ease-out);
+}
+.ci-mini:active { transform: scale(0.97); }
+.ci-mini:focus-visible { outline: 1px dashed rgb(255 255 255 / 0.6); outline-offset: -4px; }
+.ci-isl[data-open] .ci-mini { opacity: 0; filter: blur(4px); pointer-events: none; }
+
+/* open bar: arc. mark, WhatsApp, Book a call */
+.ci-full {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px;
+  opacity: 0;
+  filter: blur(6px);
+  transform: scale(0.96);
+  transform-origin: 100% 100%;
+  pointer-events: none;
+  transition: opacity 160ms ease, filter 160ms ease, transform 200ms var(--ease-out);
+}
+.ci-isl[data-open] .ci-full {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 300ms ease 110ms, filter 300ms ease 110ms, transform 500ms var(--spring) 60ms;
+}
+
+.ci-av {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+}
+.ci-full .ci-av { margin: 0 4px 0 2px; }
+.ci-av img { width: 19px; height: auto; }
+.ci-av i {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: 0 0 0 2px #0b0b0b;
+}
+
+.ci-act {
+  flex: 1;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 160ms var(--ease-out), background-color 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ci-act:active { transform: scale(0.97); }
+.ci-act:focus-visible { outline: 1px dashed rgb(255 255 255 / 0.7); outline-offset: 2px; }
+.ci-wa { background: #25d366; color: #06210f; }
+.ci-call { background: rgb(255 255 255 / 0.1); color: #f4f4f4; }
+@media (hover: hover) and (pointer: fine) {
+  .ci-wa:hover { background: #2fe072; }
+  .ci-call:hover { background: rgb(255 255 255 / 0.16); }
+}
+.ci-act svg { width: 17px; height: 17px; flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ci-dock { animation: none; }
+  .ci-isl,
+  .ci-isl[data-open] { transition: clip-path 200ms ease; }
+  .ci-full,
+  .ci-isl[data-open] .ci-full { transition: opacity 200ms ease; transform: none; filter: none; }
+}

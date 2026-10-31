@@ -158,6 +158,14 @@ html:has(.ah) [data-edge-blur] {
 .ah .hero h1 .line:nth-child(2) > span {
   animation-delay: 140ms;
 }
+/* The glossy arc. mark set inline as a word, sized to the type and sitting on the baseline */
+.ah .hero h1 .h-logo {
+  display: inline-block;
+  height: 0.8em;
+  width: auto;
+  vertical-align: -0.06em;
+  margin-left: 0.02em;
+}
 @keyframes ah-rise {
   from { transform: translateY(105%); }
   to { transform: translateY(0); }
@@ -722,7 +730,9 @@ html:has(.ah) [data-edge-blur] {
   .ah .sheet { display: flex; }
   /* Phones: the hero sizes to its content instead of filling the screen */
   .ah .hero { min-height: 0; margin-top: 0; padding-top: 220px; padding-bottom: 9px; }
-  .ah .hero h1 { font-size: 28px; line-height: 36px; margin-bottom: 12px; }
+  /* Sized so "Engineered, Automated, Perfected by arc" (16.5em wide) always fits on one line */
+  .ah .hero h1 { font-size: min(28px, calc((100vw - 30px) / 17.4)); line-height: 1.28; margin-bottom: 12px; }
+  .ah .hero h1 .line > span { white-space: nowrap; }
   .ah .rail { height: 308px; }
   .ah .card { width: 245px; height: 308px; border-radius: 10px; }
   .ah .card.wide { width: 385px; }

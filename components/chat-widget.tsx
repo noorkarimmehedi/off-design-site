@@ -1,49 +1,93 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
+import { satoshi } from "@/lib/fonts"
+import "./chat-island.css"
 
 const WHATSAPP = "https://api.whatsapp.com/send/?phone=8801733670129"
-const EASE = [0.22, 1, 0.36, 1] as const
 
-// Bottom-right chat launcher: a mono pill with registration brackets that opens WhatsApp
+function WhatsAppMark() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3Z" />
+    </svg>
+  )
+}
+
+function Mark() {
+  return (
+    <span className="ci-av" aria-hidden="true">
+      <img src="/arc-logo-black.webp" alt="" width={600} height={215} draggable={false} />
+      <i />
+    </span>
+  )
+}
+
+// Bottom-right chat island: a capsule that springs open into a bar with WhatsApp and Book a call.
+// Opens on hover (mouse), Enter/Space (keyboard, focus moves into the bar) and first tap (touch).
+// Closes when the mouse leaves, on an outside tap, on Escape, or when focus leaves the island.
 export default function ChatWidget() {
-  const reduce = useReducedMotion()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const firstAction = useRef<HTMLAnchorElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e: PointerEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false)
+    }
+    document.addEventListener("pointerdown", onDown)
+    document.addEventListener("keydown", onKey)
+    return () => {
+      document.removeEventListener("pointerdown", onDown)
+      document.removeEventListener("keydown", onKey)
+    }
+  }, [open])
+
+  const mouse = (e: React.PointerEvent) => e.pointerType === "mouse"
 
   return (
-    <motion.a
-      href={WHATSAPP}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Chat with us on WhatsApp"
-      data-chat-widget
-      initial={reduce ? false : { opacity: 0, y: 12, filter: "blur(6px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.7, ease: EASE, delay: 0.8 }}
-      whileTap={reduce ? undefined : { scale: 0.97 }}
-      className="group fixed right-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 flex h-11 items-center gap-3 border border-ivory/15 bg-ink px-4 font-mono text-[11px] uppercase tracking-[0.25em] text-ivory shadow-[0_16px_40px_-18px_rgb(0_0_0/0.5)] transition-colors duration-300 hover:border-ivory/35 focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-dashed focus-visible:outline-ivory/40 sm:right-6 sm:bottom-6"
-    >
-      {/* Registration brackets, after the animated buttons; they tuck in on hover */}
-      <span aria-hidden="true" className="pointer-events-none absolute inset-0">
-        {[
-          "-top-px -left-px border-t border-l group-hover:translate-x-0.5 group-hover:translate-y-0.5",
-          "-top-px -right-px border-t border-r group-hover:-translate-x-0.5 group-hover:translate-y-0.5",
-          "-right-px -bottom-px border-r border-b group-hover:-translate-x-0.5 group-hover:-translate-y-0.5",
-          "-bottom-px -left-px border-b border-l group-hover:translate-x-0.5 group-hover:-translate-y-0.5",
-        ].map((c) => (
-          <span key={c} className={`absolute size-2 border-ivory/35 transition-transform duration-300 ${c}`} />
-        ))}
-      </span>
-      <span aria-hidden="true" className="relative flex size-1.5">
-        <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff5941] opacity-60 motion-reduce:animate-none" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-[#ff5941]" />
-      </span>
-      Chat
-      <span
-        aria-hidden="true"
-        className="text-[12px] leading-none text-stone transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ivory"
+    <div className={`ci-dock ${satoshi.variable}`} data-chat-widget>
+      <div
+        ref={ref}
+        className="ci-isl"
+        data-open={open ? "" : undefined}
+        onPointerEnter={(e) => mouse(e) && setOpen(true)}
+        onPointerLeave={(e) => mouse(e) && setOpen(false)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false)
+        }}
       >
-        ↗
-      </span>
-    </motion.a>
+        <div className="ci-full" id="ci-actions" inert={!open}>
+          <Mark />
+          <a ref={firstAction} className="ci-act ci-wa" href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+            <WhatsAppMark />
+            WhatsApp
+          </a>
+          <Link className="ci-act ci-call" href="/call" onClick={() => setOpen(false)}>
+            Book a call
+          </Link>
+        </div>
+        <button
+          type="button"
+          className="ci-mini"
+          aria-expanded={open}
+          aria-controls="ci-actions"
+          aria-label="Chat with arc"
+          onClick={(e) => {
+            setOpen(true)
+            // Opened from the keyboard (no pointer position): move focus into the bar
+            if (e.detail === 0) requestAnimationFrame(() => firstAction.current?.focus())
+          }}
+        >
+          <Mark />
+          <span>Chat</span>
+        </button>
+      </div>
+    </div>
   )
 }

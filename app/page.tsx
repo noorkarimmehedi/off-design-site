@@ -1,23 +1,15 @@
 import type { Viewport } from "next"
-import localFont from "next/font/local"
 import CursorDot from "@/components/home/cursor-dot"
 import FaqList from "@/components/home/faq-list"
 import HomeHeader from "@/components/home/home-header"
-import { Roll, RollLink } from "@/components/home/roll"
+import { RollLink } from "@/components/home/roll"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
-import { clientLogos, EMAIL, fanImages, PHONE, WHATSAPP } from "@/lib/home"
+import { clientLogos, fanImages, WHATSAPP } from "@/lib/home"
+import { satoshi } from "@/lib/fonts"
 import "./home.css"
 
-const satoshi = localFont({
-  src: [
-    { path: "./fonts/satoshi-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/satoshi-500.woff2", weight: "500", style: "normal" },
-  ],
-  variable: "--font-satoshi",
-  display: "swap",
-})
 
 // Paints the phone's status bar / browser bar in the hero grey
 export const viewport: Viewport = { themeColor: "#ededed" }
@@ -40,10 +32,13 @@ export default function Page() {
       <section className="hero" aria-label="Intro">
         <h1>
           <span className="line">
-            <span>Arc Labs Corporation.</span>
+            <span>Bespoke software.</span>
           </span>
           <span className="line">
-            <span>Systems over manual work.</span>
+            <span>
+              Engineered, Automated, Perfected by{" "}
+              <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} />
+            </span>
           </span>
         </h1>
         <WorkRail />
@@ -53,14 +48,13 @@ export default function Page() {
         <h2 className="label rv">About</h2>
         <div className="copy rv">
           <p>
-            Arc is an AI automation and software company for Bangladesh&apos;s industries. We work with FMCG, food, pharma,
+            arc is an AI automation and software company for Bangladesh&apos;s industries. We work with FMCG, food, pharma,
             agri, manufacturing and retail teams that still run on spreadsheets, phone calls and paper, and we replace that
             manual work with systems that run on their own.
           </p>
           <p>
-            Every project starts on the floor, not in a deck. We map how orders, stock and approvals actually move, then
-            build the automation, internal tools and websites around them. We judge the work by fewer errors, faster cash
-            and teams that get their evenings back.
+            We work as your product and engineering team. From the first idea to launch and beyond, we design, build and
+            run custom software and AI automation that fits your business exactly.
           </p>
         </div>
       </section>
@@ -70,7 +64,7 @@ export default function Page() {
           <h2 className="label rv" id="ah-services">
             Services
           </h2>
-          <p className="rv">Five ways we take manual work off your team, from the factory floor to the checkout page.</p>
+          <p className="rv">Everything we build is made for one business. Here is what we design, build and automate.</p>
         </div>
         <ServiceTiles />
       </section>
@@ -170,18 +164,12 @@ export default function Page() {
           <RollLink href="#contact">Contact</RollLink>
         </nav>
         <div className="col">
-          <a href={`mailto:${EMAIL}`}>
-            <Roll>{EMAIL}</Roll>
-          </a>
-          <a href={`tel:${PHONE.replace(/[^+\d]/g, "")}`}>
-            <Roll>{PHONE}</Roll>
-          </a>
+          <RollLink href="/call">Book a call ↗</RollLink>
         </div>
         <div className="col">
-          <RollLink href={WHATSAPP}>WhatsApp</RollLink>
-          <RollLink href="/call">Book a call</RollLink>
+          <RollLink href={WHATSAPP}>Chat on WhatsApp ↗</RollLink>
         </div>
-        <p className="fine l">Arc Labs Corporation. All Rights Reserved.</p>
+        <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
       </footer>
 
       <CursorDot />
