@@ -4,11 +4,9 @@ import Link from "next/link"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { satoshi } from "@/lib/fonts"
-import { springEasing } from "@/lib/spring"
+import { boxOf, CONTENT, EASE_OUT, morphIsland, setIsland, swapContent } from "@/lib/island"
 import "./call-island.css"
 
-const SHELL = springEasing(0.8, 0.2)
-const CONTENT = springEasing(0.8, 0.35)
 const SEEN_KEY = "arc-call-island" // once per visit
 const TRIGGER = 0.3 // share of the page scrolled, roughly past Services
 
@@ -44,6 +42,7 @@ export default function CallIsland() {
   const [mounted, setMounted] = useState(false)
   const dockRef = useRef<HTMLDivElement>(null)
   const shellRef = useRef<HTMLDivElement>(null)
+  const shadowRef = useRef<HTMLDivElement>(null)
   const pillRef = useRef<HTMLDivElement>(null)
   const askRef = useRef<HTMLDivElement>(null)
   const prev = useRef<View>("hidden")
@@ -76,9 +75,9 @@ export default function CallIsland() {
     prev.current = view
     const dock = dockRef.current
     const shell = shellRef.current
-    if (!dock || !shell || view === from) return
+    const shadow = shadowRef.current
+    if (!dock || !shell || !shadow || view === from) return
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const ease = "cubic-bezier(0.23, 1, 0.32, 1)"
 
     if (view === "hidden") {
       const out = dock.animate(
@@ -86,9 +85,9 @@ export default function CallIsland() {
           ? [{ opacity: 1 }, { opacity: 0 }]
           : [
               { opacity: 1, transform: "none" },
-              { opacity: 0, transform: "translateY(-12px) scale(0.9)" },
+              { opacity: 0, transform: "translateY(-12px) scale(0.92)" },
             ],
-        { duration: 220, easing: ease, fill: "forwards" },
+        { duration: 220, easing: EASE_OUT, fill: "forwards" },
       )
       out.onfinish = () => {
         dock.hidden = true
@@ -97,14 +96,19 @@ export default function CallIsland() {
       return
     }
 
-    const target = (view === "ask" ? askRef : pillRef).current!
     if (from === "hidden") dock.hidden = false // must be in layout before measuring
-    const to = { w: target.offsetWidth, h: target.offsetHeight }
+    // Stage = the larger of the two states; each state is a clip-path box inside it
+    const pill = boxOf(pillRef.current!, 30)
+    const ask = boxOf(askRef.current!, 30)
+    const W = Math.max(pill.w, ask.w)
+    const H = Math.max(pill.h, ask.h)
+    dock.style.width = `${W}px`
+    dock.style.height = `${H}px`
+    const to = view === "ask" ? ask : pill
 
     if (from === "hidden") {
       // First appearance: drop in under the top edge
-      shell.style.width = `${to.w}px`
-      shell.style.height = `${to.h}px`
+      setIsland(shell, shadow, W, H, to, "top-center")
       dock.animate(
         reduce
           ? [{ opacity: 0 }, { opacity: 1 }]
@@ -117,37 +121,8 @@ export default function CallIsland() {
       return
     }
 
-    // pill <-> ask: the shell springs its real size; content is swapped with a spring
-    const size = { w: shell.offsetWidth, h: shell.offsetHeight }
-    shell.getAnimations().forEach((a) => a.cancel())
-    shell.style.width = `${to.w}px`
-    shell.style.height = `${to.h}px`
-    if (!reduce) {
-      shell.animate(
-        [
-          { width: `${size.w}px`, height: `${size.h}px` },
-          { width: `${to.w}px`, height: `${to.h}px` },
-        ],
-        { duration: SHELL.ms, easing: SHELL.easing },
-      )
-    }
-    const outgoing = (view === "ask" ? pillRef : askRef).current
-    outgoing?.animate(
-      [
-        { opacity: 1, transform: "none" },
-        { opacity: 0, transform: "scale(0.9) translateY(-6px)" },
-      ],
-      { duration: 80, easing: ease },
-    )
-    target.animate(
-      reduce
-        ? [{ opacity: 0 }, { opacity: 1 }]
-        : [
-            { opacity: 0, transform: "scale(0.9) translateY(-8px)", filter: "blur(5px)" },
-            { opacity: 1, transform: "none", filter: "blur(0px)" },
-          ],
-      { duration: reduce ? 150 : CONTENT.ms, easing: reduce ? "ease" : CONTENT.easing },
-    )
+    morphIsland(shell, shadow, W, H, view === "ask" ? pill : ask, to, "top-center", reduce)
+    swapContent((view === "ask" ? askRef : pillRef).current!, (view === "ask" ? pillRef : askRef).current, true, reduce)
   }, [view])
 
   const notNow = () => {
@@ -160,6 +135,7 @@ export default function CallIsland() {
   if (!mounted) return null
   return createPortal(
     <div ref={dockRef} className={`cl-top ${satoshi.variable}`} hidden role="dialog" aria-label="Book a call with arc" aria-live="polite">
+      <div ref={shadowRef} className="cl-shadow" aria-hidden="true" />
       <div ref={shellRef} className="cl-shell">
         <div ref={pillRef} className="cl-slot cl-pill" data-on={view === "pill" ? "" : undefined} aria-hidden="true">
           <Mark />

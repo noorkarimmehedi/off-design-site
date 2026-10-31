@@ -1,5 +1,5 @@
 /* Phone-only "Book a call with arc?" island, dropped in from the top edge once per visit.
-   Same physics as the bottom chat island: the shell springs its real width/height, content springs in. */
+   Same motion as the bottom chat island (lib/island.ts): clip-path reveal, transform-only shadow, no blur. */
 
 .cl-top {
   position: fixed;
@@ -8,6 +8,7 @@
   top: calc(env(safe-area-inset-top, 0px) + 12px);
   translate: -50% 0;
   max-width: calc(100vw - 24px);
+  pointer-events: none;
   font-family: var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.35;
@@ -18,13 +19,20 @@
   .cl-top { display: none; }
 }
 
+/* The black shell fills the stage (sized from JS) and is revealed with clip-path (lib/island.ts) */
 .cl-shell {
-  position: relative;
-  overflow: hidden;
-  border-radius: 30px;
+  position: absolute;
+  inset: 0;
   background: #0b0b0b;
   color: #f4f4f4;
-  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 18px 40px -16px rgb(0 0 0 / 0.55);
+  pointer-events: auto;
+  will-change: clip-path;
+}
+.cl-shadow {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 14px 30px -14px rgb(0 0 0 / 0.5);
+  will-change: transform;
 }
 
 .cl-slot {
@@ -34,6 +42,7 @@
   translate: -50% 0;
   width: max-content;
   transform-origin: 50% 0;
+  will-change: transform, opacity;
 }
 .cl-slot:not([data-on]) {
   opacity: 0;

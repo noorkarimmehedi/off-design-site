@@ -1,13 +1,13 @@
 /* Site-wide chat launcher, after BeUI's Dynamic Island.
-   The black shell animates its real width and height on one spring (set from chat-widget.tsx);
-   the corner radius is constant and the browser clamps it to half the height, so the pill-to-bar
-   morph needs no radius animation. Content slots spring in and are pulled back fast. */
+   Motion lives in lib/island.ts: the shell is revealed with a spring on clip-path, the shadow moves on
+   its own layer with transform, and content uses opacity + transform only. No layout or blur per frame. */
 
 .ci-dock {
   position: fixed;
   z-index: 40;
   right: max(16px, env(safe-area-inset-right, 0px));
   bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
   font-family: var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.3;
@@ -25,14 +25,22 @@
   from { opacity: 0; transform: translateY(10px); }
 }
 
+/* Stage sized (from JS) to the larger state. The black shell fills it and is revealed with clip-path;
+   only the clipped area paints and takes pointer events. */
 .ci-shell {
-  position: relative;
-  overflow: hidden;
-  border-radius: 32px;
+  position: absolute;
+  inset: 0;
   background: #0b0b0b;
   color: #f4f4f4;
-  /* faint light edge so the black shell stays defined over dark pages */
-  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 18px 40px -16px rgb(0 0 0 / 0.55);
+  pointer-events: auto;
+  will-change: clip-path;
+}
+/* Shadow + faint light edge (for dark pages), on its own layer so it moves with transform only */
+.ci-shadow {
+  position: absolute;
+  pointer-events: none;
+  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 14px 30px -14px rgb(0 0 0 / 0.5);
+  will-change: transform;
 }
 
 .ci-slot {
@@ -44,6 +52,7 @@
   width: max-content;
   white-space: nowrap;
   transform-origin: 100% 100%;
+  will-change: transform, opacity;
 }
 .ci-slot:not([data-on]) {
   opacity: 0;

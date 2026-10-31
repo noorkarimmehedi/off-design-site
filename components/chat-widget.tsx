@@ -3,15 +3,10 @@
 import Link from "next/link"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { satoshi } from "@/lib/fonts"
-import { springEasing } from "@/lib/spring"
+import { boxOf, morphIsland, setIsland, swapContent, type Box } from "@/lib/island"
 import "./chat-island.css"
 
 const WHATSAPP = "https://api.whatsapp.com/send/?phone=8801733670129"
-
-// BeUI's Dynamic Island physics: one long glide with a barely-there bounce for the shell,
-// a touch more life for the content. Same in both directions.
-const SHELL = springEasing(0.8, 0.2)
-const CONTENT = springEasing(0.8, 0.35)
 
 function WhatsAppMark() {
   return (
@@ -35,60 +30,61 @@ function Mark() {
 // Closes when the mouse leaves, on an outside tap, on Escape, or when focus leaves the island.
 export default function ChatWidget() {
   const [open, setOpen] = useState(false)
+  const dockRef = useRef<HTMLDivElement>(null)
   const shellRef = useRef<HTMLDivElement>(null)
+  const shadowRef = useRef<HTMLDivElement>(null)
   const compactRef = useRef<HTMLButtonElement>(null)
   const openRef = useRef<HTMLDivElement>(null)
   const firstAction = useRef<HTMLAnchorElement>(null)
-  const mounted = useRef(false)
+  const geo = useRef<{ W: number; H: number; compact: Box; open: Box } | null>(null)
 
-  // The shell owns explicit dimensions from the first paint, so the first open springs instead of snapping
+  // Size the stage once to the larger state; both states are then just clip-path boxes inside it
+  const measure = () => {
+    const c = compactRef.current!
+    const o = openRef.current!
+    const compact = boxOf(c)
+    const openBox = boxOf(o)
+    const W = Math.max(compact.w, openBox.w)
+    const H = Math.max(compact.h, openBox.h)
+    const dock = dockRef.current!
+    dock.style.width = `${W}px`
+    dock.style.height = `${H}px`
+    geo.current = { W, H, compact, open: openBox }
+  }
+
   useLayoutEffect(() => {
-    const shell = shellRef.current
-    const target = (open ? openRef : compactRef).current
-    if (!shell || !target) return
-    const to = { w: target.offsetWidth, h: target.offsetHeight }
+    measure()
+    const g = geo.current!
+    setIsland(shellRef.current!, shadowRef.current!, g.W, g.H, g.compact, "bottom-right")
+    // Satoshi may swap in after first paint and change widths
+    document.fonts?.ready.then(() => {
+      measure()
+      const g2 = geo.current!
+      setIsland(shellRef.current!, shadowRef.current!, g2.W, g2.H, open ? g2.open : g2.compact, "bottom-right")
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-    if (!mounted.current) {
-      mounted.current = true
-      shell.style.width = `${to.w}px`
-      shell.style.height = `${to.h}px`
+  const first = useRef(true)
+  useLayoutEffect(() => {
+    if (first.current) {
+      first.current = false
       return
     }
-
+    const g = geo.current
+    if (!g) return
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const from = { w: shell.offsetWidth, h: shell.offsetHeight } // wherever it is now, so it can be interrupted
-    shell.getAnimations().forEach((a) => a.cancel())
-    shell.style.width = `${to.w}px`
-    shell.style.height = `${to.h}px`
-    if (!reduce) {
-      shell.animate(
-        [
-          { width: `${from.w}px`, height: `${from.h}px` },
-          { width: `${to.w}px`, height: `${to.h}px` },
-        ],
-        { duration: SHELL.ms, easing: SHELL.easing },
-      )
-    }
-
-    const outgoing = (open ? compactRef : openRef).current
-    // Outgoing content is pulled back fast, before the moving shell can clip it
-    outgoing?.animate(
-      [
-        { opacity: 1, transform: "none" },
-        { opacity: 0, transform: "scale(0.9) translateY(6px)" },
-      ],
-      { duration: reduce ? 100 : 80, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
+    morphIsland(
+      shellRef.current!,
+      shadowRef.current!,
+      g.W,
+      g.H,
+      open ? g.compact : g.open,
+      open ? g.open : g.compact,
+      "bottom-right",
+      reduce,
     )
-    // Incoming content springs in from a soft blur, travelling with the shell
-    target.animate(
-      reduce
-        ? [{ opacity: 0 }, { opacity: 1 }]
-        : [
-            { opacity: 0, transform: "scale(0.9) translateY(8px)", filter: "blur(5px)" },
-            { opacity: 1, transform: "none", filter: "blur(0px)" },
-          ],
-      { duration: reduce ? 150 : CONTENT.ms, easing: reduce ? "ease" : CONTENT.easing },
-    )
+    swapContent((open ? openRef : compactRef).current!, (open ? compactRef : openRef).current, false, reduce)
   }, [open])
 
   useEffect(() => {
@@ -110,7 +106,8 @@ export default function ChatWidget() {
   const mouse = (e: React.PointerEvent) => e.pointerType === "mouse"
 
   return (
-    <div className={`ci-dock ${satoshi.variable}`} data-chat-widget>
+    <div ref={dockRef} className={`ci-dock ${satoshi.variable}`} data-chat-widget>
+      <div ref={shadowRef} className="ci-shadow" aria-hidden="true" />
       <div
         ref={shellRef}
         className="ci-shell"
