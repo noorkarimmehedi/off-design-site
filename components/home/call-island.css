@@ -1,0 +1,119 @@
+/* Phone-only "Book a call with arc?" island, dropped in from the top edge once per visit.
+   Same physics as the bottom chat island: the shell springs its real width/height, content springs in. */
+
+.cl-top {
+  position: fixed;
+  z-index: 45;
+  left: 50%;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  translate: -50% 0;
+  max-width: calc(100vw - 24px);
+  font-family: var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+}
+@media (min-width: 810px) {
+  .cl-top { display: none; }
+}
+
+.cl-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #0b0b0b;
+  color: #f4f4f4;
+  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 18px 40px -16px rgb(0 0 0 / 0.55);
+}
+
+.cl-slot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  translate: -50% 0;
+  width: max-content;
+  transform-origin: 50% 0;
+}
+.cl-slot:not([data-on]) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cl-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.cl-ask {
+  display: grid;
+  gap: 12px;
+  width: min(330px, calc(100vw - 24px));
+  padding: 14px;
+}
+.cl-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cl-head b {
+  display: block;
+  font-weight: 500;
+  text-wrap: balance;
+}
+.cl-head small {
+  display: block;
+  font-size: 12px;
+  opacity: 0.55;
+}
+.cl-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.cl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: scale 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.cl-btn:active { scale: 0.96; }
+.cl-btn:focus-visible { outline: 1px dashed rgb(255 255 255 / 0.7); outline-offset: 2px; }
+/* .cl-top prefix outranks the homepage's ".ah a { color: inherit }" */
+.cl-top .cl-no { background: rgb(255 255 255 / 0.1); color: #f4f4f4; }
+.cl-top .cl-yes { background: #f4f4f4; color: #0b0b0b; }
+
+.cl-av {
+  position: relative;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-items: center;
+}
+.cl-av img { width: 19px; height: auto; }
+.cl-av i {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #25d366;
+  box-shadow: 0 0 0 2px #0b0b0b;
+}

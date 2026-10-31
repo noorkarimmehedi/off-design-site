@@ -1,4 +1,5 @@
 import type { Viewport } from "next"
+import CallIsland from "@/components/home/call-island"
 import CursorDot from "@/components/home/cursor-dot"
 import FaqList from "@/components/home/faq-list"
 import HomeHeader from "@/components/home/home-header"
@@ -172,6 +173,7 @@ export default function Page() {
         <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
       </footer>
 
+      <CallIsland />
       <CursorDot />
       <ScrollReveal />
     </main>
