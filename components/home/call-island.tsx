@@ -7,7 +7,7 @@ import { satoshi } from "@/lib/fonts"
 import { boxOf, CONTENT, EASE_OUT, morphIsland, setIsland, swapContent } from "@/lib/island"
 import "./call-island.css"
 
-const SEEN_KEY = "arc-call-island" // once per visit
+const SEEN_KEY = "arc-call-island" // set when the visitor answers; lasts for this tab
 const TRIGGER = 0.3 // share of the page scrolled, roughly past Services
 
 type View = "hidden" | "pill" | "ask"
@@ -59,7 +59,6 @@ export default function CallIsland() {
       const max = document.documentElement.scrollHeight - window.innerHeight
       if (max <= 0 || window.scrollY / max < TRIGGER) return
       window.removeEventListener("scroll", onScroll)
-      markSeen()
       setView("pill")
       later(() => setView((v) => (v === "pill" ? "ask" : v)), 650)
     }
@@ -125,7 +124,9 @@ export default function CallIsland() {
     swapContent((view === "ask" ? askRef : pillRef).current!, (view === "ask" ? pillRef : askRef).current, true, reduce)
   }, [view])
 
+  // Counts as seen only once the visitor answers, so a reload before answering asks again
   const notNow = () => {
+    markSeen()
     setView("pill")
     later(() => setView("hidden"), 700)
   }
@@ -153,7 +154,10 @@ export default function CallIsland() {
             <button type="button" className="cl-btn cl-no" onClick={notNow}>
               Not now
             </button>
-            <Link className="cl-btn cl-yes" href="/call" onClick={() => setView("hidden")}>
+            <Link className="cl-btn cl-yes" href="/call" onClick={() => {
+                markSeen()
+                setView("hidden")
+              }}>
               Book a call
             </Link>
           </div>
