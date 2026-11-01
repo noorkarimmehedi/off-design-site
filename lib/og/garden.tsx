@@ -4,82 +4,105 @@ import { ImageResponse } from "next/og"
 import { shapedTextSvg } from "@/lib/og/shaped-text"
 
 // The garden link-preview card used across the site: painted linen sky and flower bed
-// (artwork by Ryan Brewer, used with permission), the arc logo pill — with the client's logo
-// beside it when we have one — and a title with a short mono line underneath.
-// Everything sits in the top half so iMessage's title label (bottom-left) never covers it.
+// (artwork by Ryan Brewer, used with permission), with the homepage's type on it — a grey arc
+// pill (the client's logo beside it when we have one), a two-tone Satoshi headline and a row of
+// frosted chips. Everything sits in the top half so iMessage's title label (bottom-left) never covers it.
 
 export const OG_SIZE = { width: 1200, height: 630 }
+
+/** One headline line. Ink lines are full white; the rest are softened, like the homepage's grey hero. */
+export type GardenLine = { text: string; ink?: boolean }
 
 const asset = (file: string) => readFile(join(process.cwd(), "assets/og", file))
 const isBangla = (s: string) => /[ঀ-৿]/.test(s)
 const data = (b: Buffer, type: string) => `data:${type};base64,${b.toString("base64")}`
 
-export async function gardenCard({ title, subtitle, logo }: { title: string; subtitle: string; logo?: string }) {
-  const [garden, arc, hind, geist, mono, brandLogo] = await Promise.all([
+const SIZE = 64
+const INK = "#ffffff"
+const SOFT = "rgba(255,255,255,0.66)"
+
+export async function gardenCard({ lines, chips = [], logo }: { lines: GardenLine[]; chips?: string[]; logo?: string }) {
+  const [garden, arc, hind, satoshi, brandLogo] = await Promise.all([
     asset("garden.jpg"),
     asset("logo-black.png"),
     asset("HindSiliguri-700.ttf"),
-    asset("Geist-400.ttf"),
-    asset("GeistMono-400.ttf"),
+    asset("Satoshi-400.ttf"),
     logo ? asset(logo) : Promise.resolve(null),
   ])
-  // Bangla is shaped by HarfBuzz and drawn as an image; Satori can't reorder vowel signs or join conjuncts
-  const shaped = isBangla(title) ? shapedTextSvg(title, hind, 67, "#ffffff") : null
 
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", position: "relative" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", position: "relative", fontFamily: "Satoshi" }}>
         <img src={data(garden, "image/jpeg")} width={1200} height={630} style={{ position: "absolute", left: 0, top: 0 }} />
 
-        {/* arc (× brand) */}
+        {/* arc (× brand), on the homepage's grey */}
         <div
           style={{
             position: "absolute",
-            left: 44,
-            top: 40,
+            left: 48,
+            top: 44,
             display: "flex",
             alignItems: "center",
             gap: 18,
-            padding: brandLogo ? "14px 26px 14px 16px" : "26px 34px",
-            borderRadius: 999,
-            background: "#ffffff",
-            boxShadow: "0 14px 30px -10px rgba(0,0,0,0.35)",
+            padding: brandLogo ? "12px 22px 12px 26px" : "22px 30px",
+            borderRadius: 22,
+            background: "#ededed",
           }}
         >
-          <img src={data(arc, "image/png")} width={140} height={50} style={{ objectFit: "contain" }} />
-          {brandLogo && <span style={{ fontFamily: "Geist Mono", fontSize: 30, color: "#8f887d" }}>×</span>}
-          {brandLogo && <img src={data(brandLogo, "image/png")} width={104} height={104} style={{ borderRadius: 999 }} />}
+          <img src={data(arc, "image/png")} width={112} height={40} style={{ objectFit: "contain" }} />
+          {brandLogo && <span style={{ fontSize: 28, color: "#7a7a7a" }}>×</span>}
+          {brandLogo && (
+            <div style={{ display: "flex", width: 76, height: 76, borderRadius: 999, overflow: "hidden", background: "#ffffff", alignItems: "center", justifyContent: "center" }}>
+              <img src={data(brandLogo, "image/png")} width={70} height={70} style={{ objectFit: "contain" }} />
+            </div>
+          )}
         </div>
 
-        {/* Title + mono line */}
-        <div style={{ position: "absolute", left: 48, top: 192, display: "flex", flexDirection: "column", gap: shaped ? 6 : 18 }}>
-          {shaped ? (
-            <img src={shaped.src} width={shaped.width} height={shaped.height} />
-          ) : (
-            <span style={{ fontFamily: "Geist", fontSize: 62, lineHeight: 1.05, letterSpacing: -2, color: "#ffffff", maxWidth: 1000 }}>
-              {title}
-            </span>
+        {/* Headline and chips, in one column so a long name pushes the chips down instead of under them */}
+        <div style={{ position: "absolute", left: 52, top: 146, width: 1080, display: "flex", flexDirection: "column" }}>
+          {lines.map((l, i) => {
+            const color = l.ink ? INK : SOFT
+            // Bangla is shaped by HarfBuzz and drawn as an image; Satori can't reorder vowel signs or join conjuncts
+            if (isBangla(l.text)) {
+              const shaped = shapedTextSvg(l.text, hind, 58, INK)
+              return <img key={i} src={shaped.src} width={shaped.width} height={shaped.height} style={{ marginTop: -2, marginBottom: -6, opacity: l.ink ? 1 : 0.66 }} />
+            }
+            return (
+              <span key={i} style={{ fontSize: SIZE, lineHeight: 1.125, letterSpacing: -2.9, color }}>
+                {l.text}
+              </span>
+            )
+          })}
+          {chips.length > 0 && (
+            <div style={{ display: "flex", gap: 12, marginTop: 18 }}>
+              {chips.map((c) => (
+                <span
+                  key={c}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    height: 42,
+                    padding: "0 16px",
+                    borderRadius: 12,
+                    background: "rgba(255,255,255,0.16)",
+                    color: "#ffffff",
+                    fontSize: 21,
+                    letterSpacing: -0.2,
+                  }}
+                >
+                  {c}
+                </span>
+              ))}
+            </div>
           )}
-          <span
-            style={{
-              fontFamily: "Geist Mono",
-              fontSize: 22,
-              letterSpacing: 4,
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.82)",
-            }}
-          >
-            {subtitle}
-          </span>
         </div>
       </div>
     ),
     {
       ...OG_SIZE,
       fonts: [
-        { name: "Geist", data: geist, weight: 400, style: "normal" },
-        { name: "Geist Mono", data: mono, weight: 400, style: "normal" },
-        // Also covers the ৳ sign and Bangla fallbacks
+        { name: "Satoshi", data: satoshi, weight: 400, style: "normal" },
+        // Also covers the ৳ sign, which Satoshi doesn't have, and Bangla fallbacks
         { name: "Hind Siliguri", data: hind, weight: 700, style: "normal" },
       ],
     },
