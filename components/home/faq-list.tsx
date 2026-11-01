@@ -3,7 +3,8 @@
 import { useState } from "react"
 import { faqs } from "@/lib/home"
 
-export default function FaqList() {
+// Homepage FAQ by default; /call passes its own questions with a different id prefix
+export default function FaqList({ items = faqs, id = "ah" }: { items?: { q: string; a: string }[]; id?: string }) {
   const [open, setOpen] = useState<Set<number>>(new Set())
   const toggle = (i: number) =>
     setOpen((prev) => {
@@ -14,15 +15,15 @@ export default function FaqList() {
 
   return (
     <div className="faq rv">
-      {faqs.map((f, i) => {
+      {items.map((f, i) => {
         const isOpen = open.has(i)
         return (
           <div className="qa" key={f.q} data-open={isOpen ? "" : undefined}>
-            <button id={`ah-q${i}`} aria-expanded={isOpen} aria-controls={`ah-a${i}`} onClick={() => toggle(i)}>
+            <button id={`${id}-q${i}`} aria-expanded={isOpen} aria-controls={`${id}-a${i}`} onClick={() => toggle(i)}>
               <span>{f.q}</span>
               <i className="plus" aria-hidden="true" />
             </button>
-            <div className="ans" id={`ah-a${i}`} role="region" aria-labelledby={`ah-q${i}`}>
+            <div className="ans" id={`${id}-a${i}`} role="region" aria-labelledby={`${id}-q${i}`}>
               <div>
                 <p>{f.a}</p>
               </div>

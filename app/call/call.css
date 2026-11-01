@@ -1,0 +1,151 @@
+/* /call in the homepage's language (inside .ah, so it shares tokens, header, menu, splits, FAQ and
+   footer from app/home.css): the soft hero line, a label/content intro, the live Cal.com booker in a
+   white panel from the centre line, then what happens next and a short FAQ. */
+
+.cp .cp-hero {
+  padding-top: 220px;
+}
+.cp .cp-hero h1 {
+  margin: 0;
+  font: 400 60px/72px var(--font);
+  letter-spacing: -0.04em;
+  color: var(--soft);
+}
+.cp .cp-hero h1 .line {
+  display: block;
+  overflow: hidden;
+}
+.cp .cp-hero h1 .line > span {
+  display: block;
+  animation: ah-rise 1100ms var(--ease-out) both;
+}
+.cp .cp-hero h1 .line:nth-child(2) > span {
+  animation-delay: 140ms;
+}
+.cp .cp-hero h1 .ink {
+  color: var(--fg);
+}
+.cp .hero-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 56px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.cp .hero-foot p {
+  margin: 0 0 20px;
+  max-width: 580px;
+}
+.cp .hero-foot .m {
+  color: var(--muted);
+}
+.cp .facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cp .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--tile);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.cp .chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3ddc84;
+  box-shadow: 0 0 0 3px rgb(61 220 132 / 0.18);
+}
+
+/* the booker: Cal.com's inline embed in a white panel; Cal shows its own loader */
+.cp .booker {
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+}
+.cp .booker .cal {
+  min-height: 640px;
+}
+
+/* what happens next */
+.cp .steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.cp .steps li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.cp .steps .n {
+  color: var(--muted);
+}
+.cp .steps p {
+  margin: 4px 0 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 21px;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+.cp .faq {
+  border-top: 1px solid var(--rule);
+}
+.cp .faq .qa:first-child > button {
+  padding-top: 20px;
+}
+
+@media (max-width: 809px) {
+  .cp .cp-hero {
+    padding-top: 168px;
+  }
+  .cp .cp-hero h1 {
+    font-size: min(34px, calc((100vw - 30px) / 10.5));
+    line-height: 1.18;
+  }
+  .cp .hero-foot {
+    grid-template-columns: 1fr;
+    row-gap: 16px;
+    margin-top: 32px;
+  }
+  .cp .chip {
+    height: 30px;
+    padding: 0 11px;
+    border-radius: 9px;
+    font-size: 13px;
+  }
+  .cp .booker {
+    margin-inline: calc(-1 * max(15px, env(safe-area-inset-left, 0px)));
+    border-radius: 14px;
+  }
+  .cp .booker .cal {
+    min-height: 760px;
+  }
+  .cp .steps li {
+    grid-template-columns: 36px 1fr;
+    padding: 16px 0;
+  }
+  .cp .steps p {
+    font-size: 14px;
+    line-height: 19px;
+  }
+  .cp .faq .qa:first-child > button {
+    padding-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp .cp-hero h1 .line > span {
+    animation: none;
+  }
+}

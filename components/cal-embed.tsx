@@ -46,11 +46,22 @@ function loadCal() {
   return window.Cal!
 }
 
-// Inline Cal.com booker that follows the site's Dark / Light theme
-export default function CalEmbed({ calLink, className }: { calLink: string; className?: string }) {
+// Inline Cal.com booker. It follows the site's Dark / Light theme unless a page fixes one
+// (the homepage-style pages are always light), and can take the page's ink as its brand colour.
+export default function CalEmbed({
+  calLink,
+  className,
+  theme: fixedTheme,
+  brand,
+}: {
+  calLink: string
+  className?: string
+  theme?: "light" | "dark"
+  brand?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const { resolvedTheme } = useTheme()
-  const theme = resolvedTheme === "light" ? "light" : "dark"
+  const theme = fixedTheme ?? (resolvedTheme === "light" ? "light" : "dark")
 
   useEffect(() => {
     const el = ref.current
@@ -70,8 +81,8 @@ export default function CalEmbed({ calLink, className }: { calLink: string; clas
       layout: "month_view",
       hideEventTypeDetails: false,
       cssVarsPerTheme: {
-        light: { "cal-brand": "#16140f" },
-        dark: { "cal-brand": "#ede8df" },
+        light: { "cal-brand": brand ?? "#16140f" },
+        dark: { "cal-brand": brand ?? "#ede8df" },
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -10,7 +10,7 @@ export function Roll({ children }: { children: string }) {
   )
 }
 
-export function RollLink({ href, children, onClick }: { href: string; children: string; onClick?: () => void }) {
+export function RollLink({ href, children, onClick, current }: { href: string; children: string; onClick?: () => void; current?: boolean }) {
   if (href.startsWith("http")) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" onClick={onClick}>
@@ -19,7 +19,7 @@ export function RollLink({ href, children, onClick }: { href: string; children: 
     )
   }
   return (
-    <Link href={href} onClick={onClick}>
+    <Link href={href} onClick={onClick} aria-current={current ? "page" : undefined}>
       <Roll>{children}</Roll>
     </Link>
   )

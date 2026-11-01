@@ -61,6 +61,20 @@ export const faqs: { q: string; a: string }[] = [
   { q: "How do revisions and feedback work?", a: "You see working software at every stage. Feedback goes into one shared list, and each stage includes rounds of changes before we move on." },
 ]
 
+// /call: what happens after someone books, and the questions people ask first
+export const callSteps: { title: string; body: string }[] = [
+  { title: "We call", body: "Fifteen minutes. Bring how the work runs today, nothing to prepare." },
+  { title: "We map the work", body: "Where time and money leak, and which steps a system could take over." },
+  { title: "You get a scope", body: "A written scope and a fixed quote before any build starts. No hourly billing." },
+]
+
+export const callFaqs: { q: string; a: string }[] = [
+  { q: "Who should join the call?", a: "Whoever runs the work day to day, and whoever signs off on budget. Often that’s one person." },
+  { q: "Do I need to prepare anything?", a: "No. A rough idea of what takes your team the most time is plenty. Screenshots of your current spreadsheets or tools help, but aren’t needed." },
+  { q: "Is the call in Bangla or English?", a: "Either. Pick whichever you’re comfortable in and we’ll follow." },
+  { q: "Can I reschedule?", a: "Yes. The confirmation email has a link to move or cancel the call." },
+]
+
 export const fanImages = Array.from({ length: 8 }, (_, i) => `/home/fan/fan-${i + 1}.webp`)
 
 export const navLinks = [

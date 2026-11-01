@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { navLinks, WHATSAPP } from "@/lib/home"
 import { Roll, RollLink } from "./roll"
@@ -8,6 +9,7 @@ import { Roll, RollLink } from "./roll"
 // Brand left, links from the centre line; on phones a "Menu" button drops a sheet from the top.
 export default function HomeHeader() {
   const [open, setOpen] = useState(false)
+  const path = usePathname()
 
   useEffect(() => {
     if (!open) return
@@ -26,7 +28,7 @@ export default function HomeHeader() {
         </Link>
         <nav className="nav" aria-label="Primary">
           {navLinks.map((l) => (
-            <RollLink key={l.label} href={l.href}>
+            <RollLink key={l.label} href={l.href} current={l.href === path}>
               {l.label}
             </RollLink>
           ))}

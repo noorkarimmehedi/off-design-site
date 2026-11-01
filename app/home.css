@@ -127,6 +127,9 @@ html:has(.ah) [data-edge-blur] {
   display: flex;
   gap: 25px;
 }
+.ah .nav a[aria-current="page"] {
+  color: var(--muted);
+}
 .ah .menu-btn {
   display: none;
   justify-self: end;
