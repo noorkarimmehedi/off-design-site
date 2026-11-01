@@ -52,6 +52,8 @@ export default function OrderBuilder({
   const [signed, setSigned] = useState(false)
   // Accept flow: 1 details → 2 review & sign → 3 pay the advance. Done steps fold to one line.
   const [step, setStep] = useState<1 | 2 | 3>(1)
+  // Which step is unfolded. Its header toggles it; null when the visitor has folded the current step away.
+  const [openStep, setOpenStep] = useState<1 | 2 | 3 | null>(1)
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle")
   const [error, setError] = useState("")
   const [result, setResult] = useState<Result | null>(null)
@@ -97,6 +99,7 @@ export default function OrderBuilder({
   // Opening a step scrolls it into view once the fold has opened, but only if its header is off screen
   const goTo = (n: 1 | 2 | 3) => {
     setStep(n)
+    setOpenStep(n)
     window.setTimeout(() => {
       const el = stepRefs.current[n - 1]
       if (!el) return
@@ -110,7 +113,16 @@ export default function OrderBuilder({
     setSignaturePng(png)
     goTo(3)
   }
-  const scrollToFlow = () => (stepRefs.current[step - 1] ?? signRef.current)?.scrollIntoView({ behavior: smooth(), block: "start" })
+  const scrollToFlow = () => {
+    setOpenStep(step)
+    ;(stepRefs.current[step - 1] ?? signRef.current)?.scrollIntoView({ behavior: smooth(), block: "start" })
+  }
+  // Header tap: fold or unfold the current step; reopening a finished step goes back to it, as Edit did
+  const toggleStep = (n: 1 | 2 | 3) => {
+    if (n > step) return
+    if (n === step) setOpenStep((o) => (o === n ? null : n))
+    else goTo(n)
+  }
   const openTerms = () => {
     setTermsOpen(true)
     termsRef.current?.scrollIntoView({ behavior: smooth(), block: "start" })
@@ -361,9 +373,10 @@ export default function OrderBuilder({
                 <Step
                   n={1}
                   step={step}
+                  open={openStep}
+                  onToggle={toggleStep}
                   title="Your details"
                   summary={`${signer.trim()} · ${phone.trim()}`}
-                  onEdit={() => goTo(1)}
                   stepRef={(el) => {
                     stepRefs.current[0] = el
                   }}
@@ -388,9 +401,10 @@ export default function OrderBuilder({
                 <Step
                   n={2}
                   step={step}
+                  open={openStep}
+                  onToggle={toggleStep}
                   title="Review & sign"
                   summary={`Signed by ${signer.trim()}`}
-                  onEdit={() => goTo(2)}
                   stepRef={(el) => {
                     stepRefs.current[1] = el
                   }}
@@ -416,7 +430,7 @@ export default function OrderBuilder({
                   <button type="button" className="link" onClick={openTerms}>
                     Read all {catalog.terms.length} terms
                   </button>
-                  <SignatureField ref={padRef} name={signer} onChange={setSigned} active={step === 2} />
+                  <SignatureField ref={padRef} name={signer} onChange={setSigned} active={openStep === 2} />
                   <button type="button" onClick={sign} disabled={!signed} className="btn">
                     Sign & continue
                   </button>
@@ -426,6 +440,8 @@ export default function OrderBuilder({
                 <Step
                   n={3}
                   step={step}
+                  open={openStep}
+                  onToggle={toggleStep}
                   title={
                     <>
                       Pay the <TakaFlow value={order.advance} /> advance
@@ -561,29 +577,41 @@ function ScopeGroups({ groups }: { groups: FeaturePointGroup[] }) {
   )
 }
 
-// One step of the accept flow: open shows its body, done folds to a single summary line
+// One step of the accept flow. Its header folds and unfolds it like the FAQ; finished steps fold to a
+// summary line, and steps not reached yet stay shut.
 function Step({
   n,
   step,
+  open: openStep,
+  onToggle,
   title,
   summary,
-  onEdit,
   stepRef,
   children,
 }: {
   n: 1 | 2 | 3
   step: 1 | 2 | 3
+  open: 1 | 2 | 3 | null
+  onToggle: (n: 1 | 2 | 3) => void
   title: ReactNode
   summary?: string
-  onEdit?: () => void
   stepRef: (el: HTMLDivElement | null) => void
   children: ReactNode
 }) {
-  const open = step === n
+  const open = openStep === n
   const done = step > n
+  const reachable = n <= step
+  const bodyId = useId()
   return (
     <div ref={stepRef} className="stp" data-open={open || undefined} data-done={done || undefined}>
-      <div className="stp-h">
+      <button
+        type="button"
+        className="stp-h"
+        onClick={() => onToggle(n)}
+        disabled={!reachable}
+        aria-expanded={open}
+        aria-controls={bodyId}
+      >
         <span className="n" aria-hidden="true">
           {done ? "✓ " : ""}
           {pad(n - 1)}
@@ -592,14 +620,10 @@ function Step({
           <span className="sr-only">Step {n}: </span>
           {title}
         </h3>
-        {done && onEdit && (
-          <button type="button" className="edit" onClick={onEdit}>
-            Edit
-          </button>
-        )}
-        {done && summary && <p className={`sum ${isBangla(summary) ? "bn" : ""}`}>{summary}</p>}
-      </div>
-      <div className="stp-b" inert={!open}>
+        {reachable && <span className="plus" aria-hidden="true" />}
+        {done && summary && <span className={`sum ${isBangla(summary) ? "bn" : ""}`}>{summary}</span>}
+      </button>
+      <div className="stp-b" id={bodyId} inert={!open}>
         <div>
           <div className="stp-in">{children}</div>
         </div>

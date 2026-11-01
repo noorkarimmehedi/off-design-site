@@ -577,10 +577,16 @@
   scroll-margin-top: 24px;
 }
 .wo .stp-h {
+  width: 100%;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr) 15px;
   align-items: baseline;
   padding: 20px 0;
+  text-align: left;
+  cursor: pointer;
+}
+.wo .stp-h:disabled {
+  cursor: default;
 }
 .wo .stp-h .n {
   font-size: 15px;
@@ -589,29 +595,33 @@
 .wo .stp-h h3 {
   margin: 0;
   font: inherit;
-  transition: color 300ms ease;
 }
-.wo .stp:not([data-open]):not([data-done]) .stp-h h3 {
+.wo .stp-h:disabled h3 {
   color: var(--muted);
 }
-.wo .stp-h .edit {
-  grid-column: 3;
-  grid-row: 1;
-  font-size: 15px;
-  color: var(--muted);
-  text-decoration: underline;
-  text-decoration-color: var(--rule);
-  text-underline-offset: 4px;
-  transition: color 160ms ease;
+.wo .stp-h h3,
+.wo .stp-h .plus {
+  transition: color 300ms ease, opacity 200ms ease;
+}
+.wo .stp-h .plus {
+  position: relative;
+  align-self: center;
+  width: 15px;
+  height: 15px;
+}
+.wo .stp[data-open] .stp-h .plus::after {
+  transform: rotate(0deg);
 }
 @media (hover: hover) and (pointer: fine) {
-  .wo .stp-h .edit:hover {
-    color: var(--fg);
+  .wo .stp-h:not(:disabled):hover h3,
+  .wo .stp-h:not(:disabled):hover .plus {
+    opacity: 0.65;
   }
 }
+/* the summary only shows while a finished step is folded */
 .wo .stp-h .sum {
   grid-column: 2 / -1;
-  margin: 2px 0 0;
+  margin-top: 2px;
   overflow: hidden;
   font-size: 15px;
   color: var(--muted);
@@ -619,16 +629,21 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+.wo .stp[data-open] .stp-h .sum {
+  display: none;
+}
+/* Folding shut is quicker and plainer than opening: the content fades first while the height closes */
 .wo .stp-b {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 500ms var(--ease-out);
+  transition: grid-template-rows 360ms var(--ease-in-out);
 }
 .wo .stp-b > div {
   overflow: hidden;
 }
 .wo .stp[data-open] .stp-b {
   grid-template-rows: 1fr;
+  transition: grid-template-rows 520ms var(--ease-out);
 }
 .wo .stp-in {
   display: grid;
@@ -636,12 +651,12 @@
   padding: 0 0 28px 48px;
   opacity: 0;
   transform: translateY(-6px);
-  transition: opacity 300ms ease, transform 400ms var(--ease-out);
+  transition: opacity 160ms ease, transform 200ms ease;
 }
 .wo .stp[data-open] .stp-in {
   opacity: 1;
   transform: none;
-  transition-delay: 80ms;
+  transition: opacity 320ms ease 90ms, transform 450ms var(--ease-out) 90ms;
 }
 .wo .field {
   display: grid;
@@ -1157,7 +1172,7 @@
     grid-template-columns: 1fr;
   }
   .wo .stp-h {
-    grid-template-columns: 36px minmax(0, 1fr) auto;
+    grid-template-columns: 36px minmax(0, 1fr) 15px;
   }
   .wo .stp-in {
     padding-left: 0;
