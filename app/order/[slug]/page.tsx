@@ -1,9 +1,17 @@
-import type { Metadata } from "next"
-import SiteHeader from "@/components/site-header"
-import TransitionLink from "@/components/transition-link"
+import type { Metadata, Viewport } from "next"
+import HomeHeader from "@/components/home/home-header"
+import { RollLink } from "@/components/home/roll"
+import ScrollReveal from "@/components/home/scroll-reveal"
 import OrderBuilder from "@/components/work-order/order-builder"
+import { satoshi } from "@/lib/fonts"
+import { WHATSAPP } from "@/lib/home"
 import { getCatalog } from "@/lib/work-order/catalog"
 import { resolveClient } from "@/lib/work-order/clients"
+import "../../home.css"
+import "../order.css"
+
+// Paints the phone's status bar / browser bar in the page grey, as on the homepage
+export const viewport: Viewport = { themeColor: "#ededed" }
 
 // The brand name in the link shows in the tab title and in WhatsApp / social link previews
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -24,29 +32,34 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+// The work order in the homepage's shell: same header and menu, same footer, same grey ground.
 export default async function ClientOrderPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const client = resolveClient(slug)
   const catalog = getCatalog(client.catalog)
   return (
-    <main className="frame relative min-h-svh overflow-x-clip bg-ink text-ivory">
-      <OrderBuilder
-        slug={slug}
-        clientName={client.name}
-        preset={client.selection}
-        catalog={catalog}
-        nameLocked={client.locked}
-        header={
-          <SiteHeader
-            left={
-              <TransitionLink href="/" className="group inline-flex items-center gap-2 transition-colors hover:text-ivory">
-                <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
-                Home
-              </TransitionLink>
-            }
-          />
-        }
-      />
+    <main className={`ah wo ${satoshi.variable}`}>
+      <div className="print:hidden">
+        <HomeHeader />
+      </div>
+      <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} />
+      <footer className="foot print:hidden">
+        <nav aria-label="Footer">
+          <RollLink href="/">Home</RollLink>
+          <RollLink href="/work">Work</RollLink>
+          <RollLink href="/#about">About</RollLink>
+          <RollLink href="/call">Call</RollLink>
+          <RollLink href="/#contact">Contact</RollLink>
+        </nav>
+        <div className="col">
+          <RollLink href="/call">Book a call ↗</RollLink>
+        </div>
+        <div className="col">
+          <RollLink href={WHATSAPP}>Chat on WhatsApp ↗</RollLink>
+        </div>
+        <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
+      </footer>
+      <ScrollReveal />
     </main>
   )
 }

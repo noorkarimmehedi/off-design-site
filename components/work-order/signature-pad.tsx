@@ -87,7 +87,7 @@ const SignaturePad = forwardRef<SignaturePadHandle, { onChange?: (signed: boolea
         <canvas
           ref={canvasRef}
           aria-label="Signature pad — draw your signature"
-          className="block h-full w-full cursor-crosshair touch-none text-ivory"
+          className="block h-full w-full cursor-crosshair touch-none text-[#222]"
           onPointerDown={(e) => {
             e.currentTarget.setPointerCapture(e.pointerId)
             drawing.current = true
@@ -107,7 +107,7 @@ const SignaturePad = forwardRef<SignaturePadHandle, { onChange?: (signed: boolea
           onPointerCancel={() => (drawing.current = false)}
         />
         {empty && (
-          <span className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[11px] uppercase tracking-[0.2em] text-stone/70">
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-[14px] tracking-normal text-[#7a7a7a]">
             Sign here
           </span>
         )}

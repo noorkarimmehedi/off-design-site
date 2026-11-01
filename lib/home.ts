@@ -65,9 +65,9 @@ export const fanImages = Array.from({ length: 8 }, (_, i) => `/home/fan/fan-${i 
 
 export const navLinks = [
   { label: "Work", href: "/work" },
-  { label: "About", href: "#about" },
+  { label: "About", href: "/#about" },
   { label: "Call", href: "/call" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/#contact" },
 ]
 
 export const WHATSAPP = "https://api.whatsapp.com/send/?phone=8801733670129"

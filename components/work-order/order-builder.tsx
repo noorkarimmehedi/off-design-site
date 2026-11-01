@@ -2,7 +2,6 @@
 
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react"
 import { createPortal } from "react-dom"
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import {
   BANK,
   defaultSelection,
@@ -11,35 +10,30 @@ import {
   taka,
   type Catalog,
   type Feature,
-  type FeatureGroup,
   type FeaturePointGroup,
-  type Line,
   type Selection,
 } from "@/lib/work-order/catalog"
-import AsciiHands from "@/components/ascii-hands"
-import RevealOnView from "@/components/reveal-on-view"
-import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
 import { TakaFlow } from "@/components/ui/number-flow"
 import SignatureField, { type SignatureFieldHandle } from "./signature-field"
 
-const CORAL = "text-[#ff5941]"
 const WHATSAPP = "+880 1733-670129"
+const WA_LINK = "https://api.whatsapp.com/send/?phone=8801733670129"
 const isBangla = (s: string) => /[ঀ-৿]/.test(s)
 const pad = (i: number) => String(i + 1).padStart(2, "0")
-
-const BTN =
-  "w-full py-4 font-mono text-[12px] uppercase tracking-[0.2em] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-35"
-const LINK = "self-start text-left text-[13px] text-stone underline decoration-stone/40 underline-offset-4 transition-colors hover:text-ivory"
+const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+const smooth = (): ScrollBehavior => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth")
 
 type Result = { number: string; total: number; advance: number; signedAt: string }
 
+// The work order as one document, in the homepage's style (see app/order/order.css): pick items with
+// pen ticks, check the totals, unfold the terms, then sign and pay the advance in three steps.
+// Prices always come from the catalogue; the API re-prices the selection on submit.
 export default function OrderBuilder({
   slug,
   clientName,
   preset,
   catalog,
   nameLocked = false,
-  header,
 }: {
   slug: string
   clientName?: string
@@ -48,8 +42,6 @@ export default function OrderBuilder({
   catalog: Catalog
   /** Name came from a saved client entry, so the client can't edit it */
   nameLocked?: boolean
-  /** Site header, rendered inside the hero so the ASCII hands sit relative to it */
-  header: ReactNode
 }) {
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(catalog, preset))
   const [business, setBusiness] = useState(clientName ?? "")
@@ -68,48 +60,49 @@ export default function OrderBuilder({
   const [showRef, setShowRef] = useState(false)
   const [slip, setSlip] = useState<{ url: string; name: string } | null>(null)
   const [slipError, setSlipError] = useState("")
+  const [termsOpen, setTermsOpen] = useState(false)
+  // Ticks already in place on first paint shouldn't draw themselves in
+  const [still, setStill] = useState(true)
+  const [dock, setDock] = useState(false)
   const padRef = useRef<SignatureFieldHandle>(null)
+  const heroRef = useRef<HTMLElement>(null)
   const signRef = useRef<HTMLElement>(null)
+  const termsRef = useRef<HTMLDivElement>(null)
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
-  const scrollOnOpen = useRef(false)
-  const asideRef = useRef<HTMLElement>(null)
-
-  // Desktop: the sticky work order sits in the vertical middle of the screen, never above 32px
-  useEffect(() => {
-    const aside = asideRef.current
-    if (!aside) return
-    const place = () => {
-      aside.style.setProperty("--sticky-top", `${Math.max(32, (window.innerHeight - aside.offsetHeight) / 2)}px`)
-    }
-    place()
-    const ro = new ResizeObserver(place)
-    ro.observe(aside)
-    window.addEventListener("resize", place)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener("resize", place)
-    }
-  }, [])
 
   const order = useMemo(() => priceSelection(selection, catalog), [selection, catalog])
   const locked = Boolean(result)
+  const quote = catalog.mode === "quote"
   const paid = Boolean(reference.trim() || slip)
   const detailsDone = Boolean(business.trim() && signer.trim() && phone.trim())
   const ready = detailsDone && signaturePng && paid
 
-  // Opening a step scrolls its header into view once it has expanded — on phones the next step starts below the fold
+  useEffect(() => {
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setStill(false)))
+    return () => cancelAnimationFrame(id)
+  }, [])
+
+  // The dock shows once the hero has scrolled away, and steps aside while the sign section is on screen
+  useEffect(() => {
+    let pastHero = false
+    let signing = false
+    const update = () => setDock(pastHero && !signing)
+    const a = new IntersectionObserver(([e]) => ((pastHero = !e.isIntersecting), update()))
+    const b = new IntersectionObserver(([e]) => ((signing = e.isIntersecting), update()), { rootMargin: "0px 0px -35% 0px" })
+    if (heroRef.current) a.observe(heroRef.current)
+    if (signRef.current) b.observe(signRef.current)
+    return () => (a.disconnect(), b.disconnect())
+  }, [])
+
+  // Opening a step scrolls it into view once the fold has opened, but only if its header is off screen
   const goTo = (n: 1 | 2 | 3) => {
-    scrollOnOpen.current = true
     setStep(n)
-  }
-  const onStepOpened = (n: number) => {
-    if (!scrollOnOpen.current) return
-    scrollOnOpen.current = false
-    const el = stepRefs.current[n - 1]
-    // Only scroll when the step's header has gone off screen
-    if (el && (el.getBoundingClientRect().top < 0 || el.getBoundingClientRect().top > window.innerHeight * 0.6)) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
+    window.setTimeout(() => {
+      const el = stepRefs.current[n - 1]
+      if (!el) return
+      const top = el.getBoundingClientRect().top
+      if (top < 0 || top > window.innerHeight * 0.6) el.scrollIntoView({ behavior: smooth(), block: "start" })
+    }, 540)
   }
   const sign = async () => {
     const png = await padRef.current?.toPng()
@@ -117,7 +110,11 @@ export default function OrderBuilder({
     setSignaturePng(png)
     goTo(3)
   }
-  const scrollToFlow = () => (stepRefs.current[step - 1] ?? signRef.current)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  const scrollToFlow = () => (stepRefs.current[step - 1] ?? signRef.current)?.scrollIntoView({ behavior: smooth(), block: "start" })
+  const openTerms = () => {
+    setTermsOpen(true)
+    termsRef.current?.scrollIntoView({ behavior: smooth(), block: "start" })
+  }
 
   const toggle = (f: Feature) => {
     if (f.required || locked) return
@@ -155,167 +152,22 @@ export default function OrderBuilder({
       if (!res.ok) throw new Error(json.error ?? "Something went wrong.")
       setResult(json)
       setStatus("idle")
-      requestAnimationFrame(() => signRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }))
+      requestAnimationFrame(() => signRef.current?.scrollIntoView({ behavior: smooth(), block: "start" }))
     } catch (e) {
       setStatus("error")
       setError(e instanceof Error ? e.message : "Something went wrong.")
     }
   }
 
-  const name = business.trim() || "your business"
+  const who = business.trim()
+  const today = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+  // Folded terms show their own titles, so the line is true for every catalogue
+  const termsSummary = catalog.terms.map(([k]) => k).join(" · ")
 
   return (
     <>
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" precedence="default" />
       <style>{`
-        .bn { font-family: 'Hind Siliguri', var(--font-sans); }
-        .feature-disclosure { --feature-ease: cubic-bezier(0.23, 1, 0.32, 1); }
-        .feature-disclosure-panel {
-          overflow: hidden;
-          transition: height 250ms var(--feature-ease), opacity 200ms var(--feature-ease);
-        }
-        .feature-scope-group {
-          opacity: 0;
-          transform: translateY(8px);
-          transition: opacity 160ms var(--feature-ease), transform 200ms var(--feature-ease);
-        }
-        .feature-disclosure[data-open="true"] .feature-scope-group { opacity: 1; transform: translateY(0); }
-        .feature-disclosure[data-open="true"] .feature-scope-group:nth-child(2) { transition-delay: 40ms; }
-        .feature-disclosure[data-open="true"] .feature-scope-group:nth-child(n+3) { transition-delay: 80ms; }
-        .feature-toggle-stem { transform-origin: center; transition: transform 200ms var(--feature-ease); }
-        .feature-disclosure[data-open="true"] .feature-toggle-stem { transform: scaleY(0); }
-        @media (prefers-reduced-motion: reduce) {
-          .feature-disclosure-panel { transition: opacity 120ms ease; }
-          .feature-scope-group { transform: none; transition: opacity 120ms ease; }
-          .feature-disclosure[data-open="true"] .feature-scope-group { transform: none; transition-delay: 0ms; }
-          .feature-toggle-stem { transition: none; }
-        }
-        /* Phones: the glass dock replaces the site's bottom fade and carries the Chat button */
-        @media (max-width: 1023px) { [data-edge-blur="bottom"], [data-chat-widget] { display: none !important; } }
-        /* Liquid glass: frosted + saturated backdrop, a light rim brighter at the top-left, inner sheen, soft drop shadow */
-        .liquid-glass {
-          position: relative;
-          isolation: isolate;
-          background: color-mix(in srgb, var(--color-ivory) 6%, rgb(0 0 0 / 0.42));
-          -webkit-backdrop-filter: blur(3px) saturate(220%) brightness(1.15);
-          backdrop-filter: blur(3px) saturate(220%) brightness(1.15);
-          box-shadow:
-            inset 0 1px 0.5px rgb(255 255 255 / 0.28),
-            inset 0 -1px 1px rgb(255 255 255 / 0.06),
-            0 1px 2px rgb(0 0 0 / 0.25),
-            0 18px 44px -14px rgb(0 0 0 / 0.65);
-        }
-        .liquid-glass::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          border-radius: inherit;
-          padding: 1px;
-          background: linear-gradient(135deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.08) 35%, rgb(255 255 255 / 0.04) 65%, rgb(255 255 255 / 0.3));
-          -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          pointer-events: none;
-        }
-        .liquid-glass::after {
-          content: "";
-          position: absolute;
-          inset: 1px 1px 50% 1px;
-          border-radius: inherit;
-          border-bottom-left-radius: 40% 30%;
-          border-bottom-right-radius: 40% 30%;
-          background: linear-gradient(to bottom, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0));
-          pointer-events: none;
-          z-index: -1;
-        }
-        /* Light: "clear" liquid glass — barely tinted, so the page stays visible through it. Thickness comes
-           from inner light on every edge; a soft white glow behind the text keeps it readable over busy content */
-        html.light .liquid-glass {
-          background: rgb(255 255 255 / 0.16);
-          -webkit-backdrop-filter: blur(2px) saturate(190%) brightness(1.08) contrast(0.92);
-          backdrop-filter: blur(2px) saturate(190%) brightness(1.08) contrast(0.92);
-          text-shadow: 0 0 10px #fff, 0 0 2px rgb(255 255 255 / 0.9);
-          box-shadow:
-            inset 0 0 0 0.5px rgb(255 255 255 / 0.6),
-            inset 2px 3px 6px -2px rgb(255 255 255 / 0.95),
-            inset -2px -3px 8px -3px rgb(255 255 255 / 0.7),
-            inset 0 -10px 18px -12px rgb(0 0 0 / 0.12),
-            0 1px 1px rgb(0 0 0 / 0.06),
-            0 14px 34px -14px rgb(0 0 0 / 0.3);
-        }
-        html.light .liquid-glass::before {
-          background: linear-gradient(135deg, #fff 0%, rgb(255 255 255 / 0.35) 22%, rgb(0 0 0 / 0.07) 50%, rgb(255 255 255 / 0.3) 78%, #fff 100%);
-        }
-        html.light .liquid-glass::after {
-          inset: 1px 1px 52% 1px;
-          border-bottom-left-radius: 50% 26%;
-          border-bottom-right-radius: 50% 26%;
-          background: linear-gradient(to bottom, rgb(255 255 255 / 0.45), rgb(255 255 255 / 0));
-        }
-        /* Segmented actions: Chat and Sign share one glass capsule; Sign is the filled half */
-        .dock-seg {
-          --feature-ease: cubic-bezier(0.23, 1, 0.32, 1);
-          display: flex;
-          align-items: center;
-          height: 46px;
-          padding: 3px;
-          border-radius: 23px;
-          background: rgb(255 255 255 / 0.07);
-          box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.16), inset 0 1px 0.5px rgb(255 255 255 / 0.22), inset 0 -6px 10px -8px rgb(0 0 0 / 0.4);
-        }
-        .dock-seg-btn {
-          position: relative;
-          height: 40px;
-          border-radius: 20px;
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          -webkit-tap-highlight-color: transparent;
-          transition: transform 160ms var(--feature-ease), box-shadow 160ms var(--feature-ease), background-color 160ms ease;
-        }
-        .dock-seg-btn:active { transform: scale(0.96); }
-        .dock-seg-chat:active { background-color: rgb(255 255 255 / 0.08); }
-        .dock-seg-sign {
-          color: #141210;
-          background: linear-gradient(to bottom, rgb(255 255 255 / 0.96), rgb(237 232 223 / 0.88));
-          box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), inset 0 -1px 1px rgb(0 0 0 / 0.08), 0 4px 10px -4px rgb(0 0 0 / 0.5);
-        }
-        .dock-seg-sign:active { box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.18), 0 1px 2px rgb(0 0 0 / 0.3); }
-        /* Curved shine on the top half; dims and settles a pixel when pressed */
-        .dock-shine {
-          position: absolute;
-          inset: 1px 1px 52% 1px;
-          border-radius: inherit;
-          border-bottom-left-radius: 50% 30%;
-          border-bottom-right-radius: 50% 30%;
-          background: linear-gradient(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0));
-          pointer-events: none;
-          transition: opacity 160ms ease, transform 160ms var(--feature-ease);
-        }
-        .dock-seg-sign:active .dock-shine { opacity: 0.45; transform: translateY(1px); }
-        html.light .dock-seg {
-          background: rgb(255 255 255 / 0.28);
-          box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 0.8), inset 0 1px 1px #fff, inset 0 -1px 2px rgb(0 0 0 / 0.06), 0 2px 6px -2px rgb(0 0 0 / 0.15);
-        }
-        html.light .dock-seg-chat:active { background-color: rgb(0 0 0 / 0.05); }
-        /* Sign: pure black, so it anchors the clear dock */
-        html.light .dock-seg-sign {
-          color: #fff;
-          text-shadow: none;
-          background: #000;
-          box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 6px 14px -6px rgb(0 0 0 / 0.45);
-        }
-        html.light .dock-seg-sign:active { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 2px 8px rgb(0 0 0 / 0.5), 0 1px 2px rgb(0 0 0 / 0.3); }
-        html.light .dock-seg-sign .dock-shine { display: none; }
-        /* Sign ↔ Pay: both labels share one grid cell and crossfade with a little blur */
-        .dock-label { display: inline-grid; }
-        .dock-label > span { grid-area: 1 / 1; transition: opacity 180ms ease, filter 180ms ease, transform 220ms var(--feature-ease); }
-        .dock-label > span[data-on="false"] { opacity: 0; filter: blur(3px); transform: translateY(5px); }
-        .dock-label > span[data-on="false"]:first-child { transform: translateY(-5px); }
-        @media (prefers-reduced-motion: reduce) {
-          .dock-seg-btn, .dock-seg-btn:active { transform: none; }
-          .dock-label > span, .dock-label > span[data-on="false"] { transform: none; filter: none; transition: opacity 150ms ease; }
-        }
         @media print {
           @page { size: A4; margin: 0; }
           html, body { background: #fff !important; }
@@ -324,310 +176,280 @@ export default function OrderBuilder({
         }
       `}</style>
 
-      {/* Hero: a shorter take on the home page — header, ASCII hands and a centred headline */}
-      <section className="relative flex flex-col sm:min-h-[62svh] print:hidden">
-        {header}
-        <AsciiHands />
-        <RevealOnView
-          as="div"
-          intensity="hero"
-          staggerChildren
-          mobileStatic
-          className="relative z-10 mx-2 mt-2 flex flex-col items-center border border-ivory/25 px-3 pt-8 pb-8 text-center sm:mx-auto sm:mt-0 sm:w-full sm:max-w-[964px] sm:flex-1 sm:justify-center sm:border-0 sm:px-10 sm:pt-28 sm:pb-6 lg:pt-10"
-        >
-          <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-            Work order · <span className="text-ivory">{result ? result.number : "Final"}</span>
+      {/* Hero: the homepage's big soft line, with the client's name in ink */}
+      <section ref={heroRef} className="wo-hero print:hidden" aria-label="Work order">
+        <h1>
+          <span className="line">
+            <span>{sentence(catalog.headline)}</span>
           </span>
-          <h1 className="font-display mt-5 text-[13vw] font-black lowercase leading-[0.85] tracking-[-0.035em] sm:text-[88px] lg:text-[104px]">
-            {catalog.headline}
-          </h1>
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[clamp(22px,7vw,32px)] sm:gap-x-3 sm:text-[48px]">
-            <span className="flex shrink-0 items-center self-center">
-              <img src="/arc-logo-dark.webp" alt="Arc Lab Technology" width={600} height={224} className="h-[0.8em] w-auto light:hidden" />
-              <img src="/arc-logo.webp" alt="Arc Lab Technology" width={600} height={217} className="hidden h-[0.8em] w-auto light:block" />
+          <span className="line">
+            <span>
+              By <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} /> for{" "}
+              {/* Follows the Business name field, so a corrected spelling shows here too */}
+              <span className={`who ${isBangla(who) ? "bn" : ""}`}>{who || "you"}</span>
             </span>
-            <img src="/ampersand-chrome-2.webp" alt="&" className="h-[1.1em] w-auto self-center light:invert" />
-            {/* Follows the Business name field, so a corrected spelling shows here too */}
-            {business.trim() ? (
-              <span className={`${isBangla(business) ? "bn font-bold" : "font-display font-black lowercase tracking-[-0.035em]"} leading-none`}>
-                {business.trim()}
-              </span>
-            ) : (
-              <span className="font-display font-black lowercase leading-none tracking-[-0.035em] text-stone">you</span>
-            )}
-          </div>
-          <p className="mx-auto mt-6 max-w-[560px] text-[15px] leading-relaxed text-stone sm:text-[16px]">
-            <span className="text-ivory">{catalog.lead}</span> {catalog.blurb}
-          </p>
-          <span aria-hidden="true" className="mt-8 font-mono text-[10px] uppercase tracking-[0.25em] text-stone">
-            {catalog.mode === "quote" ? "Scroll to review ↓" : "Scroll to build ↓"}
           </span>
-        </RevealOnView>
+        </h1>
+        <div className="hero-foot">
+          <span className="label">
+            Work order · {result ? result.number : catalog.name}
+          </span>
+          <div>
+            <p>
+              <span className="lead">{catalog.lead}</span> <span className="rest">{catalog.blurb}</span>
+            </p>
+            <div className="facts">
+              <span className="chip">
+                Delivery&nbsp;<b>{catalog.delivery}</b>
+              </span>
+              <span className="chip">50% to start</span>
+              <span className="chip">Yours once paid</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <div className="relative z-10 mx-auto w-full max-w-[1120px] px-2 pb-40 pt-0 sm:px-10 lg:pb-24 print:hidden">
-
-        <div className="mt-4 grid gap-10 sm:mt-4 lg:grid-cols-[1fr_360px] lg:gap-12">
-          {/* Feature picker */}
-          <div className="flex flex-col gap-10">
-            {catalog.groups.map((group, gi) => (
-              <RevealOnView as="section" key={group.id} delay={gi < 2 ? 0.35 + gi * 0.12 : 0}>
-                <div className="flex items-baseline justify-between border-b border-line pb-3">
-                  <h2 id={`g-${group.id}`} className="font-mono text-[11px] uppercase tracking-[0.22em] text-ivory">
-                    <span className={group.accent ? CORAL : "text-stone"}>{pad(gi)}</span> / {group.title}
-                  </h2>
-                  <span className={`font-mono text-[10px] uppercase tracking-[0.2em] ${group.accent ? CORAL : "text-stone"}`}>
-                    {group.note}
-                  </span>
-                </div>
-                <ul className="mt-3 flex flex-col gap-2">
-                  {group.features.map((f) => {
-                    const qty = selection[f.id] ?? 0
-                    const on = qty > 0
-                    return (
-                      <li key={f.id}>
-                        <div
-                          role="checkbox"
-                          aria-checked={on}
-                          aria-disabled={f.required || locked}
-                          tabIndex={f.required || locked ? -1 : 0}
-                          onClick={() => toggle(f)}
-                          onKeyDown={(e) => (e.key === " " || e.key === "Enter") && (e.preventDefault(), toggle(f))}
-                          className={`group grid grid-cols-[20px_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-2 border px-4 py-4 transition-colors sm:gap-x-4 sm:px-5 ${
-                            on ? "border-ivory/30 bg-ivory/[0.04]" : "border-line hover:border-ivory/20"
-                          } ${f.required || locked ? "cursor-default" : "cursor-pointer"} outline-none focus-visible:border-ivory/60`}
-                        >
-                          <span
-                            aria-hidden
-                            className={`mt-0.5 flex h-5 w-5 items-center justify-center border text-[12px] ${
-                              on ? "border-[#ff5941] bg-[#ff5941] text-black" : "border-ivory/25"
-                            }`}
-                          >
-                            {on && "✓"}
-                          </span>
-                          <div className="col-start-2 row-start-1 min-w-0">
-                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                              <span className="text-[16px] font-medium leading-snug tracking-[-0.01em]">{f.name}</span>
-                              {f.required && (
-                                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-stone">Included</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="col-span-3 col-start-1 row-start-2 min-w-0 sm:col-span-1 sm:col-start-2">
-                            {f.detail && <p className="mt-1 text-[13.5px] leading-relaxed text-stone">{f.detail}</p>}
-                            {f.points && f.points.length > 0 && <FeaturePoints points={f.points} />}
-                            {f.pointGroups && f.pointGroups.length > 0 && <FeaturePointGroups groups={f.pointGroups} />}
-                            {f.perUnit && (
-                              <div className="mt-3 flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                                <button
-                                  type="button"
-                                  aria-label={`Fewer ${f.perUnit.label}`}
-                                  disabled={locked || qty <= f.perUnit.min}
-                                  onClick={() => setQty(f, qty - 1)}
-                                  className="h-8 w-8 border border-line font-mono text-[14px] transition-colors hover:border-ivory/40 disabled:opacity-30"
-                                >
-                                  −
-                                </button>
-                                <span className="min-w-[72px] text-center font-mono text-[12px] tabular-nums tracking-[0.1em]">
-                                  {qty} {f.perUnit.label}
-                                </span>
-                                <button
-                                  type="button"
-                                  aria-label={`More ${f.perUnit.label}`}
-                                  disabled={locked || qty >= f.perUnit.max}
-                                  onClick={() => setQty(f, qty + 1)}
-                                  className="h-8 w-8 border border-line font-mono text-[14px] transition-colors hover:border-ivory/40 disabled:opacity-30"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                          <div className="col-start-3 row-start-1 flex shrink-0 flex-col items-end gap-0.5 text-right">
-                            <span className="text-[15px] font-medium leading-snug tabular-nums sm:text-[16px]">
-                              {taka(f.price)}
-                              {f.perUnit && <span className="text-[12px] text-stone"> each</span>}
-                            </span>
-                            <span className="text-[11px] tabular-nums text-stone line-through decoration-stone/60 sm:text-[12.5px]">{taka(f.compareAt)}</span>
-                          </div>
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </RevealOnView>
-            ))}
-          </div>
-
-          {/* Live work order */}
-          <aside ref={asideRef} className="lg:sticky lg:top-[var(--sticky-top,2rem)] lg:self-start">
-            <RevealOnView className="border border-line" delay={0.5}>
-              <div className="flex items-end justify-between gap-4 border-b border-line px-5 py-4">
-                <div className="min-w-0">
-                  <div className="font-display text-[30px] font-black lowercase leading-none tracking-[-0.035em]">work order.</div>
-                  <div className={`mt-2 truncate text-[13px] text-stone ${isBangla(name) ? "bn" : ""}`}>For {name}</div>
-                </div>
-                <span className="shrink-0 border border-line px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-stone tabular-nums">
-                  {order.lines.length} {order.lines.length === 1 ? "item" : "items"}
-                </span>
-              </div>
-              <OrderLines lines={order.lines} groups={catalog.groups} locked={locked} onRemove={toggle} />
-              <div className="border-t border-line px-5 py-4">
-                <div className="flex items-baseline justify-between text-[13px] text-stone">
-                  <span>Compare-at</span>
-                  <TakaFlow value={order.compareAt} strike />
-                </div>
-                <div className="mt-3 flex items-end justify-between">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Total</span>
-                  <TakaFlow value={order.total} className="text-[34px] font-semibold leading-none tracking-[-0.03em]" />
-                </div>
-                {order.savings > 0 && (
-                  <div className={`mt-2 text-right font-mono text-[11px] uppercase tracking-[0.15em] ${CORAL}`}>
-                    You save <TakaFlow value={order.savings} />
-                  </div>
-                )}
-              </div>
-              <div className="grid grid-cols-2 border-t border-line">
-                <div className="px-5 py-4">
-                  <div className={`font-mono text-[10px] uppercase tracking-[0.18em] ${CORAL}`}>Advance 50%</div>
-                  <TakaFlow value={order.advance} className="mt-1 text-[18px] font-semibold" />
-                </div>
-                {/* Right-aligned on phones so it lines up with the prices above */}
-                <div className="border-l border-line px-5 py-4 text-right lg:text-left">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-stone">Final 50%</div>
-                  <TakaFlow value={order.total - order.advance} className="mt-1 text-[18px] font-semibold" />
-                </div>
-              </div>
-              <div className="flex items-center justify-between border-t border-line px-5 py-3 font-mono text-[10px] uppercase tracking-[0.18em] text-stone">
-                <span>Delivery</span>
-                <span className="text-ivory">{catalog.delivery}</span>
-              </div>
-            </RevealOnView>
-            {!result && (
-              <button
-                type="button"
-                onClick={scrollToFlow}
-                className="mt-3 hidden w-full bg-ivory py-3.5 font-mono text-[12px] uppercase tracking-[0.2em] text-ink transition-opacity hover:opacity-90 lg:block"
-              >
-                Review & sign ↓
-              </button>
-            )}
-          </aside>
+      <article className={`doc rv print:hidden${quote ? " quote" : ""}${still ? " still" : ""}`} aria-label="Work order">
+        <div className="doc-head">
+          <h2>Work order</h2>
+          <dl>
+            <dt>For</dt>
+            <dd className={isBangla(who) ? "bn" : ""}>{who || "—"}</dd>
+            <dt>Scope</dt>
+            <dd>{catalog.name}</dd>
+            <dt>Delivery</dt>
+            <dd>{catalog.delivery}</dd>
+            <dt>{result ? "No." : "Date"}</dt>
+            <dd suppressHydrationWarning>{result ? result.number : today}</dd>
+          </dl>
         </div>
 
-        {/* Accept: details → review & sign → pay the advance, in one card */}
-        <section ref={signRef} className="mt-20 scroll-mt-8" aria-labelledby="sign-heading">
+        <div className="d-colh" aria-hidden="true">
+          <span />
+          <span>Item</span>
+          <span>Was</span>
+          <span>Price</span>
+        </div>
+
+        {catalog.groups.map((group) => (
+          <section className="d-grp" key={group.id} aria-labelledby={`g-${group.id}`}>
+            <header>
+              <h3 id={`g-${group.id}`}>{group.title}</h3>
+              <span>{group.note}</span>
+            </header>
+            {group.features.map((f) => {
+              const qty = selection[f.id] ?? 0
+              const on = qty > 0
+              const fixed = Boolean(f.required || locked)
+              return (
+                <div
+                  key={f.id}
+                  role="checkbox"
+                  aria-checked={on}
+                  aria-disabled={fixed}
+                  aria-label={f.name}
+                  tabIndex={fixed ? -1 : 0}
+                  onClick={() => toggle(f)}
+                  onKeyDown={(e) => {
+                    if (e.target !== e.currentTarget || (e.key !== " " && e.key !== "Enter")) return
+                    e.preventDefault()
+                    toggle(f)
+                  }}
+                  className={`d-row${on ? " on" : ""}`}
+                >
+                  <span className="box" aria-hidden="true">
+                    <svg viewBox="0 0 21 21">
+                      <path d="M5.2 11.1c1.1.8 2.1 2 2.9 3.4C10.1 10.4 12.6 7.3 16 5.3" pathLength={1} />
+                    </svg>
+                  </span>
+                  <div className="min-w-0">
+                    <div className="d-name">
+                      <span>{f.name}</span>
+                      {f.required && !quote && <span className="incl">Included</span>}
+                    </div>
+                    {f.detail && <p>{f.detail}</p>}
+                    {f.points && f.points.length > 0 && <Scope count={f.points.length}>{<ul>{f.points.map((p) => <li key={p}>{p}</li>)}</ul>}</Scope>}
+                    {f.pointGroups && f.pointGroups.length > 0 && <ScopeGroups groups={f.pointGroups} />}
+                    {f.perUnit && (
+                      <div className="stepper" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                        <button type="button" aria-label={`Fewer ${f.perUnit.label}`} disabled={locked || qty <= f.perUnit.min} onClick={() => setQty(f, qty - 1)}>
+                          −
+                        </button>
+                        <output aria-live="polite">
+                          {qty} {f.perUnit.label}
+                        </output>
+                        <button type="button" aria-label={`More ${f.perUnit.label}`} disabled={locked || qty >= f.perUnit.max} onClick={() => setQty(f, qty + 1)}>
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <span className="c-was">{taka(f.compareAt)}</span>
+                  <span className="c-now">
+                    {taka(f.price)}
+                    {f.perUnit && <small>each</small>}
+                  </span>
+                </div>
+              )
+            })}
+          </section>
+        ))}
+
+        <div className="d-tot">
+          <span className="count">
+            {order.lines.length} {order.lines.length === 1 ? "item" : "items"}
+          </span>
+          <div>
+            <div className="totals">
+              <div className="row">
+                <span>Compare-at</span>
+                <TakaFlow value={order.compareAt} strike />
+              </div>
+              <div className="grand">
+                <span className="lbl">Total</span>
+                <TakaFlow value={order.total} className="amt" />
+              </div>
+              {order.savings > 0 && (
+                <div className="save">
+                  You save <TakaFlow value={order.savings} />
+                </div>
+              )}
+            </div>
+            <div className="halves">
+              <div>
+                <span>Advance 50%</span>
+                <TakaFlow value={order.advance} className="amt" />
+              </div>
+              <div>
+                <span>At handover</span>
+                <TakaFlow value={order.total - order.advance} className="amt" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div ref={termsRef} className="d-terms" data-open={termsOpen || undefined}>
+          <button type="button" className="d-terms-h" aria-expanded={termsOpen} aria-controls="wo-terms" onClick={() => setTermsOpen((o) => !o)}>
+            <span className="lbl">Terms · {catalog.terms.length}</span>
+            <span className="d-terms-sum">{termsSummary}</span>
+            <span className="plus" aria-hidden="true" />
+          </button>
+          <div className="d-terms-b" id="wo-terms" inert={!termsOpen}>
+            <div>
+              <ol>
+                {catalog.terms.map(([k, v]) => (
+                  <li key={k}>
+                    <b>{k}.</b> {v}
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        {/* Accept: details → review & sign → pay the advance */}
+        <section ref={signRef} className="d-sign" id="sign" aria-labelledby="sign-heading">
           {result ? (
             <Confirmation result={result} business={business} reference={reference} hasSlip={Boolean(slip)} />
           ) : (
             <>
-              <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-                <span>Sign & pay</span>
-                <span className="h-px flex-1 bg-line" />
-                <TakaFlow value={order.total} />
+              <div className="sign-lead">
+                <h2 id="sign-heading">Sign & start</h2>
+                <p>Three short steps. Work starts once the advance is confirmed.</p>
               </div>
-              {/* Desktop: heading on the left, centred against the steps on the right — together the full width of the builder above */}
-              <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,620px)] lg:gap-12">
-                <div className="lg:self-center">
-                  <h2 id="sign-heading" className="font-display text-[40px] font-black lowercase leading-[0.95] tracking-[-0.035em] sm:text-[56px] lg:text-[72px]">
-                    sign & start.
-                  </h2>
-                  <p className="mt-3 max-w-[420px] text-[15px] leading-relaxed text-stone lg:mt-5">Three short steps. Work starts once the advance is confirmed.</p>
-                </div>
-
-              <div className="border border-line bg-ivory/[0.015]">
-                {/* 1 — details */}
+              <div className="steps">
                 <Step
                   n={1}
                   step={step}
-                  onOpened={onStepOpened}
                   title="Your details"
                   summary={`${signer.trim()} · ${phone.trim()}`}
                   onEdit={() => goTo(1)}
-                  stepRef={(el) => { stepRefs.current[0] = el }}
+                  stepRef={(el) => {
+                    stepRefs.current[0] = el
+                  }}
                 >
                   <Field label="Business name" value={business} onChange={setBusiness} disabled={nameLocked} autoComplete="organization" />
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="two">
                     <Field label="Your full name" value={signer} onChange={setSigner} autoComplete="name" />
                     <Field label="Phone / WhatsApp" value={phone} onChange={setPhone} type="tel" autoComplete="tel" />
                   </div>
                   {showEmail ? (
                     <Field label="Email" value={email} onChange={setEmail} type="email" autoComplete="email" />
                   ) : (
-                    <button type="button" onClick={() => setShowEmail(true)} className={LINK}>
+                    <button type="button" onClick={() => setShowEmail(true)} className="link">
                       + Add email for a copy (optional)
                     </button>
                   )}
-                  <button type="button" onClick={() => goTo(2)} disabled={!detailsDone} className={`${BTN} bg-ivory text-ink`}>
+                  <button type="button" onClick={() => goTo(2)} disabled={!detailsDone} className="btn">
                     Continue
                   </button>
                 </Step>
 
-                {/* 2 — review & sign */}
                 <Step
                   n={2}
                   step={step}
-                  onOpened={onStepOpened}
                   title="Review & sign"
                   summary={`Signed by ${signer.trim()}`}
                   onEdit={() => goTo(2)}
-                  stepRef={(el) => { stepRefs.current[1] = el }}
+                  stepRef={(el) => {
+                    stepRefs.current[1] = el
+                  }}
                 >
-                  <dl className="border border-line text-[13.5px]">
-                    {[
-                      ["Total", <TakaFlow key="t" value={order.total} />],
-                      [
-                        "Payment",
-                        <span key="p">
-                          <TakaFlow value={order.advance} /> now · <TakaFlow value={order.total - order.advance} /> at handover
-                        </span>,
-                      ],
-                      ["Delivery", `${catalog.delivery} after the advance`],
-                    ].map(([k, v], i) => (
-                      <div key={i} className="flex justify-between gap-4 border-b border-line px-4 py-2.5 last:border-b-0">
-                        <dt className="text-stone">{k}</dt>
-                        <dd className="text-right tabular-nums">{v}</dd>
-                      </div>
-                    ))}
+                  <dl className="kv">
+                    <div>
+                      <dt>Total</dt>
+                      <dd>
+                        <TakaFlow value={order.total} />
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Payment</dt>
+                      <dd>
+                        <TakaFlow value={order.advance} /> now · <TakaFlow value={order.total - order.advance} /> at handover
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Delivery</dt>
+                      <dd>{catalog.delivery} after the advance</dd>
+                    </div>
                   </dl>
-                  <details className="group text-[13px] text-stone">
-                    <summary className={`${LINK} cursor-pointer list-none [&::-webkit-details-marker]:hidden`}>
-                      <span className="group-open:hidden">Read all {catalog.terms.length} terms</span>
-                      <span className="hidden group-open:inline">Hide terms</span>
-                    </summary>
-                    <ol className="mt-3 flex flex-col gap-2.5">
-                      {catalog.terms.map(([k, v], i) => (
-                        <li key={k} className="grid grid-cols-[28px_1fr] leading-relaxed">
-                          <span className={`font-mono text-[10px] tracking-[0.15em] ${CORAL} pt-1`}>{pad(i)}</span>
-                          <span>
-                            <span className="text-ivory">{k}.</span> {v}
-                          </span>
-                        </li>
-                      ))}
-                    </ol>
-                  </details>
-                  <SignatureField ref={padRef} name={signer} onChange={setSigned} />
-                  <button type="button" onClick={sign} disabled={!signed} className={`${BTN} bg-ivory text-ink`}>
+                  <button type="button" className="link" onClick={openTerms}>
+                    Read all {catalog.terms.length} terms
+                  </button>
+                  <SignatureField ref={padRef} name={signer} onChange={setSigned} active={step === 2} />
+                  <button type="button" onClick={sign} disabled={!signed} className="btn">
                     Sign & continue
                   </button>
-                  <p className="-mt-1 text-center text-[12.5px] text-stone">Signing means you accept this work order and its terms.</p>
+                  <p className="note">Signing means you accept this work order and its terms.</p>
                 </Step>
 
-                {/* 3 — pay the advance; required before the order can be accepted */}
-                <Step n={3} step={step} onOpened={onStepOpened} title={<>Pay the <TakaFlow value={order.advance} /> advance</>} stepRef={(el) => { stepRefs.current[2] = el }}>
-                  <div className="flex items-center justify-between gap-4 border border-[#ff5941] px-4 py-3.5">
+                <Step
+                  n={3}
+                  step={step}
+                  title={
+                    <>
+                      Pay the <TakaFlow value={order.advance} /> advance
+                    </>
+                  }
+                  stepRef={(el) => {
+                    stepRefs.current[2] = el
+                  }}
+                >
+                  <div className="send">
                     <div>
-                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">Send exactly</div>
-                      <TakaFlow value={order.advance} className="text-[26px] font-semibold tracking-[-0.02em]" />
+                      <span>Send exactly</span>
+                      <TakaFlow value={order.advance} className="amt" />
                     </div>
                     <CopyButton value={String(order.advance)} label="advance amount" />
                   </div>
-                  <dl className="border border-line">
+                  <dl className="kv bank">
                     {BANK.map(([k, v]) => (
-                      <div key={k} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 border-b border-line py-2 pl-4 pr-2 last:border-b-0 sm:grid-cols-[130px_minmax(0,1fr)_auto]">
-                        <dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone sm:col-auto">{k}</dt>
-                        <dd className="col-start-1 font-mono text-[14px] tracking-[0.02em] [overflow-wrap:anywhere] sm:col-start-auto">{v}</dd>
-                        <CopyButton value={v} label={k.toLowerCase()} className="col-start-2 row-span-2 row-start-1 sm:col-start-auto sm:row-span-1 sm:row-start-auto" />
+                      <div key={k}>
+                        <dt>{k}</dt>
+                        <dd>
+                          {v}
+                          <CopyButton value={v} label={k.toLowerCase()} />
+                        </dd>
                       </div>
                     ))}
                   </dl>
@@ -635,64 +457,39 @@ export default function OrderBuilder({
                   {showRef ? (
                     <Field label="Transaction ID" value={reference} onChange={setReference} />
                   ) : (
-                    <button type="button" onClick={() => setShowRef(true)} className={LINK}>
+                    <button type="button" onClick={() => setShowRef(true)} className="link">
                       No screenshot? Enter the transaction ID
                     </button>
                   )}
-                  <LiquidMetalButton
-                    label={status === "saving" ? "Submitting…" : "Submit order"}
-                    onClick={accept}
-                    disabled={!ready || status === "saving"}
-                  />
-                  {status === "error" && <p className={`-mt-1 text-center text-[13px] ${CORAL}`}>{error}</p>}
-                  <p className="-mt-1 text-center text-[12.5px] text-stone">We check the payment and confirm on WhatsApp.</p>
+                  <button type="button" onClick={accept} disabled={!ready || status === "saving"} className="btn">
+                    {status === "saving" ? "Submitting…" : "Submit order"}
+                  </button>
+                  {status === "error" && <p className="err">{error}</p>}
+                  <p className="note">We check the payment and confirm on WhatsApp.</p>
                 </Step>
-              </div>
               </div>
             </>
           )}
         </section>
-      </div>
+      </article>
 
-      {/* Mobile dock: floating liquid-glass pill with the total, Chat (WhatsApp) and Sign */}
+      {/* Dock: total, Chat (WhatsApp) and Sign */}
       {!result && (
-        <div className="fixed inset-x-2 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[45] lg:hidden print:hidden">
-          <div className="liquid-glass flex items-center gap-2 rounded-[26px] py-2 pl-5 pr-2">
-            <div className="relative min-w-0">
-              <div className="flex items-baseline gap-2">
-                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ivory/60">Total</span>
-                <TakaFlow value={order.compareAt} strike className="text-[11px] text-ivory/55" />
-              </div>
-              <TakaFlow value={order.total} className="block text-[22px] font-semibold leading-tight tracking-[-0.02em]" />
-            </div>
-            <div className="dock-seg ml-auto shrink-0">
-              <a
-                href="https://api.whatsapp.com/send/?phone=8801733670129"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat with us on WhatsApp"
-                className="dock-seg-btn dock-seg-chat pl-[13px] pr-3 font-mono text-[10px] uppercase tracking-[0.2em]"
-              >
-                <span aria-hidden="true" className="relative flex size-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ff5941] opacity-60 motion-reduce:animate-none" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-[#ff5941]" />
-                </span>
-                Chat
-              </a>
-              <button
-                type="button"
-                onClick={scrollToFlow}
-                aria-label={step === 3 ? "Pay the advance" : "Review and sign"}
-                className="dock-seg-btn dock-seg-sign px-4 font-mono text-[11px] uppercase tracking-[0.2em]"
-              >
-                <span aria-hidden="true" className="dock-shine" />
-                <span aria-hidden="true" className="dock-label">
-                  <span data-on={step !== 3}>Sign ↓</span>
-                  <span data-on={step === 3}>Pay ↓</span>
-                </span>
-              </button>
-            </div>
+        <div className="wo-dock print:hidden" data-show={dock || undefined} inert={!dock}>
+          <div className="tot">
+            <span>Total</span>
+            <TakaFlow value={order.total} className="amt" />
           </div>
+          <a href={WA_LINK} target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
+            <i aria-hidden="true" />
+            Chat
+          </a>
+          <button type="button" onClick={scrollToFlow} aria-label={step === 3 ? "Pay the advance" : "Review and sign"}>
+            <span className="lbl" aria-hidden="true">
+              <span data-on={step !== 3}>Sign ↓</span>
+              <span data-on={step === 3}>Pay ↓</span>
+            </span>
+          </button>
         </div>
       )}
 
@@ -716,184 +513,51 @@ export default function OrderBuilder({
   )
 }
 
-// The live work order's line items, grouped by catalogue section. Add-ons can be removed
-// right here; lines slide in and out as the selection changes.
-function OrderLines({
-  lines,
-  groups,
-  locked,
-  onRemove,
-}: {
-  lines: Line[]
-  groups: FeatureGroup[]
-  locked: boolean
-  onRemove: (f: Feature) => void
-}) {
-  const reduce = useReducedMotion()
-  const ease = [0.22, 1, 0.36, 1] as const
-  const grouped = groups.map((g) => ({ group: g, lines: lines.filter((l) => g.features.includes(l.feature)) })).filter((g) => g.lines.length)
-  const fold = {
-    initial: { opacity: 0, height: 0 },
-    animate: { opacity: 1, height: "auto" },
-    exit: { opacity: 0, height: 0 },
-    transition: { duration: reduce ? 0 : 0.35, ease },
-  }
+// The scope under a deliverable is long, so it stays folded until it's asked for. The row it sits in
+// toggles the line item, so the fold's button stops the click.
+function Scope({ count, children }: { count: number; children: ReactNode }) {
+  const [open, setOpen] = useState(false)
+  const id = useId()
   return (
-    <div className="max-h-[360px] overflow-y-auto px-5 pb-4 pt-1" data-lenis-prevent>
-      <AnimatePresence initial={false}>
-        {grouped.map(({ group, lines }) => (
-          <motion.section key={group.id} {...fold} className="overflow-hidden" aria-label={group.title}>
-            <h3 className="pb-1 pt-3 font-mono text-[9.5px] uppercase tracking-[0.2em] text-stone">{group.title}</h3>
-            <ul>
-              <AnimatePresence initial={false}>
-                {lines.map((l) => {
-                  const f = l.feature
-                  const removable = !f.required && !locked
-                  return (
-                    <motion.li key={f.id} {...fold} className="overflow-hidden">
-                      <div className="group/line -mx-2 flex items-center gap-2.5 px-2 py-1.5 transition-colors hover:bg-ivory/[0.035]">
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[13.5px] leading-snug text-ivory/90">{f.name}</div>
-                          {f.perUnit && (
-                            <div className="text-[12px] tabular-nums text-stone">
-                              {l.qty} {f.perUnit.label} × {taka(f.price)}
-                            </div>
-                          )}
-                        </div>
-                        {/* Core items say "Included"; add-ons get a remove button in the same spot, so prices stay flush right */}
-                        {f.required && <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-stone">Included</span>}
-                        {removable && (
-                          <button
-                            type="button"
-                            onClick={() => onRemove(f)}
-                            aria-label={`Remove ${f.name}`}
-                            className="flex size-6 shrink-0 items-center justify-center text-[15px] leading-none text-stone transition-[opacity,color] hover:text-[#ff5941] focus-visible:opacity-100 lg:opacity-0 lg:group-hover/line:opacity-100"
-                          >
-                            ×
-                          </button>
-                        )}
-                        <TakaFlow value={l.price} className="min-w-[68px] shrink-0 text-right text-[13.5px] tabular-nums" />
-                      </div>
-                    </motion.li>
-                  )
-                })}
-              </AnimatePresence>
-            </ul>
-          </motion.section>
-        ))}
-      </AnimatePresence>
+    <div data-open={open || undefined}>
+      <button
+        type="button"
+        className="scope-t"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={(e) => {
+          e.stopPropagation()
+          setOpen((o) => !o)
+        }}
+        onKeyDown={(e) => (e.key === " " || e.key === "Enter") && e.stopPropagation()}
+      >
+        <span className="plus" aria-hidden="true" />
+        {open ? "Hide features" : `${count} features included`}
+      </button>
+      <div className="scope-b" id={id} inert={!open}>
+        <div>
+          <div className="scope-in">{children}</div>
+        </div>
+      </div>
     </div>
   )
 }
 
-// The scope under a deliverable is long, so it stays folded behind a toggle until it's asked for.
-// The row it sits in is clickable (it toggles the line item), so the button stops the click.
-function FeaturePoints({ points }: { points: string[] }) {
-  return (
-    <FeatureDisclosure count={points.length}>
-      <ul className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
-        {points.map((p) => (
-          <li key={p} className="feature-scope-group grid grid-cols-[10px_1fr] gap-2 text-[12.5px] leading-[1.45] text-stone/90">
-            <span aria-hidden="true" className="mt-[7px] h-[3px] w-[3px] shrink-0 bg-[#ff5941]" />
-            <span>{p}</span>
-          </li>
-        ))}
-      </ul>
-    </FeatureDisclosure>
-  )
-}
-
-// The scope, split under the catalogue's own section headings.
-function FeaturePointGroups({ groups }: { groups: FeaturePointGroup[] }) {
+function ScopeGroups({ groups }: { groups: FeaturePointGroup[] }) {
   const count = groups.reduce((n, g) => n + g.points.length, 0)
   return (
-    <FeatureDisclosure count={count}>
-      <div className="flex flex-col gap-3">
-        {groups.map((g) => (
-          <div key={g.title} className="feature-scope-group">
-            <div className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-stone">{g.title}</div>
-            <ul className="mt-1.5 grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
-              {g.points.map((p) => (
-                <li key={p} className="grid grid-cols-[10px_1fr] gap-2 text-[12.5px] leading-[1.45] text-stone/90">
-                  <span aria-hidden="true" className="mt-[7px] h-[3px] w-[3px] shrink-0 bg-[#ff5941]" />
-                  <span>{p}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </FeatureDisclosure>
-  )
-}
-
-// Keep the content mounted so CSS transitions can reverse smoothly, even mid-toggle.
-function FeatureDisclosure({ count, children }: { count: number; children: ReactNode }) {
-  const [open, setOpen] = useState(false)
-  const [height, setHeight] = useState(0)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const panelId = useId()
-
-  useEffect(() => {
-    const content = contentRef.current
-    if (!content) return
-    setHeight(content.offsetHeight)
-    // Layout measurements must ignore the parent section's reveal transform.
-    const observer = new ResizeObserver(([entry]) => {
-      setHeight(entry.borderBoxSize[0]?.blockSize ?? content.offsetHeight)
-    })
-    observer.observe(content)
-    return () => observer.disconnect()
-  }, [])
-
-  return (
-    <div className="feature-disclosure mt-2" data-open={open}>
-      <Toggle open={open} count={count} panelId={panelId} onToggle={() => setOpen((o) => !o)} />
-      <div
-        id={panelId}
-        aria-hidden={!open}
-        inert={!open}
-        className="feature-disclosure-panel"
-        style={{ height: open ? height : 0, opacity: open ? 1 : 0 }}
-      >
-        <div ref={contentRef} className="pb-1 pt-2">{children}</div>
-      </div>
-    </div>
-  )
-}
-
-// The square stays aligned; only the SVG's vertical stroke folds into a minus.
-function Toggle({ open, count, panelId, onToggle }: { open: boolean; count: number; panelId: string; onToggle: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation()
-        onToggle()
-      }}
-      onKeyDown={(e) => {
-        if (e.key === " " || e.key === "Enter") e.stopPropagation()
-      }}
-      aria-expanded={open}
-      aria-controls={panelId}
-      className="inline-flex min-h-11 cursor-pointer items-center gap-2.5 text-left font-mono text-[10px] uppercase leading-none tracking-[0.2em] text-stone transition-colors duration-150 hover:text-ivory focus-visible:text-ivory focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff5941]"
-    >
-      <span
-        aria-hidden="true"
-        className={`flex size-5 shrink-0 items-center justify-center border transition-colors duration-150 ${
-          open ? "border-[#ff5941] text-[#ff5941]" : "border-ivory/25"
-        }`}
-      >
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M2 6h8" />
-          <path d="M6 2v8" className="feature-toggle-stem" />
-        </svg>
-      </span>
-      <span className="grid">
-        <span className={`col-start-1 row-start-1 ${open ? "invisible" : ""}`} aria-hidden={open}>{count} features included</span>
-        <span className={`col-start-1 row-start-1 ${open ? "" : "invisible"}`} aria-hidden={!open}>Hide features</span>
-      </span>
-    </button>
+    <Scope count={count}>
+      {groups.map((g) => (
+        <div key={g.title}>
+          <h4>{g.title}</h4>
+          <ul>
+            {g.points.map((p) => (
+              <li key={p}>{p}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </Scope>
   )
 }
 
@@ -904,7 +568,6 @@ function Step({
   title,
   summary,
   onEdit,
-  onOpened,
   stepRef,
   children,
 }: {
@@ -913,104 +576,60 @@ function Step({
   title: ReactNode
   summary?: string
   onEdit?: () => void
-  onOpened?: (n: number) => void
   stepRef: (el: HTMLDivElement | null) => void
   children: ReactNode
 }) {
   const open = step === n
   const done = step > n
-  const reduce = useReducedMotion()
-  const ease = [0.22, 1, 0.36, 1] as const
   return (
-    <div ref={stepRef} className="scroll-mt-6 border-b border-line last:border-b-0">
-      <div className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6">
-        <span
-          aria-hidden="true"
-          className={`flex h-6 w-6 items-center justify-center border font-mono text-[11px] transition-colors duration-300 ${
-            done ? "border-ivory bg-ivory text-ink" : open ? "border-ivory text-ivory" : "border-line text-stone"
-          }`}
-        >
-          {done ? "✓" : n}
+    <div ref={stepRef} className="stp" data-open={open || undefined} data-done={done || undefined}>
+      <div className="stp-h">
+        <span className="n" aria-hidden="true">
+          {done ? "✓ " : ""}
+          {pad(n - 1)}
         </span>
-        <div className="min-w-0">
-          <h3 className={`text-[15px] font-medium transition-colors duration-300 ${open || done ? "" : "text-stone"}`}>
-            <span className="sr-only">Step {n}: </span>
-            {title}
-          </h3>
-          <AnimatePresence initial={false}>
-            {done && summary && (
-              <motion.p
-                key="summary"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: reduce ? 0 : 0.35, ease }}
-                className={`truncate text-[13px] text-stone ${isBangla(summary) ? "bn" : ""}`}
-              >
-                {summary}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-        {done && onEdit ? (
-          <button
-            type="button"
-            onClick={onEdit}
-            className="px-1 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
-          >
+        <h3>
+          <span className="sr-only">Step {n}: </span>
+          {title}
+        </h3>
+        {done && onEdit && (
+          <button type="button" className="edit" onClick={onEdit}>
             Edit
           </button>
-        ) : (
-          <span />
         )}
+        {done && summary && <p className={`sum ${isBangla(summary) ? "bn" : ""}`}>{summary}</p>}
       </div>
-      {/* Height animates to the content; the body rises in a beat behind it */}
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            key="body"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ height: { duration: reduce ? 0 : 0.5, ease }, opacity: { duration: reduce ? 0 : 0.3 } }}
-            onAnimationComplete={(def) => (def as { height?: unknown }).height === "auto" && onOpened?.(n)}
-            className="overflow-hidden"
-          >
-            <motion.div
-              initial={{ y: reduce ? 0 : 14 }}
-              animate={{ y: 0 }}
-              transition={{ duration: reduce ? 0 : 0.5, ease, delay: reduce ? 0 : 0.08 }}
-              className="flex flex-col gap-4 px-4 pb-6 sm:pb-7 sm:pl-[64px] sm:pr-6"
-            >
-              {children}
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div className="stp-b" inert={!open}>
+        <div>
+          <div className="stp-in">{children}</div>
+        </div>
+      </div>
     </div>
   )
 }
 
-function CopyButton({ value, label, className = "" }: { value: string; label: string; className?: string }) {
+function CopyButton({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false)
+  const timer = useRef(0)
   return (
     <button
       type="button"
+      className="copy"
       aria-label={`Copy ${label}`}
+      data-done={copied || undefined}
       onClick={() =>
         navigator.clipboard
           ?.writeText(value)
           .then(() => {
             setCopied(true)
-            setTimeout(() => setCopied(false), 1400)
+            clearTimeout(timer.current)
+            timer.current = window.setTimeout(() => setCopied(false), 1400)
           })
           .catch(() => {})
       }
-      className={`h-9 min-w-[72px] shrink-0 border px-3 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors ${
-        copied ? "border-[#ff5941]/50 text-[#ff5941]" : "border-line text-stone hover:border-ivory/40 hover:text-ivory"
-      } ${className}`}
     >
-      {copied ? "Copied" : "Copy"}
+      <span>Copy</span>
+      <span aria-hidden="true">Copied</span>
     </button>
   )
 }
@@ -1031,16 +650,16 @@ function Field({
   autoComplete?: string
 }) {
   return (
-    <label className="flex flex-col gap-2">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone">{label}</span>
+    <label className="field">
+      <span>{label}</span>
       <input
         type={type}
         value={value}
         disabled={disabled}
         autoComplete={autoComplete}
+        inputMode={type === "tel" ? "tel" : undefined}
         onChange={(e) => onChange(e.target.value)}
-        // 16px: iOS Safari zooms the page into inputs with smaller text
-        className={`border border-line bg-transparent px-4 py-3 text-[16px] outline-none transition-colors placeholder:text-stone/50 focus:border-ivory/50 disabled:text-ivory/70 ${isBangla(value) ? "bn" : ""}`}
+        className={isBangla(value) ? "bn" : undefined}
       />
     </label>
   )
@@ -1049,32 +668,27 @@ function Field({
 function Confirmation({ result, business, reference, hasSlip }: { result: Result; business: string; reference: string; hasSlip: boolean }) {
   const proof = [hasSlip && "screenshot", reference.trim() && `reference ${reference.trim()}`].filter(Boolean).join(" and ")
   return (
-    <div>
-      <div className="flex items-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-stone">
-        <span className={CORAL}>Signed · payment in review</span>
-        <span className="h-px flex-1 bg-line" />
+    <div className="done-card">
+      <div className="tag">
+        <span>Signed · payment in review</span>
         <span>{result.number}</span>
       </div>
-      <h2 className="font-display mt-6 text-[44px] font-black lowercase leading-[0.95] tracking-[-0.035em] sm:text-[72px]">let’s build it.</h2>
-      <p className="mt-5 max-w-[640px] text-[16px] leading-relaxed text-stone">
-        Thank you{business ? <span className={isBangla(business) ? "bn" : ""}>, {business}</span> : ""}. Work order{" "}
-        <span className="text-ivory">{result.number}</span> is signed, with your payment {proof}. We’ll verify the{" "}
-        <span className="text-ivory">{taka(result.advance)}</span> advance and confirm on WhatsApp — work starts as soon as it clears.
+      <h2>Let’s build it.</h2>
+      <p>
+        Thank you{business ? <span className={isBangla(business) ? "bn" : ""}>, {business}</span> : ""}. Work order <b>{result.number}</b> is signed,
+        with your payment {proof}. We’ll verify the <b>{taka(result.advance)}</b> advance and confirm on WhatsApp — work starts as soon as it
+        clears.
       </p>
-      <div className="mt-10 flex max-w-[640px] flex-col gap-2 sm:flex-row">
+      <div className="acts">
         <a
+          className="btn"
           href={`https://wa.me/8801733670129?text=${encodeURIComponent(`Hi Arc Labs, I've signed work order ${result.number} and paid the advance.`)}`}
           target="_blank"
           rel="noreferrer"
-          className="flex-1 bg-[#ff5941] py-3.5 text-center font-mono text-[11px] uppercase tracking-[0.2em] text-black transition-opacity hover:opacity-90"
         >
           Message us on WhatsApp
         </a>
-        <button
-          type="button"
-          onClick={() => window.print()}
-          className="flex-1 border border-line py-3.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors hover:border-ivory/40"
-        >
+        <button type="button" className="btn ghost" onClick={() => window.print()}>
           Download PDF
         </button>
       </div>
@@ -1108,30 +722,28 @@ function SlipUpload({
   onError: (e: string) => void
 }) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="grid gap-2">
       {slip ? (
-        <div className="flex items-center gap-4 border border-line p-3">
-          <img src={slip.url} alt="Payment screenshot" className="h-12 w-12 shrink-0 object-cover" />
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-[14px]">{slip.name}</span>
-            <span className="block text-[12.5px] text-stone">Screenshot added</span>
+        <div className="slip has">
+          <span className="ic">
+            <img src={slip.url} alt="Payment screenshot" />
           </span>
-          <button
-            type="button"
-            onClick={() => onChange(null)}
-            className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone transition-colors hover:text-ivory"
-          >
+          <span className="tx">
+            <span>{slip.name}</span>
+            <small>Screenshot added</small>
+          </span>
+          <button type="button" className="link" onClick={() => onChange(null)}>
             Remove
           </button>
         </div>
       ) : (
-        <label className="flex cursor-pointer items-center gap-4 border border-dashed border-ivory/30 p-3 transition-colors hover:border-ivory/60 focus-within:border-ivory/60">
-          <span aria-hidden="true" className="flex h-12 w-12 shrink-0 items-center justify-center border border-line text-[22px] font-light text-stone">
-            +
+        <label className="slip">
+          <span className="ic" aria-hidden="true">
+            ↑
           </span>
-          <span className="min-w-0">
-            <span className="block text-[14px]">Add payment screenshot</span>
-            <span className="block text-[12.5px] text-stone">From your bank app, after you send it</span>
+          <span className="tx">
+            <span>Add payment screenshot</span>
+            <small>From your bank app, after you send it</small>
           </span>
           <input
             type="file"
@@ -1151,7 +763,7 @@ function SlipUpload({
           />
         </label>
       )}
-      {error && <p className={`text-[12.5px] ${CORAL}`}>{error}</p>}
+      {error && <p className="err">{error}</p>}
     </div>
   )
 }

@@ -1,0 +1,1219 @@
+/* Work order page in the homepage's language (it sits inside .ah, so it shares the tokens, header,
+   menu sheet, roll links and footer from app/home.css). The order itself is one white document:
+   items with pen ticks, totals, folded terms, then the sign-and-pay steps. A dark dock carries the
+   total, Chat and Sign once the hero has scrolled away. */
+
+.wo {
+  --ink: #222222;
+  --err: #c2412d;
+}
+
+/* ── hero ── */
+.wo .wo-hero {
+  padding-top: 220px;
+}
+.wo .wo-hero h1 {
+  margin: 0;
+  font: 400 60px/72px var(--font);
+  letter-spacing: -0.04em;
+  color: var(--soft);
+}
+.wo .wo-hero h1 .line {
+  display: block;
+  overflow: hidden;
+}
+.wo .wo-hero h1 .line > span {
+  display: block;
+  animation: ah-rise 1100ms var(--ease-out) both;
+}
+.wo .wo-hero h1 .line:nth-child(2) > span {
+  animation-delay: 140ms;
+}
+.wo .wo-hero .who {
+  color: var(--fg);
+}
+.wo .wo-hero .h-logo {
+  display: inline-block;
+  height: 0.8em;
+  width: auto;
+  vertical-align: -0.06em;
+  margin-left: 0.02em;
+}
+.wo .hero-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 56px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+.wo .hero-foot p {
+  margin: 0;
+  max-width: 580px;
+}
+.wo .hero-foot .lead {
+  color: var(--fg);
+}
+.wo .hero-foot .rest {
+  color: var(--muted);
+}
+.wo .facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.wo .chip {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--tile);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.wo .chip b {
+  font-weight: 500;
+}
+
+/* ── document ── */
+.wo .doc {
+  max-width: 920px;
+  margin: 140px auto 0;
+  padding: 48px 56px 56px;
+  border-radius: 12px;
+  background: var(--panel);
+}
+.wo .doc-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: end;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--fg);
+}
+.wo .doc-head h2 {
+  margin: 0;
+  font: 400 48px/52px var(--font);
+  letter-spacing: -0.04em;
+}
+.wo .doc-head dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 2px 20px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+.wo .doc-head dt {
+  color: var(--muted);
+}
+.wo .doc-head dd {
+  margin: 0;
+  text-align: right;
+}
+.wo .d-colh,
+.wo .d-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 120px 120px;
+  gap: 16px;
+}
+.wo .d-colh {
+  padding-top: 28px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.wo .d-colh span:nth-child(n + 3) {
+  text-align: right;
+}
+.wo .d-grp {
+  padding-top: 28px;
+}
+.wo .d-grp > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.wo .d-grp > header h3 {
+  margin: 0;
+  font: inherit;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.wo .d-row {
+  align-items: start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 17px;
+  line-height: 23px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 200ms ease;
+}
+.wo .d-row[aria-disabled="true"] {
+  cursor: default;
+}
+.wo .d-row .d-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.wo .d-row .incl {
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .d-row p {
+  margin: 3px 0 0;
+  max-width: 52ch;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .c-was {
+  text-align: right;
+  color: var(--muted);
+  font-size: 15px;
+  text-decoration: line-through;
+  text-decoration-color: rgb(122 122 122 / 0.6);
+  font-variant-numeric: tabular-nums;
+}
+.wo .c-now {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  transition: color 200ms ease;
+}
+.wo .c-now small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+.wo .d-row:not(.on) .c-now {
+  color: var(--muted);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .d-row:not([aria-disabled="true"]):hover {
+    background: rgb(0 0 0 / 0.02);
+  }
+}
+.wo .d-row:focus-visible {
+  background: rgb(0 0 0 / 0.03);
+}
+
+/* Pen tick: drawn inside the box, a slow down-stroke then a quick flick up. Unticking just fades.
+   The 1 2 dash keeps the hidden tick's round cap from showing as a dot before it draws. */
+.wo .box {
+  position: relative;
+  width: 21px;
+  height: 21px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 1px solid rgb(0 0 0 / 0.3);
+  transition: border-color 160ms ease, transform 160ms var(--ease-out);
+}
+.wo .box svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.wo .box path {
+  opacity: 0;
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.02;
+  transition: opacity 140ms ease, stroke-dashoffset 0s linear 140ms;
+}
+.wo .on .box {
+  border-color: var(--ink);
+}
+.wo .on .box path {
+  opacity: 1;
+  stroke-dashoffset: 0;
+  transition: opacity 0s, stroke-dashoffset 440ms cubic-bezier(0.6, 0, 0.2, 1);
+}
+.wo .d-row:active .box {
+  transform: scale(0.88);
+}
+.wo .d-row[aria-disabled="true"] .box {
+  opacity: 0.45;
+}
+.wo .doc.quote .d-row[aria-disabled="true"] .box {
+  opacity: 1;
+}
+.wo .doc.still .box,
+.wo .doc.still .box path {
+  transition: none !important;
+}
+
+/* per-unit stepper */
+.wo .stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--tile);
+}
+.wo .stepper button {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  font-size: 18px;
+  transition: background-color 160ms ease, transform 160ms var(--ease-out), opacity 200ms ease;
+}
+.wo .stepper button:active {
+  transform: scale(0.92);
+}
+.wo .stepper button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .stepper button:not(:disabled):hover {
+    background: var(--panel);
+  }
+}
+.wo .stepper output {
+  min-width: 84px;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* scope under a deliverable, folded until asked for */
+.wo .scope-t {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+  transition: color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .scope-t:hover {
+    color: var(--fg);
+  }
+}
+.wo .scope-t .plus {
+  position: relative;
+  width: 11px;
+  height: 11px;
+}
+.wo .plus::before,
+.wo .plus::after {
+  content: "";
+  position: absolute;
+  inset: calc(50% - 0.7px) 0 auto;
+  height: 1.4px;
+  background: currentColor;
+  transition: transform 400ms var(--ease-out);
+}
+.wo .plus::after {
+  transform: rotate(90deg);
+}
+.wo [data-open] > .scope-t .plus::after,
+.wo .d-terms[data-open] .plus::after {
+  transform: rotate(0deg);
+}
+.wo .scope-b {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms var(--ease-out);
+}
+.wo .scope-b > div {
+  overflow: hidden;
+}
+.wo [data-open] > .scope-b {
+  grid-template-rows: 1fr;
+}
+.wo .scope-in {
+  padding: 4px 0 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 250ms ease, transform 350ms var(--ease-out);
+}
+.wo [data-open] > .scope-b .scope-in {
+  opacity: 1;
+  transform: none;
+  transition-delay: 60ms;
+}
+.wo .scope-in h4 {
+  margin: 10px 0 4px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: 0;
+}
+.wo .scope-in h4:first-child {
+  margin-top: 0;
+}
+.wo .scope-in ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 24px;
+}
+.wo .scope-in li {
+  position: relative;
+  padding-left: 12px;
+  font-size: 13.5px;
+  line-height: 19px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .scope-in li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+/* totals */
+.wo .d-tot {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  padding-top: 28px;
+}
+.wo .d-tot .count {
+  align-self: end;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .totals {
+  display: grid;
+  gap: 6px;
+}
+.wo .totals .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 16px;
+  color: var(--muted);
+}
+.wo .totals .grand {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 4px;
+}
+.wo .totals .grand .lbl {
+  font-size: 16px;
+  color: var(--muted);
+}
+.wo .totals .grand .amt {
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.wo .save {
+  text-align: right;
+  font-size: 15px;
+}
+.wo .halves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+.wo .halves > div {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--tile);
+}
+.wo .halves > div > span:first-child {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .halves .amt {
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+/* terms, folded to one line */
+.wo .d-terms {
+  margin-top: 40px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 24px;
+}
+.wo .d-terms-h {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 15px;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  text-align: left;
+}
+.wo .d-terms-h .lbl {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+.wo .d-terms-h .plus {
+  position: relative;
+  width: 15px;
+  height: 15px;
+}
+.wo .d-terms-sum {
+  overflow: hidden;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: opacity 200ms ease;
+}
+.wo .d-terms[data-open] .d-terms-sum {
+  opacity: 0;
+}
+.wo .d-terms-b {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 500ms var(--ease-out);
+}
+.wo .d-terms-b > div {
+  overflow: hidden;
+}
+.wo .d-terms[data-open] .d-terms-b {
+  grid-template-rows: 1fr;
+}
+.wo .d-terms ol {
+  margin: 0;
+  padding: 4px 0 22px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
+  counter-reset: t;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 300ms ease, transform 400ms var(--ease-out);
+}
+.wo .d-terms[data-open] ol {
+  opacity: 1;
+  transform: none;
+  transition-delay: 80ms;
+}
+.wo .d-terms li {
+  counter-increment: t;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .d-terms li::before {
+  content: counter(t, decimal-leading-zero) "  ";
+  color: var(--fg);
+}
+.wo .d-terms b {
+  font-weight: 500;
+  color: var(--fg);
+}
+
+/* ── sign & pay ── */
+.wo .d-sign {
+  margin-top: 40px;
+  scroll-margin-top: 24px;
+}
+.wo .sign-lead {
+  margin-bottom: 20px;
+}
+.wo .sign-lead h2 {
+  margin: 0;
+  font: inherit;
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: -0.035em;
+}
+.wo .sign-lead p {
+  margin: 12px 0 0;
+  max-width: 34ch;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--muted);
+}
+.wo .steps {
+  border-top: 1px solid var(--rule);
+}
+.wo .stp {
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: 24px;
+}
+.wo .stp-h {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: baseline;
+  padding: 20px 0;
+}
+.wo .stp-h .n {
+  font-size: 15px;
+  color: var(--muted);
+}
+.wo .stp-h h3 {
+  margin: 0;
+  font: inherit;
+  transition: color 300ms ease;
+}
+.wo .stp:not([data-open]):not([data-done]) .stp-h h3 {
+  color: var(--muted);
+}
+.wo .stp-h .edit {
+  grid-column: 3;
+  grid-row: 1;
+  font-size: 15px;
+  color: var(--muted);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 4px;
+  transition: color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .stp-h .edit:hover {
+    color: var(--fg);
+  }
+}
+.wo .stp-h .sum {
+  grid-column: 2 / -1;
+  margin: 2px 0 0;
+  overflow: hidden;
+  font-size: 15px;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wo .stp-b {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 500ms var(--ease-out);
+}
+.wo .stp-b > div {
+  overflow: hidden;
+}
+.wo .stp[data-open] .stp-b {
+  grid-template-rows: 1fr;
+}
+.wo .stp-in {
+  display: grid;
+  gap: 14px;
+  padding: 0 0 28px 48px;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 300ms ease, transform 400ms var(--ease-out);
+}
+.wo .stp[data-open] .stp-in {
+  opacity: 1;
+  transform: none;
+  transition-delay: 80ms;
+}
+.wo .field {
+  display: grid;
+  gap: 6px;
+}
+.wo .field > span {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+/* 17px: iOS Safari zooms into inputs under 16px */
+.wo .field input {
+  height: 50px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--tile);
+  font: inherit;
+  font-size: 17px;
+  color: var(--fg);
+  outline: none;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+/* Inset ring: the fold around each step clips anything drawn outside the field */
+.wo .field input:focus {
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--fg);
+}
+.wo .field input:disabled {
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted);
+  opacity: 1;
+}
+.wo .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.wo .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 17px;
+  letter-spacing: -0.01em;
+  transition: transform 160ms var(--ease-out), opacity 200ms ease, background-color 200ms ease;
+}
+.wo .btn:active {
+  transform: scale(0.97);
+}
+.wo .btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  transform: none;
+}
+.wo .btn.ghost {
+  background: var(--tile);
+  color: var(--fg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .btn:not(:disabled):hover {
+    background: #000;
+  }
+  .wo .btn.ghost:not(:disabled):hover {
+    background: var(--tile-hi);
+  }
+}
+.wo .link {
+  justify-self: start;
+  font-size: 15px;
+  color: var(--muted);
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 4px;
+  transition: color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .link:hover {
+    color: var(--fg);
+  }
+}
+.wo .kv {
+  margin: 0;
+  border-radius: 10px;
+  background: var(--tile);
+}
+.wo .kv > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 11px 14px;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+.wo .kv > div + div {
+  border-top: 1px solid rgb(0 0 0 / 0.07);
+}
+.wo .kv dt {
+  color: var(--muted);
+}
+.wo .kv dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.wo .bank dd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-wrap: anywhere;
+}
+.wo .note {
+  margin: -4px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .err {
+  margin: -4px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--err);
+  letter-spacing: 0;
+}
+.wo .send {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+}
+.wo .send > div > span:first-child {
+  display: block;
+  font-size: 13px;
+  color: rgb(255 255 255 / 0.6);
+  letter-spacing: 0;
+}
+.wo .send .amt {
+  font-size: 30px;
+  letter-spacing: -0.03em;
+}
+
+/* Copy ↔ Copied share one cell and crossfade with a little blur */
+.wo .copy {
+  display: inline-grid;
+  flex: none;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--tile-hi);
+  font-size: 13px;
+  letter-spacing: 0;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+}
+.wo .send .copy {
+  background: rgb(255 255 255 / 0.14);
+}
+.wo .copy:active {
+  transform: scale(0.95);
+}
+.wo .copy > span {
+  grid-area: 1 / 1;
+  align-self: center;
+  transition: opacity 200ms ease, filter 200ms ease, transform 250ms var(--ease-out);
+}
+.wo .copy > span + span,
+.wo .copy[data-done] > span:first-child {
+  opacity: 0;
+  filter: blur(2px);
+  transform: scale(0.9);
+}
+.wo .copy[data-done] > span + span {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.wo .slip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px dashed rgb(0 0 0 / 0.25);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.wo .slip.has {
+  border-style: solid;
+  border-color: var(--rule);
+  cursor: default;
+}
+.wo .slip:focus-within {
+  border-color: var(--fg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .wo .slip:not(.has):hover {
+    background: var(--tile);
+  }
+}
+.wo .slip .ic {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 9px;
+  background: var(--tile-hi);
+  overflow: hidden;
+  font-size: 20px;
+}
+.wo .slip .ic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.wo .slip .tx {
+  min-width: 0;
+  flex: 1;
+}
+.wo .slip .tx span {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wo .slip small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* typed signature: the name written out stroke by stroke, one letter after another */
+.wo .sig-box {
+  display: flex;
+  flex-direction: column;
+  height: 176px;
+  padding: 0 18px 12px;
+  border-radius: 10px;
+  background: #f6f6f6;
+}
+.wo .sig-type {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+.wo .sig-type svg {
+  height: auto;
+  max-height: 100%;
+  color: var(--ink);
+  overflow: visible;
+}
+.wo .sig-type .empty {
+  margin-bottom: 18px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .sig-stroke {
+  stroke-dasharray: 1 2;
+  stroke-dashoffset: 1.02;
+  animation: wo-sig 550ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+@keyframes wo-sig {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.wo .sig-pad {
+  flex: 1;
+  min-height: 0;
+  margin: 0 -18px;
+}
+.wo .sig-pad canvas {
+  color: var(--ink) !important;
+}
+.wo .sig-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(0 0 0 / 0.25);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.wo .sig-acts {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 10px;
+}
+.wo .sig-acts .link {
+  font-size: 14px;
+}
+
+/* confirmation */
+.wo .done-card {
+  padding: 8px 0 8px;
+}
+.wo .done-card .tag {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.wo .done-card h2 {
+  margin: 20px 0 0;
+  font: 400 60px/64px var(--font);
+  letter-spacing: -0.04em;
+  animation: wo-rise-in 700ms var(--ease-out) both;
+}
+.wo .done-card p {
+  margin: 14px 0 24px;
+  max-width: 52ch;
+  font-size: 16px;
+  line-height: 22px;
+  color: var(--muted);
+  animation: wo-rise-in 700ms var(--ease-out) 80ms both;
+}
+.wo .done-card p b {
+  font-weight: 400;
+  color: var(--fg);
+}
+.wo .done-card .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  animation: wo-rise-in 700ms var(--ease-out) 140ms both;
+}
+@keyframes wo-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+  }
+}
+
+/* ── dock: total, Chat and Sign; slides up once the hero is gone, steps aside for the sign section ── */
+.wo-dock {
+  position: fixed;
+  z-index: 40;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px 6px 18px;
+  border-radius: 18px;
+  background: #222;
+  color: #fff;
+  font-family: var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.45);
+  transform: translate(-50%, 140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms ease;
+}
+.wo-dock[data-show] {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.wo-dock .tot {
+  display: grid;
+  min-width: 120px;
+  padding-right: 12px;
+}
+.wo-dock .tot > span:first-child {
+  font-size: 12px;
+  line-height: 15px;
+  color: rgb(255 255 255 / 0.55);
+  letter-spacing: 0;
+}
+.wo-dock .tot .amt {
+  font-size: 22px;
+  line-height: 26px;
+  letter-spacing: -0.03em;
+}
+.wo-dock a,
+.wo-dock button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 16px;
+  border-radius: 13px;
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), background-color 160ms ease;
+}
+.wo-dock a {
+  background: rgb(255 255 255 / 0.1);
+}
+.wo-dock a i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3ddc84;
+}
+.wo-dock button {
+  background: #fff;
+  color: #222;
+}
+.wo-dock a:active,
+.wo-dock button:active {
+  transform: scale(0.96);
+}
+/* Sign ↔ Pay crossfade in one cell */
+.wo-dock .lbl {
+  display: inline-grid;
+}
+.wo-dock .lbl > span {
+  grid-area: 1 / 1;
+  transition: opacity 180ms ease, filter 180ms ease, transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.wo-dock .lbl > span[data-on="false"] {
+  opacity: 0;
+  filter: blur(3px);
+  transform: translateY(5px);
+}
+.wo-dock .lbl > span[data-on="false"]:first-child {
+  transform: translateY(-5px);
+}
+
+.wo .bn {
+  font-family: "Hind Siliguri", var(--font);
+}
+
+/* ═════════ phone ═════════ */
+@media (max-width: 809px) {
+  .wo .wo-hero {
+    padding-top: 168px;
+  }
+  .wo .wo-hero h1 {
+    font-size: min(34px, calc((100vw - 30px) / 10.5));
+    line-height: 1.18;
+  }
+  .wo .hero-foot {
+    grid-template-columns: 1fr;
+    row-gap: 16px;
+    margin-top: 32px;
+  }
+  .wo .chip {
+    height: 30px;
+    padding: 0 11px;
+    border-radius: 9px;
+    font-size: 13px;
+  }
+  .wo .doc {
+    margin: 112px calc(-1 * max(15px, env(safe-area-inset-left, 0px))) 0;
+    padding: 28px max(15px, env(safe-area-inset-left, 0px)) 36px;
+    border-radius: 14px;
+  }
+  .wo .doc-head {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .wo .doc-head h2 {
+    font-size: 34px;
+    line-height: 38px;
+  }
+  .wo .doc-head dl {
+    grid-template-columns: auto 1fr;
+  }
+  .wo .d-colh {
+    display: none;
+  }
+  .wo .d-row {
+    grid-template-columns: 21px minmax(0, 1fr) auto;
+    gap: 12px;
+    font-size: 16px;
+    line-height: 21px;
+  }
+  .wo .c-was {
+    display: none;
+  }
+  .wo .scope-in ul {
+    grid-template-columns: 1fr;
+  }
+  .wo .d-tot {
+    grid-template-columns: 1fr;
+    padding-top: 20px;
+  }
+  .wo .d-tot .count {
+    display: none;
+  }
+  .wo .totals .grand .amt {
+    font-size: 36px;
+  }
+  .wo .d-terms ol {
+    grid-template-columns: 1fr;
+  }
+  .wo .stp-h {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
+  .wo .stp-in {
+    padding-left: 0;
+  }
+  .wo .two {
+    grid-template-columns: 1fr;
+  }
+  .wo .done-card h2 {
+    font-size: 40px;
+    line-height: 44px;
+  }
+  .wo-dock {
+    left: 8px;
+    right: 8px;
+    transform: translateY(140%);
+  }
+  .wo-dock[data-show] {
+    transform: none;
+  }
+  .wo-dock .tot {
+    min-width: 0;
+    margin-right: auto;
+  }
+  /* The dock carries Chat on phones, so the site's chat button steps aside */
+  html:has(.wo) [data-chat-widget] {
+    display: none !important;
+  }
+  .wo .foot {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wo .wo-hero h1 .line > span,
+  .wo .done-card h2,
+  .wo .done-card p,
+  .wo .done-card .acts {
+    animation: none;
+  }
+  .wo .sig-stroke {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .wo .box path,
+  .wo .stp-b,
+  .wo .stp-in,
+  .wo .scope-b,
+  .wo .scope-in,
+  .wo .d-terms-b,
+  .wo .d-terms ol,
+  .wo-dock {
+    transition-duration: 0ms !important;
+  }
+  .wo .stp-in,
+  .wo .scope-in,
+  .wo .d-terms ol {
+    transform: none;
+  }
+}
