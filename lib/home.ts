@@ -1,5 +1,7 @@
 // Content for the homepage (app/page.tsx). Layout follows the Archlinea template; copy is Arc's.
 
+import type { ShapeName } from "@/components/home/dither-mind"
+
 // Where the hero film is served from. Set NEXT_PUBLIC_VIDEO_BASE to the Cloudflare URL
 // (an R2 bucket on a custom domain, ending in "/") once sk-achar.mp4 is uploaded there.
 export const VIDEO_BASE = process.env.NEXT_PUBLIC_VIDEO_BASE ?? "/home/work/"
@@ -26,14 +28,13 @@ export const work: WorkCard[] = [
   { name: "Mango Lover", href: "https://www.mangolover.com.bd/", img: "w-ml-foot", wide: true, alt: "Mango Lover footer on desktop" },
 ]
 
-export type AsciiKind = "flow" | "ledger" | "bars" | "web" | "ring"
-
-export const services: { name: string; body: string; ascii: AsciiKind }[] = [
-  { name: "Web Design & Development", ascii: "web", body: "Custom websites and online stores, designed and built from scratch for your brand, fast on every device." },
-  { name: "Internal Tools & Dashboards", ascii: "bars", body: "Admin panels, dashboards and internal apps built around how your team already works." },
-  { name: "AI Automation", ascii: "flow", body: "AI agents and workflows that take repetitive work off your team, connected to the tools you already use." },
-  { name: "Custom Software & ERP", ascii: "ledger", body: "Bespoke web and mobile apps and business systems, designed, built and maintained for your company alone." },
-  { name: "Brand & Product Design", ascii: "ring", body: "Identity, interfaces and product design, so your brand and your software look and feel like one." },
+// Each tile's dithered object steps through three shapes; the last is the result it lingers on.
+export const services: { name: string; body: string; steps: [ShapeName, ShapeName, ShapeName] }[] = [
+  { name: "Web Design & Development", steps: ["search", "browser", "laptop"], body: "Custom websites and online stores, designed and built from scratch for your brand, fast on every device." },
+  { name: "Internal Tools & Dashboards", steps: ["gears", "calculator", "bars"], body: "Admin panels, dashboards and internal apps built around how your team already works." },
+  { name: "Intelligent Automation", steps: ["sparkle", "flow", "check"], body: "AI agents and workflows that take repetitive work off your team, connected to the tools you already use." },
+  { name: "Custom Software & ERP", steps: ["globe", "chat", "jigsaw"], body: "Bespoke web and mobile apps and business systems, designed, built and maintained for your company alone." },
+  { name: "Brand & Product Design", steps: ["bulb", "star", "diamond"], body: "Identity, interfaces and product design, so your brand and your software look and feel like one." },
 ]
 
 // Logo heights are tuned by eye so tall and wide marks carry the same weight.

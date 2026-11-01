@@ -2,113 +2,87 @@
 
 import { useEffect, useRef } from "react"
 import { services } from "@/lib/home"
-import { fields } from "./ascii-fields"
+import { MORPH_MS, Mind, type ShapeName } from "./dither-mind"
 
-const FONT = '10px "SF Mono", Menlo, Consolas, ui-monospace, monospace'
-const CELL_H = 12.5
-const INK = "#333333"
+const STEP_MS = 2600
+const LINGER_MS = 1400 // extra time on each service's last shape, its "result"
 
-// Five service tiles, each with a live ASCII field drawn on a canvas. Fields only animate
-// while on screen, speed up while the tile is hovered, and tick once a second for reduced motion.
+// Five service tiles, each with a dithered 3D object that steps through three shapes, like an agent narrating its work.
+// Dots conjure into the first shape when the row scrolls in. No two tiles ever show the same shape at once:
+// a tile claims a shape before morphing to it, and skips ahead when another tile holds it.
+// Tiles only step while on screen; with reduced motion each shows its final shape, still.
 export default function ServiceTiles() {
   const listRef = useRef<HTMLUListElement>(null)
 
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     const tiles = Array.from(listRef.current!.querySelectorAll<HTMLLIElement>(".tile"))
+    const held = new Map<ShapeName, number>()
+    const free = (s: ShapeName, owner: number) => !held.has(s) || held.get(s) === owner
+    const timers = new Set<number>()
+    const later = (fn: () => void, ms: number) => {
+      const id = window.setTimeout(() => {
+        timers.delete(id)
+        fn()
+      }, ms)
+      timers.add(id)
+      return id
+    }
     const cleanups: (() => void)[] = []
 
-    const items = tiles.map((tile, i) => {
-      const cv = tile.querySelector("canvas")!
-      const it = {
-        tile,
-        cv,
-        ctx: cv.getContext("2d")!,
-        field: fields[services[i].ascii],
-        t: Math.random() * 10,
-        speed: 1,
-        target: 1,
-        on: false,
-        C: 0,
-        R: 0,
-        cw: 6,
-        ox: 0,
-        oy: 0,
+    tiles.forEach((tile, i) => {
+      const steps = services[i].steps
+      const host = tile.querySelector<HTMLElement>(".mind")!
+      const pref = reduced ? [2, 1, 0] : [0, 1, 2]
+      let k = pref.find((j) => free(steps[j], i)) ?? pref[0]
+      held.set(steps[k], i)
+      const mind = new Mind(host, host.querySelector("canvas")!, steps[k], i * 2.3 + 1, reduced)
+      if (!mind.ok) return
+      let timer = 0
+      let inView = false
+
+      const advance = () => {
+        // next step whose shape nobody else is showing; if both are taken, hold and look again shortly
+        const next = [1, 2].map((d) => (k + d) % 3).find((j) => free(steps[j], i))
+        if (next === undefined) {
+          timer = later(advance, 600)
+          return
+        }
+        const prev = steps[k]
+        k = next
+        held.set(steps[k], i)
+        mind.show(steps[k])
+        later(() => held.get(prev) === i && held.delete(prev), MORPH_MS / 2)
+        tick()
       }
-      const size = () => {
-        const r = cv.getBoundingClientRect()
-        if (!r.width) return
-        const d = Math.min(2, window.devicePixelRatio || 1)
-        cv.width = Math.round(r.width * d)
-        cv.height = Math.round(r.height * d)
-        it.ctx.setTransform(d, 0, 0, d, 0, 0)
-        it.ctx.font = FONT
-        it.ctx.textBaseline = "top"
-        it.cw = it.ctx.measureText("M").width
-        it.C = Math.floor(r.width / it.cw)
-        it.R = Math.floor(r.height / CELL_H)
-        it.ox = (r.width - it.C * it.cw) / 2
-        it.oy = (r.height - it.R * CELL_H) / 2
-        draw(it)
+      const tick = () => {
+        clearTimeout(timer)
+        if (!inView || reduced) return
+        timer = later(advance, STEP_MS + (k === 2 ? LINGER_MS : 0))
       }
-      const ro = new ResizeObserver(size)
-      ro.observe(cv)
-      const io = new IntersectionObserver(([e]) => (it.on = e.isIntersecting))
-      io.observe(cv)
-      const enter = () => (it.target = 2.6)
-      const leave = () => (it.target = 1)
-      tile.addEventListener("pointerenter", enter)
-      tile.addEventListener("pointerleave", leave)
+
+      let conjured = false
+      const io = new IntersectionObserver(
+        ([e]) => {
+          inView = e.isIntersecting
+          if (!inView) return clearTimeout(timer)
+          if (!conjured) {
+            conjured = true
+            later(() => mind.conjure(), i * 90) // left to right
+          }
+          later(tick, i * 380)
+        },
+        { threshold: 0.35 },
+      )
+      io.observe(tile)
       cleanups.push(() => {
-        ro.disconnect()
         io.disconnect()
-        tile.removeEventListener("pointerenter", enter)
-        tile.removeEventListener("pointerleave", leave)
+        mind.destroy()
       })
-      return it
     })
 
-    function draw(it: (typeof items)[number]) {
-      if (!it.C) return
-      const { ctx, C, R, cw, ox, oy } = it
-      ctx.clearRect(0, 0, it.cv.width, it.cv.height)
-      ctx.fillStyle = INK
-      const boost = Math.min(1, 0.85 + (it.speed - 1) * 0.1)
-      it.field(
-        (x, y, ch, a) => {
-          if (ch === " " || x < 0 || y < 0 || x >= C || y >= R) return
-          ctx.globalAlpha = Math.min(1, a * boost)
-          ctx.fillText(ch, ox + x * cw, oy + y * CELL_H)
-        },
-        C,
-        R,
-        it.t,
-      )
-      ctx.globalAlpha = 1
-    }
-
-    let frame = 0
-    let timer = 0
-    if (reduce) {
-      timer = window.setInterval(() => items.forEach((it) => it.on && ((it.t += 1), draw(it))), 1000)
-    } else {
-      let last = performance.now()
-      frame = requestAnimationFrame(function loop(now) {
-        const dt = Math.min(0.05, (now - last) / 1000)
-        last = now
-        for (const it of items) {
-          if (!it.on) continue
-          it.speed += (it.target - it.speed) * 0.08 // ease into and out of the hover speed-up
-          it.t += dt * it.speed
-          draw(it)
-        }
-        frame = requestAnimationFrame(loop)
-      })
-    }
-
     return () => {
-      cancelAnimationFrame(frame)
-      clearInterval(timer)
+      timers.forEach(clearTimeout)
       cleanups.forEach((c) => c())
     }
   }, [])
@@ -118,7 +92,7 @@ export default function ServiceTiles() {
       {services.map((s) => (
         <li className="tile" key={s.name}>
           <h3>{s.name}</h3>
-          <div className="ascii" aria-hidden="true">
+          <div className="mind" aria-hidden="true">
             <canvas />
           </div>
           <p>{s.body}</p>
