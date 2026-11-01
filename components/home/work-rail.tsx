@@ -39,7 +39,8 @@ function Card({ w, copy }: { w: WorkCard; copy: number }) {
   )
 }
 
-// A strip of work that drifts left forever and can be dragged, with momentum after release.
+// A strip of work that drifts left forever. With a mouse it can be dragged, with momentum after release;
+// on touch screens it ignores the finger and keeps a steady drift.
 export default function WorkRail() {
   const railRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -84,7 +85,9 @@ export default function WorkRail() {
     })
 
     const down = (e: PointerEvent) => {
-      if (dragging || e.button) return
+      // Mouse only. On touch the rail just keeps drifting: a finger landing on it to scroll the page
+      // must not stop it, nudge it sideways, or fling it. Taps still open the card.
+      if (dragging || e.button || e.pointerType !== "mouse") return
       dragging = true
       moved = 0
       v = 0
