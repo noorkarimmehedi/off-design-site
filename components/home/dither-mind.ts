@@ -183,6 +183,8 @@ type Uniforms = Record<"res" | "time" | "a" | "b" | "t" | "scale" | "front" | "f
 
 // One canvas and one GL context per tile. A single shared rAF loop draws only the minds that are on screen.
 const minds = new Set<Mind>()
+// Canvases whose GPU context is due to be freed after an unmount
+const releasing = new WeakMap<HTMLCanvasElement, number>()
 let raf = 0
 let last = 0
 const start = typeof performance !== "undefined" ? performance.now() : 0
@@ -228,19 +230,25 @@ export class Mind {
     this.A = this.B = SHAPES[shape]
     this.form = reduced ? 1 : 0
     this.hold = !reduced
+    // A remount on the same canvas (React Strict Mode, Fast Refresh) cancels the pending release
+    clearTimeout(releasing.get(canvas))
+    releasing.delete(canvas)
     const gl = (this.gl = canvas.getContext("webgl2", { antialias: false, alpha: true, premultipliedAlpha: true, powerPreference: "low-power" }))
     this.ro = new ResizeObserver(() => this.resize())
     this.io = new IntersectionObserver(([e]) => {
       this.visible = e.isIntersecting
       kick()
     }, { rootMargin: "80px" })
-    this.ok = !!gl && this.build()
+    // The browser can hand back a context it has already taken away (too many canvases, a GPU
+    // reset). Building on it fails with empty logs, so wait for webglcontextrestored instead.
+    const lost = !!gl && gl.isContextLost()
+    this.ok = !!gl && (lost || this.build())
     if (!this.ok) return
     this.ro.observe(host)
     this.io.observe(host)
     canvas.addEventListener("webglcontextlost", this.onLost)
     canvas.addEventListener("webglcontextrestored", this.onRestored)
-    minds.add(this)
+    if (!lost) minds.add(this)
   }
 
   private onLost = (e: Event) => {
@@ -268,6 +276,8 @@ export class Mind {
     gl.attachShader(prog, fs)
     gl.linkProgram(prog)
     if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      // A lost context fails every call with empty logs; webglcontextrestored rebuilds it
+      if (gl.isContextLost()) return false
       console.error(gl.getShaderInfoLog(fs) || gl.getProgramInfoLog(prog))
       return false
     }
@@ -360,7 +370,13 @@ export class Mind {
     this.io.disconnect()
     this.canvas.removeEventListener("webglcontextlost", this.onLost)
     this.canvas.removeEventListener("webglcontextrestored", this.onRestored)
-    this.gl?.getExtension("WEBGL_lose_context")?.loseContext()
+    // Free the GPU context, but a tick later: if the component remounts onto this same canvas
+    // straight away, the new Mind cancels this and reuses the live context instead of a dead one
+    const ext = this.gl?.getExtension("WEBGL_lose_context")
+    if (ext) releasing.set(this.canvas, window.setTimeout(() => {
+      releasing.delete(this.canvas)
+      ext.loseContext()
+    }, 0))
   }
 }
 
