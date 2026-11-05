@@ -7,8 +7,9 @@ import { RollLink } from "@/components/home/roll"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
-import { clientLogos, fanImages, WHATSAPP } from "@/lib/home"
+import { clientLogos, concepts, fanImages, WHATSAPP } from "@/lib/home"
 import { satoshi } from "@/lib/fonts"
+import { AnnotatedText } from "@/components/ui/annotated-text"
 import "./home.css"
 
 
@@ -16,6 +17,7 @@ import "./home.css"
 export const viewport: Viewport = { themeColor: "#ededed" }
 
 const TALK = "Let's Talk"
+const INDUSTRIES = ["FMCG", "food", "pharma", "agri", "manufacturing", "retail"]
 
 function Arrow({ className }: { className: string }) {
   return (
@@ -49,9 +51,16 @@ export default function Page() {
         <h2 className="label rv">About</h2>
         <div className="copy rv">
           <p>
-            arc is an AI automation and software company for Bangladesh&apos;s industries. We work with FMCG, food, pharma,
-            agri, manufacturing and retail teams that still run on spreadsheets, phone calls and paper, and we replace that
-            manual work with systems that run on their own.
+            arc is a technology firm for Bangladesh&apos;s industries. We build websites, AI systems and custom software for{" "}
+            {INDUSTRIES.map((name, i) => (
+              <span key={name}>
+                <AnnotatedText variant="highlight" delay={0.15 + i * 0.18} duration={0.5}>
+                  {name}
+                </AnnotatedText>
+                {i < INDUSTRIES.length - 2 ? ", " : i === INDUSTRIES.length - 2 ? " and " : ""}
+              </span>
+            ))}{" "}
+            teams, and we build each one around the way that team actually works.
           </p>
           <p>
             We work as your product and engineering team. From the first idea to launch and beyond, we design, build and
@@ -114,6 +123,34 @@ export default function Page() {
               </li>
             )
           })}
+        </ul>
+      </section>
+
+      <section aria-labelledby="ah-whatif">
+        <div className="svc-head">
+          <h2 className="label rv" id="ah-whatif">
+            What if
+          </h2>
+          <p className="rv">
+            What if we designed and engineered the sites of brands Bangladesh uses every day? These are our own concepts,
+            not commissioned work.
+          </p>
+        </div>
+        <ul className="concepts rv">
+          {concepts.map((c) => (
+            <li key={c.name}>
+              <a className="concept" href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.name}, ${c.category} website concept (opens in a new tab)`}>
+                <span className="shot">
+                  <img src={c.image} alt="" width={1600} height={1000} loading="lazy" draggable={false} />
+                </span>
+                <span className="meta">
+                  <span className="name">{c.name}</span>
+                  <span className="tag">{c.category} ↗</span>
+                </span>
+                <span className="body">{c.body}</span>
+              </a>
+            </li>
+          ))}
         </ul>
       </section>
 

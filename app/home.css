@@ -336,6 +336,75 @@ html:has(.ah) [data-edge-blur] {
   image-rendering: pixelated;
 }
 
+/* ── what if: our own concept redesigns, a screenshot over a name and one line ── */
+.ah .concepts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.ah .concept {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 10px 10px 20px;
+  border-radius: 12px;
+  background: var(--tile);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 250ms ease, transform 400ms var(--ease-out);
+}
+.ah .concept .shot {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--tile-hi);
+}
+.ah .concept img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 600ms var(--ease-out);
+}
+.ah .concept .meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-inline: 10px;
+}
+.ah .concept .name {
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: -0.03em;
+}
+.ah .concept .tag,
+.ah .concept .body {
+  font-size: 15px;
+  line-height: 21px;
+  letter-spacing: -0.01em;
+  color: var(--muted);
+}
+.ah .concept .tag {
+  flex: none;
+  transition: color 200ms ease;
+}
+.ah .concept .body {
+  padding-inline: 10px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ah .concept:hover { background: var(--tile-hi); transform: translateY(-4px); }
+  .ah .concept:hover img { transform: scale(1.03); }
+  .ah .concept:hover .tag { color: var(--fg); }
+}
+.ah .concept:active { transform: scale(0.98); }
+
 /* ── clients: compact soft tiles in the Services card style; ↗ marks a live site ── */
 .ah .clients {
   display: grid;
@@ -395,10 +464,6 @@ html:has(.ah) [data-edge-blur] {
 .ah .wordmark.gala {
   font: 400 28px/1 "Playfair Display", Georgia, serif;
   letter-spacing: -0.02em;
-}
-.ah .wordmark.cober {
-  font: 400 19px/1 ui-serif, "New York", "Iowan Old Style", Baskerville, Georgia, serif;
-  letter-spacing: -0.01em;
 }
 @media (hover: hover) and (pointer: fine) {
   .ah .clients a.cl:hover { background: var(--tile-hi); transform: translateY(-4px); }
@@ -747,12 +812,18 @@ html:has(.ah) [data-edge-blur] {
   .ah .mind { min-height: 180px; }
   .ah .tile h3 { font-size: 20px; line-height: 25px; }
   .ah .tile p { font-size: 14px; line-height: 19px; }
+  /* What if: swipe through the concepts like the Services tiles */
+  .ah .concepts { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; margin-inline: -15px; padding-inline: 15px; scroll-padding-inline: 15px; scrollbar-width: none; }
+  .ah .concepts::-webkit-scrollbar { display: none; }
+  .ah .concepts > li { flex: none; width: 86%; scroll-snap-align: start; }
+  .ah .concept .name { font-size: 20px; line-height: 25px; }
+  .ah .concept .tag,
+  .ah .concept .body { font-size: 14px; line-height: 19px; }
   /* Clients tiles: two across on phones */
   .ah .clients { grid-template-columns: 1fr 1fr; gap: 8px; }
   .ah .clients .cl { height: 84px; }
   .ah .clients .logo { height: calc(var(--h) * 0.64); }
   .ah .wordmark.gala { font-size: 24px; }
-  .ah .wordmark.cober { font-size: 17px; }
   .ah .qa > button { padding-bottom: 16px; }
   .ah .qa + .qa > button { padding-top: 16px; }
   .ah .ans p { font-size: 14px; line-height: 19px; }
@@ -763,12 +834,13 @@ html:has(.ah) [data-edge-blur] {
   .ah .talk svg { display: none; }
   /* The word already fills the width here, so the desktop slide would push it off screen */
   .ah .talk:hover .word { transform: none; }
-  .ah .foot { grid-template-columns: auto 1fr; column-gap: 36px; padding-top: 128px; row-gap: 0; }
-  .ah .foot nav { grid-column: 1 / -1; margin-bottom: 48px; }
+  /* One rhythm: 28px between rows, 16px between items side by side */
+  .ah .foot { grid-template-columns: auto 1fr; column-gap: 16px; row-gap: 28px; padding-top: 128px; }
+  .ah .foot nav { grid-column: 1 / -1; column-gap: 16px; row-gap: 6px; }
   .ah .foot .col { gap: 4px; }
   .ah .foot .fine.l,
   .ah .foot .fine.r { grid-column: 1 / -1; }
-  .ah .foot .fine.l { margin-top: 48px; }
+  .ah .foot .fine { font-size: 14px; line-height: 19px; }
   /* Room for the floating Chat button so it doesn't sit on the copyright line */
   .ah .foot { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
@@ -781,6 +853,8 @@ html:has(.ah) [data-edge-blur] {
   .ah .card,
   .ah .card img,
   .ah .card video,
+  .ah .concept,
+  .ah .concept img,
   .ah .talk .word,
   .ah .talk svg { transition-duration: 0ms; }
 }

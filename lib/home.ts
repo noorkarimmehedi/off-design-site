@@ -40,7 +40,14 @@ export const services: { name: string; body: string; steps: [ShapeName, ShapeNam
 // Logo heights are tuned by eye so tall and wide marks carry the same weight.
 export type ClientLogo =
   | { name: string; logo: string; height: number; href?: string }
-  | { name: string; wordmark: "gala" | "cober"; href?: string }
+  | { name: string; wordmark: "gala"; href?: string }
+
+// "What if": our own unsolicited redesigns of brands we don't work with, served from this site
+export const concepts: { name: string; category: string; href: string; image: string; body: string }[] = [
+  { name: "Ghorer Bazar", category: "Organic Food", href: "/ghorerbazar", image: "/home/concepts/ghorerbazar.webp", body: "A product page built for the way people here buy: cash on delivery, WhatsApp and a phone call." },
+  { name: "Gentleman's Wardrobe", category: "Clothing", href: "/gw", image: "/home/concepts/gw.webp", body: "A tailoring house that leads with craft, ready to wear on one side and made to measure on the other." },
+  { name: "SSLCOMMERZ", category: "SaaS", href: "/sslcommerz", image: "/home/concepts/sslcommerz.webp", body: "Payments in one line: cards, bKash, Nagad and EMI through a single integration." },
+]
 
 export const clientLogos: ClientLogo[] = [
   { name: "Sera Khabar", logo: "sera-khabar", height: 56, href: "https://www.serakhabar.com/" },
@@ -49,8 +56,8 @@ export const clientLogos: ClientLogo[] = [
   { name: "Gala", wordmark: "gala" },
   { name: "Angonaloy", logo: "angonaloy", height: 30, href: "https://angonaloy.shop/" },
   { name: "Tar", logo: "tar", height: 64, href: "https://tar-storefront.tarbd.workers.dev/" },
-  { name: "Cober Collective", wordmark: "cober" },
-  { name: "Listen Labs", logo: "listen-labs", height: 22 },
+  { name: "Rajshahi Aam Bari", logo: "rajshahi-aam-bari", height: 64 },
+  { name: "Classiya", logo: "classiya", height: 56 },
 ]
 
 export const faqs: { q: string; a: string }[] = [
