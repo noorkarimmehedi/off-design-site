@@ -3,10 +3,10 @@ import CalEmbed from "@/components/cal-embed"
 import DhakaTime from "@/components/home/dhaka-time"
 import FaqList from "@/components/home/faq-list"
 import HomeHeader from "@/components/home/home-header"
-import { RollLink } from "@/components/home/roll"
+import SiteFoot from "@/components/home/site-foot"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import { satoshi } from "@/lib/fonts"
-import { callFaqs, callSteps, WHATSAPP } from "@/lib/home"
+import { callFaqs, callSteps } from "@/lib/home"
 import "../home.css"
 import "./call.css"
 
@@ -87,22 +87,7 @@ export default function CallPage() {
         <FaqList items={callFaqs} id="cp" />
       </section>
 
-      <footer className="foot">
-        <nav aria-label="Footer">
-          <RollLink href="/">Home</RollLink>
-          <RollLink href="/work">Work</RollLink>
-          <RollLink href="/#about">About</RollLink>
-          <RollLink href="/call">Call</RollLink>
-          <RollLink href="/#contact">Contact</RollLink>
-        </nav>
-        <div className="col">
-          <RollLink href={WHATSAPP}>Chat on WhatsApp ↗</RollLink>
-        </div>
-        <div className="col">
-          <RollLink href="/work">Portfolio ↗</RollLink>
-        </div>
-        <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
-      </footer>
+      <SiteFoot />
       <ScrollReveal />
     </main>
   )

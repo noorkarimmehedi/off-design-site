@@ -658,35 +658,6 @@ html:has(.ah) [data-edge-blur] {
   100% { opacity: 1; }
 }
 
-/* ── footer ── */
-.ah .foot {
-  display: grid;
-  grid-template-columns: 50% 290px 1fr;
-  padding-top: 140px;
-  padding-bottom: 25px;
-  row-gap: 40px;
-}
-.ah .foot nav {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.ah .foot .col {
-  display: grid;
-  gap: 10px;
-  align-content: start;
-}
-.ah .foot .fine {
-  margin: 0;
-  color: var(--soft);
-}
-.ah .foot .fine.l {
-  grid-column: 1;
-}
-.ah .foot .fine.r {
-  grid-column: 2 / span 2;
-}
-
 /* ── phone menu sheet ── */
 .ah .sheet {
   position: absolute;
@@ -834,15 +805,6 @@ html:has(.ah) [data-edge-blur] {
   .ah .talk svg { display: none; }
   /* The word already fills the width here, so the desktop slide would push it off screen */
   .ah .talk:hover .word { transform: none; }
-  /* One rhythm: 28px between rows, 16px between items side by side */
-  .ah .foot { grid-template-columns: auto 1fr; column-gap: 16px; row-gap: 28px; padding-top: 128px; }
-  .ah .foot nav { grid-column: 1 / -1; column-gap: 16px; row-gap: 6px; }
-  .ah .foot .col { gap: 4px; }
-  .ah .foot .fine.l,
-  .ah .foot .fine.r { grid-column: 1 / -1; }
-  .ah .foot .fine { font-size: 14px; line-height: 19px; }
-  /* Room for the floating Chat button so it doesn't sit on the copyright line */
-  .ah .foot { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
 }
 
 @media (prefers-reduced-motion: reduce) {

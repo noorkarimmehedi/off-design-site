@@ -3,11 +3,11 @@ import CallIsland from "@/components/home/call-island"
 import CursorDot from "@/components/home/cursor-dot"
 import FaqList from "@/components/home/faq-list"
 import HomeHeader from "@/components/home/home-header"
-import { RollLink } from "@/components/home/roll"
+import SiteFoot from "@/components/home/site-foot"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
-import { clientLogos, concepts, fanImages, WHATSAPP } from "@/lib/home"
+import { clientLogos, concepts, fanImages } from "@/lib/home"
 import { satoshi } from "@/lib/fonts"
 import { AnnotatedText } from "@/components/ui/annotated-text"
 import "./home.css"
@@ -193,22 +193,7 @@ export default function Page() {
         <Arrow className="a-out" />
       </a>
 
-      <footer className="foot">
-        <nav aria-label="Footer">
-          <RollLink href="/">Home</RollLink>
-          <RollLink href="/work">Work</RollLink>
-          <RollLink href="#about">About</RollLink>
-          <RollLink href="/call">Call</RollLink>
-          <RollLink href="#contact">Contact</RollLink>
-        </nav>
-        <div className="col">
-          <RollLink href="/call">Book a call ↗</RollLink>
-        </div>
-        <div className="col">
-          <RollLink href={WHATSAPP}>Chat on WhatsApp ↗</RollLink>
-        </div>
-        <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
-      </footer>
+      <SiteFoot />
 
       <CallIsland />
       <CursorDot />

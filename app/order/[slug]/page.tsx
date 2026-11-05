@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next"
 import HomeHeader from "@/components/home/home-header"
-import { RollLink } from "@/components/home/roll"
+import SiteFoot from "@/components/home/site-foot"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import OrderBuilder from "@/components/work-order/order-builder"
 import { satoshi } from "@/lib/fonts"
-import { WHATSAPP } from "@/lib/home"
 import { getCatalog } from "@/lib/work-order/catalog"
 import { resolveClient } from "@/lib/work-order/clients"
 import "../../home.css"
@@ -43,22 +42,7 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ sl
         <HomeHeader />
       </div>
       <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} />
-      <footer className="foot print:hidden">
-        <nav aria-label="Footer">
-          <RollLink href="/">Home</RollLink>
-          <RollLink href="/work">Work</RollLink>
-          <RollLink href="/#about">About</RollLink>
-          <RollLink href="/call">Call</RollLink>
-          <RollLink href="/#contact">Contact</RollLink>
-        </nav>
-        <div className="col">
-          <RollLink href="/call">Book a call ↗</RollLink>
-        </div>
-        <div className="col">
-          <RollLink href={WHATSAPP}>Chat on WhatsApp ↗</RollLink>
-        </div>
-        <p className="fine l">© 2026 Arc Labs Corporation. All Rights Reserved.</p>
-      </footer>
+      <SiteFoot />
       <ScrollReveal />
     </main>
   )

@@ -1200,7 +1200,7 @@
   html:has(.wo) [data-chat-widget] {
     display: none !important;
   }
-  .wo .foot {
+  .wo .sf-mark {
     padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
   }
 }

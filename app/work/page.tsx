@@ -5,7 +5,7 @@ import LiveEmbed from "@/components/live-embed"
 import ProjectCard from "@/components/project-card"
 import RevealOnView from "@/components/reveal-on-view"
 import ScrollScale from "@/components/scroll-scale"
-import SiteFooter from "@/components/site-footer"
+import SiteFoot from "@/components/home/site-foot"
 import SiteHeader from "@/components/site-header"
 import TodayDate from "@/components/today-date"
 import TransitionLink from "@/components/transition-link"
@@ -124,7 +124,7 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <SiteFooter hideSignature />
+      <SiteFoot />
     </main>
   )
 }

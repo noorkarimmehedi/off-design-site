@@ -1,0 +1,111 @@
+/* Site-wide footer (components/home/site-foot.tsx). Self-contained: own palette, font and
+   gutters, so it reads the same inside the homepage shell and on the dark /work page. */
+.sf {
+  --sf-bg: #ededed;
+  --sf-ink: rgb(122 122 122 / 0.6);
+  --sf-ink-hi: #7a7a7a;
+  --sf-rule: rgb(0 0 0 / 0.16);
+  --sf-gutter-l: max(15px, env(safe-area-inset-left, 0px));
+  --sf-gutter-r: max(15px, env(safe-area-inset-right, 0px));
+  position: relative;
+  z-index: 10; /* above page decoration such as /work's frame guides */
+  margin-top: 140px;
+  clip-path: inset(0);
+  color-scheme: light;
+}
+/* Inside the homepage shell, step out of its side padding to run edge to edge */
+.ah .sf {
+  margin-left: calc(-1 * var(--sf-gutter-l));
+  margin-right: calc(-1 * var(--sf-gutter-r));
+}
+.sf *,
+.sf *::before,
+.sf *::after {
+  box-sizing: border-box;
+}
+.sf .curtain-in {
+  padding-left: var(--sf-gutter-l);
+  padding-right: var(--sf-gutter-r);
+  border-top: 1px solid var(--sf-rule);
+  background: var(--sf-bg);
+}
+.sf .curtain-in.fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.sf-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 24px;
+  padding: 64px 0 40px;
+  font: 400 11px/1.6 var(--font-satoshi), "Satoshi", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  letter-spacing: 0;
+  color: var(--sf-ink);
+  -webkit-font-smoothing: antialiased;
+}
+.sf-grid p {
+  margin: 0;
+}
+.sf-grid a {
+  color: inherit;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: color 150ms ease;
+}
+.sf-grid a:focus-visible {
+  outline: 2px solid #333;
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sf-grid a:hover { color: var(--sf-ink-hi); }
+}
+.sf-credit {
+  grid-column: 1 / span 6;
+  max-width: 560px;
+}
+.sf-credit a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.sf-legal {
+  grid-column: 8 / span 5;
+  display: grid;
+  align-content: start;
+  row-gap: 8px;
+}
+.sf-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.sf-mark {
+  line-height: 0;
+}
+.pressed-mark {
+  --press-shade: #00000038;
+  --press-light: #ffffff8c;
+  --press-floor: #00000009;
+  --press-lip: #ffffffe6;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4141 / 1517;
+  color: color-mix(in oklab, var(--sf-bg), black 4%);
+}
+
+@media (max-width: 809px) {
+  .sf { margin-top: 96px; }
+  .sf-grid { grid-template-columns: 1fr; }
+  .sf-credit,
+  .sf-legal { grid-column: 1; }
+  /* Room under the mark for the floating Chat button */
+  .sf-mark { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media print {
+  .sf { display: none; }
+}
