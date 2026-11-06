@@ -794,6 +794,22 @@ html:has(.ah) [data-edge-blur] {
   .ah .split { grid-template-columns: 1fr; row-gap: 40px; padding-top: 144px; }
   .ah #about { padding-top: 152px; }
   .ah .copy { gap: 20px; max-width: none; }
+  /* The drawn highlight is one unbreakable box, which leaves long phrases ("industrial manufacturing")
+     stranding ragged lines on a phone. Here it becomes a marker stroke that wraps with the text. */
+  .ah .copy .hl {
+    display: inline;
+    position: static;
+    white-space: normal;
+    padding: 0 0.12em;
+    margin: 0 -0.12em;
+    border-radius: 0.2em;
+    background: linear-gradient(rgb(253 224 71 / 0.6), rgb(253 224 71 / 0.6)) 0 60% / 100% 1.1em no-repeat;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background-size 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .ah .copy .hl[data-annotation-pending] { background-size: 0% 1.1em; }
+  .ah .copy .hl > svg { display: none; }
   .ah .svc-head { grid-template-columns: 1fr; row-gap: 40px; padding-top: 144px; margin-bottom: 36px; }
   .ah .tiles { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; margin-inline: -15px; padding-inline: 15px; scroll-padding-inline: 15px; scrollbar-width: none; }
   .ah .tiles::-webkit-scrollbar { display: none; }

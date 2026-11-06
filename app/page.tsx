@@ -18,7 +18,7 @@ import "./home.css"
 export const viewport: Viewport = { themeColor: "#ededed" }
 
 const TALK = "Let's Talk"
-const INDUSTRIES = ["FMCG", "food", "pharma", "agri", "manufacturing", "retail"]
+const INDUSTRIES = ["consumer goods", "food and beverage", "life sciences", "agribusiness", "industrial manufacturing", "retail"]
 
 function Arrow({ className }: { className: string }) {
   return (
@@ -52,20 +52,20 @@ export default function Page() {
         <h2 className="label rv">About</h2>
         <div className="copy rv">
           <p>
-            arc is a technology firm for Bangladesh&apos;s industries. We build websites, AI systems and custom software for{" "}
+            arc is a technology firm serving Bangladesh&apos;s{" "}
             {INDUSTRIES.map((name, i) => (
               <span key={name}>
-                <AnnotatedText variant="highlight" delay={0.15 + i * 0.18} duration={0.5}>
+                <AnnotatedText variant="highlight" className="hl" delay={0.15 + i * 0.18} duration={0.5}>
                   {name}
                 </AnnotatedText>
-                {i < INDUSTRIES.length - 2 ? ", " : i === INDUSTRIES.length - 2 ? " and " : ""}
+                {i < INDUSTRIES.length - 2 ? ", " : i === INDUSTRIES.length - 2 ? ", and " : ""}
               </span>
             ))}{" "}
-            teams, and we build each one around the way that team actually works.
+            sectors. We build websites, AI systems, and custom software tailored to the unique operations of each business.
           </p>
           <p>
-            We work as your product and engineering team. From the first idea to launch and beyond, we design, build and
-            run custom software and AI automation that fits your business exactly.
+            We work as your product and engineering team. From the first idea to launch and beyond, we design, build, and
+            operate custom software and AI automation built around how your business works.
           </p>
         </div>
       </section>
