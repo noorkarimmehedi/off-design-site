@@ -373,10 +373,14 @@ html:has(.ah) [data-edge-blur] {
   transition: transform 600ms var(--ease-out);
 }
 .ah .concept .shot { position: relative; }
+.ah .concept .zoom {
+  position: absolute;
+  inset: 0;
+  transition: transform 600ms var(--ease-out);
+}
+.ah .concept .zoom img { transition: none; }
 .ah .concept iframe {
   position: absolute;
-  top: 0;
-  left: 0;
   border: 0;
   transform-origin: 0 0;
   pointer-events: none;
@@ -413,6 +417,8 @@ html:has(.ah) [data-edge-blur] {
 @media (hover: hover) and (pointer: fine) {
   .ah .concept:hover { background: var(--tile-hi); transform: translateY(-4px); }
   .ah .concept:hover img { transform: scale(1.03); }
+  .ah .concept:hover .zoom { transform: scale(1.03); }
+  .ah .concept:hover .zoom img { transform: none; }
   .ah .concept:hover .tag { color: var(--fg); }
 }
 .ah .concept:active { transform: scale(0.98); }

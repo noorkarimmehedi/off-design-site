@@ -141,7 +141,13 @@ export default function Page() {
           {concepts.map((c) => (
             <li key={c.name}>
               <a className="concept" href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.name}, ${c.category} website concept (opens in a new tab)`}>
-                <LiveShot src={c.href} poster={c.image} />
+                {c.live === false ? (
+                  <span className="shot">
+                    <img src={c.image} alt="" width={1600} height={1000} loading="lazy" draggable={false} />
+                  </span>
+                ) : (
+                  <LiveShot src={c.href} poster={c.image} />
+                )}
                 <span className="meta">
                   <span className="name">{c.name}</span>
                   <span className="tag">{c.category} ↗</span>
