@@ -8,6 +8,7 @@ import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
 import { clientLogos, concepts, fanImages } from "@/lib/home"
+import { LiveShot } from "@/components/home/live-shot"
 import { satoshi } from "@/lib/fonts"
 import { AnnotatedText } from "@/components/ui/annotated-text"
 import "./home.css"
@@ -140,9 +141,7 @@ export default function Page() {
           {concepts.map((c) => (
             <li key={c.name}>
               <a className="concept" href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.name}, ${c.category} website concept (opens in a new tab)`}>
-                <span className="shot">
-                  <img src={c.image} alt="" width={1600} height={1000} loading="lazy" draggable={false} />
-                </span>
+                <LiveShot src={c.href} poster={c.image} />
                 <span className="meta">
                   <span className="name">{c.name}</span>
                   <span className="tag">{c.category} ↗</span>

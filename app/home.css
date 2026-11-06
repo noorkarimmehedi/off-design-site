@@ -372,6 +372,18 @@ html:has(.ah) [data-edge-blur] {
   object-position: top;
   transition: transform 600ms var(--ease-out);
 }
+.ah .concept .shot { position: relative; }
+.ah .concept iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+.ah .concept iframe.on { opacity: 1; }
 .ah .concept .meta {
   display: flex;
   align-items: baseline;
