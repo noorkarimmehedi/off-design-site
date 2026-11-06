@@ -1,0 +1,99 @@
+/* /skills. Builds on home.css (.ah tokens, header, .split, .label, .copy, .qa). */
+
+.sk .sk-hero {
+  padding-top: 220px;
+}
+.sk .sk-hero h1 {
+  margin: 0;
+  font: 400 60px/72px var(--font);
+  letter-spacing: -0.04em;
+  color: var(--soft);
+}
+.sk .sk-hero h1 span {
+  display: block;
+}
+.sk .sk-first {
+  padding-top: 120px;
+}
+
+/* Long, unbreakable content (the install command, the prompt card) must not widen the grid tracks */
+.sk .split {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.sk .split > *,
+.sk .copy > * {
+  min-width: 0;
+}
+.sk .copy {
+  gap: 20px;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* A desktop behind the prompt, as you'd see it on a Mac: a green brush-stroke wallpaper. */
+.sk .sk-tile {
+  margin-top: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sk .sk-desk {
+  background: #e7e6d6 url(/skills/brush-green.webp) center 55% / cover no-repeat;
+}
+/* query's indigo glow turns pink on this pale green, so the card sits on the wallpaper alone */
+.sk .sk-desk .qp-light {
+  display: none;
+}
+.sk .sk-desk .qp-card {
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.55), 0 8px 24px rgb(0 0 0 / 0.25);
+}
+.sk .sk-tile.sk-desk .qp-aura {
+  padding-block: 130px;
+}
+
+.sk .sk-small {
+  font-size: 15px;
+  line-height: 21px;
+  color: var(--muted);
+}
+.sk .sk-small a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 200ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .sk .sk-small a:hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+.sk .faq {
+  max-width: 580px;
+}
+.sk .sk-mode-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+.sk .sk-mode + .sk-mode .sk-mode-row {
+  padding-top: 20px;
+}
+.sk .sk-mono {
+  font: 15px/26px ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0;
+}
+
+.sk .sk-end {
+  height: 160px;
+}
+
+@media (max-width: 809px) {
+  .sk .sk-hero { padding-top: 120px; }
+  .sk .sk-hero h1 { font-size: 36px; line-height: 42px; }
+  .sk .sk-first { padding-top: 80px; }
+  .sk .split { grid-template-columns: minmax(0, 1fr); }
+  .sk .sk-tile.sk-desk .qp-aura { padding: 70px 12px; }
+  .sk .sk-mode-row { grid-template-columns: 1fr; gap: 4px; }
+  .sk .sk-end { height: 100px; }
+}

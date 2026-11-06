@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "ask-secrets",
+      "description": "Ask the person for API keys, tokens, passwords, connection strings and other private values through the query CLI, which opens a small prompt on their Mac, instead of asking them to paste the value into chat. Use whenever a task needs a credential or environment variable you don't have, such as a missing API key, a command failing on an unset variable, a .env file that needs a value, or a test that needs live credentials.",
+      "type": "skill-md",
+      "url": "https://www.arc-bangladesh.com/skills/ask-secrets/SKILL.md",
+      "digest": "sha256:875f75d50391bcac72fa634ac71fed6b0cd5a3f4ea74043045dcd79754b37080"
+    }
+  ]
+}

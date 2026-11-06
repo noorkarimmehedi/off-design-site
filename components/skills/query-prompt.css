@@ -1,0 +1,198 @@
+/* query's prompt card, sized in points as in PromptView.swift. Accent is the indigo preset. */
+.qp-stage {
+  --qp-accent: rgb(133 128 255);
+  --qp-deep: rgb(41 46 158);
+  --qp-body: rgb(120 77 235);
+  --qp-hi: rgb(230 133 199);
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+.qp-aura {
+  padding: 90px 16px;
+}
+.qp-light {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: min(640px, 130%);
+  height: 420px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background:
+    radial-gradient(40% 45% at 34% 40%, var(--qp-hi), transparent 70%),
+    radial-gradient(50% 55% at 66% 58%, var(--qp-body), transparent 72%),
+    radial-gradient(60% 60% at 50% 50%, var(--qp-deep), transparent 75%);
+  filter: blur(46px);
+  opacity: 0.85;
+  animation: qp-drift 14s ease-in-out infinite alternate;
+}
+@keyframes qp-drift {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(14deg) scale(1.06); }
+  100% { transform: rotate(-10deg) scale(0.98); }
+}
+
+.qp-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 30px;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  letter-spacing: 0;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+/* A faint lit top edge that fades down the sides */
+.qp-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.04));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.qp-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.qp-badge {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgb(133 128 255 / 0.2);
+  color: var(--qp-accent);
+}
+.qp-titles {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+.qp-title {
+  font-size: 14px;
+  line-height: 17px;
+  font-weight: 600;
+}
+.qp-sub {
+  font-size: 12px;
+  line-height: 15px;
+  color: rgb(255 255 255 / 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.qp-count {
+  flex: none;
+  font: 12px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  color: rgb(255 255 255 / 0.5);
+}
+.qp-x {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.6);
+}
+
+.qp-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 46px;
+  padding: 0 10px 0 14px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.qp-field[data-focus] {
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(133 128 255 / 0.6);
+}
+.qp-key {
+  flex: none;
+  width: 132px;
+  font: 11px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  color: rgb(255 255 255 / 0.5);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.qp-field[data-focus] .qp-key {
+  color: rgb(255 255 255 / 0.75);
+}
+.qp-val {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  font: 14px/1 ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.qp-caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 16px;
+  margin-left: 1px;
+  background: var(--qp-accent);
+  animation: qp-blink 1s steps(1) infinite;
+}
+@keyframes qp-blink {
+  50% { opacity: 0; }
+}
+.qp-eye {
+  flex: none;
+  color: rgb(255 255 255 / 0.45);
+}
+
+.qp-send {
+  display: grid;
+  place-items: center;
+  height: 42px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgb(255 255 255 / 0.1);
+  color: rgb(255 255 255 / 0.4);
+  transition: background-color 200ms ease-out, color 200ms ease-out;
+}
+.qp-send[data-ready] {
+  background: var(--qp-accent);
+  color: #000;
+}
+
+@media (max-width: 460px) {
+  .qp-card { padding: 16px; gap: 12px; border-radius: 26px; }
+  .qp-key { width: 96px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .qp-light, .qp-caret { animation: none; }
+}

@@ -22,7 +22,7 @@ export default function SiteFoot({ className = "" }: { className?: string }) {
         <footer className="sf-legal">
           <nav className="sf-links" aria-label="Footer">
             <a href="/">Home</a>
-            <a href="/work">Work</a>
+            <a href="/skills">Skills</a>
             <a href="/#about">About</a>
             <a href="/call">Call</a>
             <a href="/#contact">Contact</a>

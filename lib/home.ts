@@ -85,7 +85,7 @@ export const callFaqs: { q: string; a: string }[] = [
 export const fanImages = Array.from({ length: 8 }, (_, i) => `/home/fan/fan-${i + 1}.webp`)
 
 export const navLinks = [
-  { label: "Work", href: "/work" },
+  { label: "Skills", href: "/skills" },
   { label: "About", href: "/#about" },
   { label: "Call", href: "/call" },
   { label: "Contact", href: "/#contact" },

@@ -1,0 +1,151 @@
+/* Install command. Uses the .ah tokens (--panel, --muted, --dot, --dot-fg, --ease-out) where present. */
+.ic {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 8px 0 18px;
+  border-radius: 12px;
+  background: var(--panel, #fff);
+  max-width: 100%;
+}
+.ic-code {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  font: 14px/56px ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0;
+  color: var(--fg, #333);
+  outline: none;
+  /* a long command fades out at the edge instead of being cut */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  padding-right: 24px;
+}
+.ic-code::-webkit-scrollbar {
+  display: none;
+}
+.ic-code:focus-visible {
+  outline: 1px dashed var(--fg, #333);
+  outline-offset: -6px;
+}
+.ic-prompt {
+  color: var(--muted, #7a7a7a);
+  user-select: none;
+}
+
+/* .ic prefix outranks the homepage's ".ah button" reset */
+.ic .ic-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 40px;
+  padding: 0 15px 0 13px;
+  border-radius: 999px;
+  background: var(--dot, #222);
+  color: var(--dot-fg, #fff);
+  font-size: 15px;
+  line-height: 1;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--ease-out, ease-out);
+}
+.ic-btn:active {
+  transform: scale(0.96);
+}
+
+/* copy ↔ check: one scales and blurs out while the other comes in */
+.ic-icon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+}
+.ic-icon svg {
+  position: absolute;
+  inset: 0;
+  transition: opacity 200ms ease, transform 300ms var(--ease-out, ease-out), filter 200ms ease;
+}
+.ic-check {
+  opacity: 0;
+  transform: scale(0.5);
+  filter: blur(2px);
+}
+.ic-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 320ms var(--ease-out, ease-out) 60ms;
+}
+.ic[data-copied] .ic-copy {
+  opacity: 0;
+  transform: scale(0.5);
+  filter: blur(2px);
+}
+.ic[data-copied] .ic-check {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.ic[data-copied] .ic-check path {
+  stroke-dashoffset: 0;
+}
+
+/* label rolls up, like the site's nav links; the width follows the longer word */
+.ic-label {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  height: 18px;
+}
+.ic-label > span {
+  grid-area: 1 / 1;
+  display: block;
+  line-height: 18px;
+  transition: transform 450ms var(--ease-out, ease-out);
+}
+.ic-label > span + span {
+  transform: translateY(100%);
+}
+.ic[data-copied] .ic-label > span:first-child {
+  transform: translateY(-100%);
+}
+.ic[data-copied] .ic-label > span + span {
+  transform: none;
+}
+
+.ic-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* phones: smaller type and a tighter button, so more of the command shows */
+@media (max-width: 809px) {
+  .ic {
+    height: 52px;
+    padding-left: 16px;
+    padding-right: 6px;
+  }
+  .ic-code {
+    font-size: 13px;
+    line-height: 52px;
+  }
+  .ic .ic-btn {
+    padding: 0 13px 0 11px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ic-icon svg,
+  .ic-label > span,
+  .ic-check path {
+    transition-duration: 0ms;
+    transition-delay: 0ms;
+  }
+}
