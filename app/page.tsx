@@ -7,7 +7,8 @@ import SiteFoot from "@/components/home/site-foot"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
-import { clientLogos, concepts, fanImages } from "@/lib/home"
+import { clientLogos, concepts } from "@/lib/home"
+import RiffleBook from "@/components/home/riffle-book"
 import { LiveShot } from "@/components/home/live-shot"
 import { satoshi } from "@/lib/fonts"
 import { AnnotatedText } from "@/components/ui/annotated-text"
@@ -167,21 +168,8 @@ export default function Page() {
         <FaqList />
       </section>
 
-      {/* The template's card fan: a tilted box spinning on its vertical axis, eight blades hinged
-          45° apart, each card turned another 45° about its own centre */}
-      <div className="fan-box" aria-hidden="true">
-        <div className="fan-tilt">
-          <div className="fan-spin">
-            {fanImages.map((src, i) => (
-              <div className="blade" key={src} style={{ ["--a" as string]: `${i * 45}deg` }}>
-                <div className="blade-card">
-                  <img src={src} alt="" loading="lazy" draggable={false} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Riffle: an open book of the work that thumbs through itself */}
+      <RiffleBook />
 
       <a className="talk" href="/call" id="contact" aria-label="Let's talk: book a call">
         <Arrow className="a-in" />
