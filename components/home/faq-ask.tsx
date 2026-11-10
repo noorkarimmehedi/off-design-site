@@ -24,7 +24,7 @@ export default function FaqAsk({ id }: { id: string }) {
   const [editing, setEditing] = useState(false)
   const [question, setQuestion] = useState("")
   const [answer, setAnswer] = useState("")
-  const [status, setStatus] = useState<"idle" | "loading" | "streaming" | "error">("idle")
+  const [status, setStatus] = useState<"idle" | "loading" | "streaming" | "error" | "limited">("idle")
   const input = useRef<HTMLInputElement>(null)
   const abort = useRef<AbortController | null>(null)
 
@@ -49,6 +49,10 @@ export default function FaqAsk({ id }: { id: string }) {
         body: JSON.stringify({ question: q }),
         signal: ctrl.signal,
       })
+      if (res.status === 429) {
+        setStatus("limited")
+        return
+      }
       if (!res.ok || !res.body) throw new Error(await res.text())
       setStatus("streaming")
       const reader = res.body.getReader()
@@ -68,7 +72,7 @@ export default function FaqAsk({ id }: { id: string }) {
     }
   }
 
-  const shown = answer || status === "loading" || status === "error"
+  const shown = answer || status === "loading" || status === "error" || status === "limited"
 
   return (
     <div className="qa ask" data-open={shown ? "" : undefined}>
@@ -113,8 +117,15 @@ export default function FaqAsk({ id }: { id: string }) {
               Something went wrong. Try again, or email <a href="mailto:hello@arc-bangladesh.com">hello@arc-bangladesh.com</a>.
             </p>
           )}
+          {status === "limited" && (
+            <p>
+              That’s a lot of questions. Give it a minute, or <a href="/call">book a free 15-minute call</a> and ask us
+              directly.
+            </p>
+          )}
           {answer &&
             status !== "error" &&
+            status !== "limited" &&
             answer
               .split(/\n\s*\n/)
               .filter((p) => p.trim())

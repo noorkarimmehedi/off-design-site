@@ -1,11 +1,17 @@
 import { streamText } from "ai"
 import { EMAIL, PHONE, WHATSAPP, callFaqs, faqs, services } from "@/lib/home"
+import { clientIp, rateLimit } from "@/lib/rate-limit"
 
 // "Ask anything else" under the FAQ: one question in, a short streamed answer out.
 // Runs through Vercel AI Gateway, which reads AI_GATEWAY_API_KEY from the environment.
 // The free Gateway tier excludes Claude; set ASK_MODEL (e.g. "anthropic/claude-haiku-5.5") once credits are added.
 const MODEL = process.env.ASK_MODEL || "openai/gpt-5-mini"
 const MAX_QUESTION = 400
+// Per visitor IP: 5 a minute, 30 a day
+const LIMITS = [
+  { limit: 5, ms: 60_000 },
+  { limit: 30, ms: 86_400_000 },
+]
 
 const qa = (list: { q: string; a: string }[]) => list.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n")
 
@@ -42,6 +48,14 @@ export async function POST(req: Request) {
   } catch {}
   if (!question) return new Response("Ask a question first.", { status: 400 })
   if (question.length > MAX_QUESTION) return new Response("That question is too long.", { status: 413 })
+
+  const wait = rateLimit(`ask:${clientIp(req)}`, LIMITS)
+  if (wait) {
+    return new Response("You’ve asked a lot of questions. Please wait a little, or book a call.", {
+      status: 429,
+      headers: { "Retry-After": String(wait) },
+    })
+  }
 
   const result = streamText({
     model: MODEL,
