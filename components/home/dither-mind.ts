@@ -216,6 +216,7 @@ export class Mind {
   private dirty = true
   private ro: ResizeObserver
   private io: IntersectionObserver
+  private mo: MutationObserver
   readonly ok: boolean
   shape: ShapeName
 
@@ -239,6 +240,8 @@ export class Mind {
       this.visible = e.isIntersecting
       kick()
     }, { rootMargin: "80px" })
+    // The ink follows the page text colour, so a light/dark switch recolours the objects
+    this.mo = new MutationObserver(() => this.setInk())
     // The browser can hand back a context it has already taken away (too many canvases, a GPU
     // reset). Building on it fails with empty logs, so wait for webglcontextrestored instead.
     const lost = !!gl && gl.isContextLost()
@@ -246,6 +249,7 @@ export class Mind {
     if (!this.ok) return
     this.ro.observe(host)
     this.io.observe(host)
+    this.mo.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
     canvas.addEventListener("webglcontextlost", this.onLost)
     canvas.addEventListener("webglcontextrestored", this.onRestored)
     if (!lost) minds.add(this)
@@ -292,7 +296,7 @@ export class Mind {
       res: U("uRes"), time: U("uTime"), a: U("uA"), b: U("uB"), t: U("uT"), scale: U("uScale"), front: U("uFront"),
       form: U("uForm"), pix: U("uPix"), shimmer: U("uShimmer"), seed: U("uSeed"),
     }
-    gl.uniform3f(this.u.front, 0.2, 0.2, 0.2) // #333333, the page ink
+    this.setInk()
     gl.uniform1f(this.u.seed, this.seed)
     gl.clearColor(0, 0, 0, 0)
     return true
@@ -364,8 +368,20 @@ export class Mind {
     return !this.reduced || morphing || forming
   }
 
+  // Reads the .ah --fg token (#333333 light, #e6e6e6 dark) into the shader's ink uniform
+  private setInk() {
+    const gl = this.gl
+    if (!gl || gl.isContextLost()) return
+    const m = getComputedStyle(this.host).color.match(/[\d.]+/g)
+    const [r, g, b] = m ? m.slice(0, 3).map((v) => +v / 255) : [0.2, 0.2, 0.2]
+    gl.uniform3f(this.u.front, r, g, b)
+    this.dirty = true
+    kick()
+  }
+
   destroy() {
     minds.delete(this)
+    this.mo.disconnect()
     this.ro.disconnect()
     this.io.disconnect()
     this.canvas.removeEventListener("webglcontextlost", this.onLost)

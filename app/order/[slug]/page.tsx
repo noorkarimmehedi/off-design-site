@@ -10,7 +10,7 @@ import "../../home.css"
 import "../order.css"
 
 // Paints the phone's status bar / browser bar in the page grey, as on the homepage
-export const viewport: Viewport = { themeColor: "#ededed" }
+export const viewport: Viewport = { themeColor: "#111111" }
 
 // The brand name in the link shows in the tab title and in WhatsApp / social link previews
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

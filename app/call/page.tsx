@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 }
 
 // Paints the phone's status bar / browser bar in the page grey, as on the homepage
-export const viewport: Viewport = { themeColor: "#ededed" }
+export const viewport: Viewport = { themeColor: "#111111" }
 
 // Book a discovery call, in the homepage's shell: hero line, a label/content intro, the live
 // Cal.com booker from the centre line, then what happens next and a short FAQ.

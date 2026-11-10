@@ -24,7 +24,8 @@ export default function HomeHeader() {
     <>
       <header className="top">
         <Link className="brand" href="/" aria-label="Arc Labs, home">
-          <img src="/arc-logo-black.webp" alt="" width={600} height={215} draggable={false} />
+          <img className="lt-only" src="/arc-logo-black.webp" alt="" width={600} height={215} draggable={false} />
+          <img className="dk-only" src="/arc-logo-white.webp" alt="" width={600} height={215} draggable={false} />
         </Link>
         <nav className="nav" aria-label="Primary">
           {navLinks.map((l) => (

@@ -55,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     // next-themes swaps the dark/light class before paint; dark stays the default
-    <html lang="en" className={`light ${lausanne.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`dark ${lausanne.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -203,7 +203,7 @@ html { font-family: var(--font-sans); background: var(--color-ink); }
         `}</style>
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           <SmoothScroll />
           {children}
           <EdgeBlur position="top" />

@@ -97,6 +97,25 @@
   color: color-mix(in oklab, var(--sf-bg), black 4%);
 }
 
+/* Dark theme: same ground as the page (#111), the deboss lit from above on a darker press */
+.dark .sf {
+  --sf-bg: #111111;
+  --sf-ink: rgb(160 160 160 / 0.6);
+  --sf-ink-hi: #b0b0b0;
+  --sf-rule: rgb(255 255 255 / 0.12);
+  color-scheme: dark;
+}
+.dark .sf-grid a:focus-visible {
+  outline-color: #e6e6e6;
+}
+.dark .pressed-mark {
+  --press-shade: #000000b3;
+  --press-light: #ffffff1f;
+  --press-floor: #00000024;
+  --press-lip: #ffffff14;
+  color: color-mix(in oklab, var(--sf-bg), black 20%);
+}
+
 @media (max-width: 809px) {
   .sf { margin-top: 96px; }
   .sf-grid { grid-template-columns: 1fr; }
@@ -104,6 +123,13 @@
   .sf-legal { grid-column: 1; }
   /* Room under the mark for the floating Chat button */
   .sf-mark { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+  /* Small, the deboss edges shrink to a hairline, so the press goes shallower to keep reading as a stamp */
+  .dark .pressed-mark {
+    --press-shade: #00000099;
+    --press-light: #ffffff26;
+    --press-lip: #ffffff1a;
+    color: color-mix(in oklab, var(--sf-bg), black 9%);
+  }
 }
 
 @media print {

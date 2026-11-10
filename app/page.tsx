@@ -15,7 +15,7 @@ import "./home.css"
 
 
 // Paints the phone's status bar / browser bar in the hero grey
-export const viewport: Viewport = { themeColor: "#ededed" }
+export const viewport: Viewport = { themeColor: "#111111" }
 
 const TALK = "Let's Talk"
 const INDUSTRIES = ["consumer goods", "food and beverage", "life sciences", "agribusiness", "industrial manufacturing", "retail"]
@@ -41,7 +41,8 @@ export default function Page() {
           <span className="line">
             <span>
               Engineered, Automated, Perfected by{" "}
-              <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} />
+              <img className="h-logo lt-only" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} />
+              <img className="h-logo dk-only" src="/home/arc-gloss-dark.webp" alt="arc" width={720} height={270} draggable={false} />
             </span>
           </span>
         </h1>

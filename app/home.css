@@ -7,6 +7,10 @@ html:has(.ah),
 html:has(.ah) body {
   background: #ededed;
 }
+html.dark:has(.ah),
+html.dark:has(.ah) body {
+  background: #111111;
+}
 /* The site-wide edge blurs are tinted for the dark/white theme; this page has its own ground */
 html:has(.ah) [data-edge-blur] {
   display: none;
@@ -322,18 +326,31 @@ html:has(.ah) [data-edge-blur] {
 @media (hover: hover) and (pointer: fine) {
   .ah .tile:hover { background: var(--tile-hi); transform: translateY(-4px); }
 }
-.ah .mind {
+.ah .chrome {
   position: relative;
   flex: 1;
-  min-height: 200px;
-  margin-inline: -8px;
+  min-height: 220px;
+  margin-inline: -14px;
 }
-.ah .mind canvas {
+.ah .chrome canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  image-rendering: pixelated;
+  display: block;
+}
+/* A soft neutral contact shadow under each object */
+.ah .chrome-shadow {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 2px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0));
+}
+.ah:not(.dark *) .chrome-shadow {
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.18), rgb(0 0 0 / 0));
 }
 
 /* ── what if: our own concept redesigns, a screenshot over a name and one line ── */
@@ -787,6 +804,26 @@ html:has(.ah) [data-edge-blur] {
   filter: blur(6px);
 }
 
+/* Dark theme: same tokens, inverted ground */
+.dark .ah {
+  --bg: #111111;
+  --fg: #e6e6e6;
+  --muted: #8a8a8a;
+  --soft: rgb(160 160 160 / 0.78);
+  --rule: rgb(255 255 255 / 0.16);
+  --panel: #1c1c1c;
+  --dot: #e6e6e6;
+  --dot-fg: #111111;
+  --pill: rgb(0 0 0 / 0.25);
+  --pill-m: rgb(230 230 230 / 0.72);
+  --tile: rgb(255 255 255 / 0.04);
+  --tile-hi: rgb(255 255 255 / 0.075);
+}
+.dark .ah-cursor {
+  background: #e6e6e6;
+  color: #111;
+}
+
 /* ── cursor dot (rendered into <body>, outside .ah, so it carries its own colours) ── */
 .ah-cursor {
   position: fixed;
@@ -846,27 +883,11 @@ html:has(.ah) [data-edge-blur] {
   .ah .split { grid-template-columns: 1fr; row-gap: 40px; padding-top: 144px; }
   .ah #about { padding-top: 152px; }
   .ah .copy { gap: 20px; max-width: none; }
-  /* The drawn highlight is one unbreakable box, which leaves long phrases ("industrial manufacturing")
-     stranding ragged lines on a phone. Here it becomes a marker stroke that wraps with the text. */
-  .ah .copy .hl {
-    display: inline;
-    position: static;
-    white-space: normal;
-    padding: 0 0.12em;
-    margin: 0 -0.12em;
-    border-radius: 0.2em;
-    background: linear-gradient(rgb(253 224 71 / 0.6), rgb(253 224 71 / 0.6)) 0 60% / 100% 1.1em no-repeat;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-    transition: background-size 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .ah .copy .hl[data-annotation-pending] { background-size: 0% 1.1em; }
-  .ah .copy .hl > svg { display: none; }
   .ah .svc-head { grid-template-columns: 1fr; row-gap: 40px; padding-top: 144px; margin-bottom: 36px; }
   .ah .tiles { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; margin-inline: -15px; padding-inline: 15px; scroll-padding-inline: 15px; scrollbar-width: none; }
   .ah .tiles::-webkit-scrollbar { display: none; }
   .ah .tile { flex: none; width: 76%; min-height: 340px; scroll-snap-align: start; }
-  .ah .mind { min-height: 180px; }
+  .ah .chrome { min-height: 190px; }
   .ah .tile h3 { font-size: 20px; line-height: 25px; }
   .ah .tile p { font-size: 14px; line-height: 19px; }
   /* What if: swipe through the concepts like the Services tiles */
@@ -906,3 +927,44 @@ html:has(.ah) [data-edge-blur] {
   .ah .talk .word,
   .ah .talk svg { transition-duration: 0ms; }
 }
+
+/* Dark theme: the few colours above that aren't tokens */
+.dark .ah {
+  color-scheme: dark;
+}
+.dark .ah .card {
+  background: #1f1f1f;
+}
+.dark .ah .logo {
+  filter: brightness(0) invert(1);
+}
+.dark .ah .wordmark {
+  color: #fff;
+}
+.ah .dk-only,
+.dark .ah .lt-only {
+  display: none !important;
+}
+.dark .ah .dk-only {
+  display: revert !important;
+}
+.dark .ah .h-logo.dk-only {
+  display: inline-block !important;
+}
+
+/* The drawn highlight is one unbreakable box, which leaves long phrases ("industrial manufacturing")
+   stranding ragged lines. At every width it is a marker stroke that wraps with the text. */
+.ah .copy .hl {
+  display: inline;
+  position: static;
+  white-space: normal;
+  padding: 0 0.12em;
+  margin: 0 -0.12em;
+  border-radius: 0.2em;
+  background: linear-gradient(rgb(253 224 71 / 0.6), rgb(253 224 71 / 0.6)) 0 60% / 100% 1.1em no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ah .copy .hl[data-annotation-pending] { background-size: 0% 1.1em; }
+.ah .copy .hl > svg { display: none; }

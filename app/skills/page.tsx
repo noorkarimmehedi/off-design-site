@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: { title: "Skills for coding agents — arc.", description },
   twitter: { title: "Skills for coding agents — arc.", description },
 }
-export const viewport: Viewport = { themeColor: "#ededed" }
+export const viewport: Viewport = { themeColor: "#111111" }
 
 const INSTALL = "npx skills add https://www.arc-bangladesh.com --skill ask-secrets"
 
