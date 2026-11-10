@@ -560,6 +560,58 @@ html:has(.ah) [data-edge-blur] {
   transition-delay: 80ms;
 }
 
+/* FAQ "Ask anything else": same row rhythm as the questions, turns into an input in place */
+.ah .ask-row {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+.ah .ask-idle {
+  text-align: left;
+  color: var(--muted);
+  cursor: text;
+  transition: color 200ms ease;
+}
+.ah .ask-idle svg { margin-right: 2px; transition: transform 300ms var(--ease-out); }
+@media (hover: hover) {
+  .ah .ask-idle:hover { color: var(--fg); }
+  .ah .ask-idle:hover svg { transform: translateX(2px); }
+}
+.ah .ask-row input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: max(16px, 1em); /* matches the questions, never below 16px so iOS doesn't zoom */
+  color: var(--fg);
+  background: none;
+  border: 0;
+  outline: none;
+  padding: 0;
+}
+.ah .ask-row input::placeholder { color: var(--muted); }
+.ah .ask-send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin: -8px 0;
+  border-radius: 50%;
+  background: var(--tile-hi);
+  transition: opacity 200ms ease, transform 160ms var(--ease-out);
+}
+.ah .ask-send:disabled { opacity: 0.4; }
+.ah .ask-send:not(:disabled):active { transform: scale(0.94); }
+.ah .ask-send:focus-visible,
+.ah .ask-idle:focus-visible { outline: 1.5px solid var(--fg); outline-offset: 2px; }
+.ah .ask .ans p + p { padding-top: 0; margin-top: -10px; }
+.ah .ask .ans a { text-decoration: underline; text-underline-offset: 3px; }
+.ah .ask .ans .ask-wait { color: var(--muted); }
+
 /* ── card fan: measured from the template ──
    694×522 box (390×498 on phones) carrying one fixed 3D matrix (tilt + perspective + 0.72 scale).
    Inside, a layer turns about Y at 30°/s. Eight 350×552 blades hinge on their left edge 8px right of

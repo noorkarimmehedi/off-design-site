@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { faqs } from "@/lib/home"
+import FaqAsk from "./faq-ask"
 
 // Homepage FAQ by default; /call passes its own questions with a different id prefix
 export default function FaqList({ items = faqs, id = "ah" }: { items?: { q: string; a: string }[]; id?: string }) {
@@ -31,6 +32,7 @@ export default function FaqList({ items = faqs, id = "ah" }: { items?: { q: stri
           </div>
         )
       })}
+      <FaqAsk id={id} />
     </div>
   )
 }
