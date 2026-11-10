@@ -7,10 +7,10 @@ import { clientIp, rateLimit } from "@/lib/rate-limit"
 // The free Gateway tier excludes Claude; set ASK_MODEL (e.g. "anthropic/claude-haiku-5.5") once credits are added.
 const MODEL = process.env.ASK_MODEL || "openai/gpt-5-mini"
 const MAX_QUESTION = 400
-// Per visitor IP: 5 a minute, 30 a day
+// Per visitor IP: 12 questions a day, no more than 5 in any minute
 const LIMITS = [
   { limit: 5, ms: 60_000 },
-  { limit: 30, ms: 86_400_000 },
+  { limit: 12, ms: 86_400_000 },
 ]
 
 const qa = (list: { q: string; a: string }[]) => list.map((f) => `Q: ${f.q}\nA: ${f.a}`).join("\n\n")

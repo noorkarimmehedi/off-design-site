@@ -25,6 +25,7 @@ export default function FaqAsk({ id }: { id: string }) {
   const [question, setQuestion] = useState("")
   const [answer, setAnswer] = useState("")
   const [status, setStatus] = useState<"idle" | "loading" | "streaming" | "error" | "limited">("idle")
+  const [daily, setDaily] = useState(false)
   const input = useRef<HTMLInputElement>(null)
   const abort = useRef<AbortController | null>(null)
 
@@ -50,6 +51,8 @@ export default function FaqAsk({ id }: { id: string }) {
         signal: ctrl.signal,
       })
       if (res.status === 429) {
+        // A short wait means the per-minute burst limit; a long one means the daily cap
+        setDaily(Number(res.headers.get("Retry-After")) > 120)
         setStatus("limited")
         return
       }
@@ -119,8 +122,8 @@ export default function FaqAsk({ id }: { id: string }) {
           )}
           {status === "limited" && (
             <p>
-              That’s a lot of questions. Give it a minute, or <a href="/call">book a free 15-minute call</a> and ask us
-              directly.
+              {daily ? "You’ve reached today’s question limit." : "That’s a lot of questions at once. Give it a minute, or"}{" "}
+              <a href="/call">{daily ? "Book" : "book"} a free 15-minute call</a> and ask us directly.
             </p>
           )}
           {answer &&
