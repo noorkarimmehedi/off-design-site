@@ -9,7 +9,7 @@
   translate: -50% 0;
   max-width: calc(100vw - 24px);
   pointer-events: none;
-  font-family: var(--font-satoshi, "Satoshi"), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-lausanne), ui-sans-serif, system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.35;
   letter-spacing: -0.02em;

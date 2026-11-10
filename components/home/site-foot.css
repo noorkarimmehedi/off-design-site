@@ -41,7 +41,7 @@
   column-gap: 16px;
   row-gap: 24px;
   padding: 64px 0 40px;
-  font: 400 11px/1.6 var(--font-satoshi), "Satoshi", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  font: 400 11px/1.6 var(--font-lausanne), ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
   letter-spacing: 0;
   color: var(--sf-ink);
   -webkit-font-smoothing: antialiased;

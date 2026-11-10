@@ -25,7 +25,7 @@ html:has(.ah) [data-edge-blur] {
   --pill-m: rgb(28 28 28 / 0.72);
   --tile: rgb(0 0 0 / 0.04);
   --tile-hi: rgb(0 0 0 / 0.075);
-  --font: var(--font-satoshi), "Satoshi", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --font: var(--font-lausanne), ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", sans-serif;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
 
@@ -802,7 +802,7 @@ html:has(.ah) [data-edge-blur] {
   display: grid;
   place-items: center;
   pointer-events: none;
-  font: 400 20px/1 var(--font-satoshi), ui-sans-serif, system-ui, sans-serif;
+  font: 400 20px/1 var(--font-lausanne), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.02em;
   opacity: 0;
   transform: translate3d(-100px, -100px, 0) scale(0.33);
@@ -837,7 +837,7 @@ html:has(.ah) [data-edge-blur] {
   /* Phones: the hero sizes to its content instead of filling the screen */
   .ah .hero { min-height: 0; margin-top: 0; padding-top: 220px; padding-bottom: 9px; }
   /* Sized so "Engineered, Automated, Perfected by arc" (16.5em wide) always fits on one line */
-  .ah .hero h1 { font-size: min(28px, calc((100vw - 30px) / 17.4)); line-height: 1.28; margin-bottom: 12px; }
+  .ah .hero h1 { font-size: min(28px, calc((100vw - 30px) / 18)); line-height: 1.28; margin-bottom: 12px; }
   .ah .hero h1 .line > span { white-space: nowrap; }
   .ah .rail { height: 308px; }
   .ah .card { width: 245px; height: 308px; border-radius: 10px; }
@@ -886,7 +886,7 @@ html:has(.ah) [data-edge-blur] {
   .ah .ans p { font-size: 14px; line-height: 19px; }
   .ah .fan-box { --bw: 230px; --bh: 385px; --cw: 230px; width: auto; height: 498px; margin: 88px -15px 0; }
   .ah .talk { margin-top: 56px; height: auto; display: block; }
-  .ah .talk .word { font-size: 26.5vw; line-height: 0.85; margin-left: -0.03em; }
+  .ah .talk .word { font-size: 24.7vw; line-height: 0.85; margin-left: -0.03em; }
   .ah .talk .word::after,
   .ah .talk svg { display: none; }
   /* The word already fills the width here, so the desktop slide would push it off screen */

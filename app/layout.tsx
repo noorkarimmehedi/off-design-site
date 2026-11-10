@@ -5,6 +5,7 @@ import ChatWidget from "@/components/chat-widget"
 import EdgeBlur from "@/components/edge-blur"
 import SmoothScroll from "@/components/smooth-scroll"
 import { ThemeProvider } from "@/components/theme-provider"
+import { lausanne } from "@/lib/fonts"
 
 const description =
   "Arc is an AI automation & software company for Bangladesh's industries — FMCG, food, pharma, agri, manufacturing & retail. Systems over manual work."
@@ -54,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     // next-themes swaps the dark/light class before paint; dark stays the default
-    <html lang="en" className="light" suppressHydrationWarning>
+    <html lang="en" className={`light ${lausanne.variable}`} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -81,7 +82,7 @@ export default function RootLayout({
 }
 
 :root {
-  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-sans: var(--font-lausanne), "Geist", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-commit-mono: "Commit Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-ppmondwest: "PPMondwest", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
