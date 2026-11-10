@@ -4,9 +4,9 @@ import { useEffect, useRef } from "react"
 import { services } from "@/lib/home"
 import { Chrome } from "./liquid-chrome"
 
-// Five service tiles, each with a live liquid-chrome object (the dark "arc." mark's material) that keeps working:
+// Five service tiles, each with a live smoked-glass object, lit by a drifting band of the site yellow, that keeps working:
 // a browser with a drop sliding across it, a bar chart re-measuring, a gyroscope, modules breathing, the arc. mark.
-// On a fine pointer the object turns to the cursor and a chrome drop follows it. Off-screen tiles don't render;
+// On a fine pointer the object turns to the cursor and a glass drop follows it. Off-screen tiles don't render;
 // with reduced motion each tile is one still frame.
 export default function ServiceTiles() {
   const listRef = useRef<HTMLUListElement>(null)

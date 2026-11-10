@@ -1,7 +1,7 @@
-// Liquid chrome: one small raymarched WebGL canvas per service tile, rendering a mirror-chrome object
-// (the dark "arc." mark's material) against a procedural studio reflection. Each object keeps working on
-// its own; on a fine pointer it turns toward the cursor on a slightly underdamped spring, a drop of chrome
-// follows the pointer and melts into it, and a yellow reflection strip comes up.
+// Smoked glass: one small raymarched WebGL canvas per service tile, rendering a near-black glass object
+// with pale edges and a band of the site yellow drifting through it. Each object keeps working on
+// its own; on a fine pointer it turns toward the cursor on a slightly underdamped spring, a drop of glass
+// follows the pointer and melts into it, and the yellow band brightens.
 // One shared rAF loop ticks only the tiles on screen, and nothing runs in a hidden tab.
 // With reduced motion each tile renders one still frame.
 
@@ -39,7 +39,10 @@ const SHAPES = [
 ]
 
 const VERT = `attribute vec2 p; void main(){ gl_Position=vec4(p,0.,1.); }`
-const frag = (shape: string) => `precision highp float;
+// Smoked glass: near-black glass with pale edges, one band of the site yellow drifting through it.
+// The ray refracts in, marches through the body, and leaves in three slightly different directions
+// (one per channel) so the band gets a thin amber fringe. `lite` trims the march for phones.
+const frag = (shape: string, deriv: boolean, lite: boolean) => `${deriv ? "#extension GL_OES_standard_derivatives : enable\n" : ""}precision highp float;
 uniform vec2 uRes; uniform float uT; uniform vec2 uRot; uniform vec3 uPtr;
 mat2 R(float a){ float c=cos(a), s=sin(a); return mat2(c,-s,s,c); }
 float smin(float a,float b,float k){ float h=clamp(0.5+0.5*(b-a)/k,0.,1.); return mix(b,a,h)-k*h*(1.-h); }
@@ -54,31 +57,53 @@ float map(vec3 p){
   return d;
 }
 vec3 nrm(vec3 p){ vec2 e=vec2(0.0015,-0.0015); return normalize(e.xyy*map(p+e.xyy)+e.yyx*map(p+e.yyx)+e.yxy*map(p+e.yxy)+e.xxx*map(p+e.xxx)); }
-float env(vec3 r){
-  float y=r.y;
-  float up=mix(1.0,0.42,pow(clamp(y,0.,1.),0.6));
-  float dn=mix(0.03,0.5,pow(clamp(-y,0.,1.),0.7));
-  float c=mix(dn,up,smoothstep(-0.03,0.03,y));
-  c*=0.78+0.22*smoothstep(-0.25,0.25,sin(r.x*5.+r.z*3.));
-  c+=0.5*smoothstep(0.8,0.95,dot(r,normalize(vec3(0.7,0.35,0.6))));
-  c+=0.9*smoothstep(0.82,0.93,dot(r,normalize(vec3(-0.5,0.7,0.5))));
-  return c;
+const vec3 Y=vec3(0.992,0.878,0.278);
+// a drifting yellow band, a low amber strip, a quiet softbox and a thin white strip
+// sh sharpens the band (transmitted light sees a thin band, reflections the full soft one)
+vec3 env(vec3 r,float sh,float k){
+  float y0=0.1+0.3*sin(uT*0.35);
+  vec3 c=Y*pow(smoothstep(0.24,0.03,abs(r.y-y0-0.35*r.x)),sh)*(1.5+1.5*uPtr.z)*k;
+  c+=vec3(1.,0.72,0.2)*0.5*smoothstep(0.16,0.02,abs(r.y+0.62));
+  c+=vec3(0.9,0.95,1.)*0.4*smoothstep(0.6,0.98,dot(r,normalize(vec3(-0.6,0.6,0.5))));
+  c+=vec3(1.)*0.3*smoothstep(0.1,0.02,abs(r.x-0.75));
+  return c+0.008;
 }
+vec3 out2(vec3 ri,vec3 n2,float eta){ vec3 o=refract(ri,-n2,eta); return dot(o,o)<0.5?reflect(ri,-n2):o; }
 void main(){
-  vec2 uv=(gl_FragCoord.xy-0.5*uRes)/min(uRes.x,uRes.y)*2.;
+  float m=min(uRes.x,uRes.y);
+  vec2 uv=(gl_FragCoord.xy-0.5*uRes)/m*2.;
   vec3 ro=vec3(0.,0.,4.2), rd=normalize(vec3(uv,-3.0));
   float t=2.3, d=1., md=1.;
-  for(int i=0;i<56;i++){ d=map(ro+rd*t); md=min(md,d); if(d<0.002||t>6.4) break; t+=d; }
+  for(int i=0;i<${lite ? 52 : 68};i++){ d=map(ro+rd*t); md=min(md,d); if(d<0.002||t>6.4) break; t+=d; }
   float hit=step(d,0.01);
-  float a=max(hit,1.-smoothstep(0.,0.014,md));
-  vec3 p=ro+rd*t, n=nrm(p), r=reflect(rd,n);
-  float c=env(r)+0.22*pow(1.-max(dot(n,-rd),0.),4.);
-  c+=0.1*(0.5+0.5*n.y);
-  vec3 col=vec3(c)*0.94;
-  float strip=smoothstep(0.93,0.985,dot(r,normalize(vec3(0.7,-0.45,0.55))));
-  col=mix(col,vec3(0.992,0.878,0.278),strip*(0.08+0.92*uPtr.z));
-  col=mix(vec3(0.12),col,hit);
-  gl_FragColor=vec4(clamp(col,0.,1.)*a,a);
+  vec3 col=vec3(0.); float a;
+  if(hit>0.5){
+    vec3 p=ro+rd*t, n=nrm(p);
+    ${deriv ? "float edge=smoothstep(7.,16.,length(fwidth(n))*m/2.8);" : "float edge=0.;"}
+    float l=0.5+0.5*dot(n,normalize(vec3(-0.4,0.7,0.6)));
+    float cs=max(dot(n,-rd),0.);
+    float F=0.04+0.96*pow(1.-cs,5.);
+    vec3 ri=refract(rd,n,1./1.5);
+    vec3 pi=p-n*0.03; float ti=0.;
+    for(int i=0;i<${lite ? 14 : 20};i++){ float di=-map(pi+ri*ti); if(di<0.004||ti>2.6) break; ti+=max(di,0.012); }
+    vec3 n2=nrm(pi+ri*ti);
+    // light coming through sees a much thinner band that fades with depth, so a flat face reads as
+    // dark glass with a line of yellow passing through it rather than a gold surface
+    float k=0.85+0.15*uPtr.z;
+    vec3 tr=vec3(env(out2(ri,n2,1.44),4.,k).r,env(out2(ri,n2,1.5),4.,k).g,env(out2(ri,n2,1.57),4.,k).b);
+    col=tr*(1.-F)*exp(-ti*0.45);
+    col+=env(reflect(rd,n),1.,1.)*F*0.8;
+    col+=vec3(1.,0.97,0.9)*edge*(0.08+0.6*l*l);
+    col+=vec3(1.)*0.1*(1.-cs)*(1.-cs);
+    col=1.-exp(-1.35*max(col,0.));
+    a=max(0.86,max(col.r,max(col.g,col.b)));
+  } else {
+    // anti-aliased pale silhouette and a faint yellow halo
+    float aa=1.-smoothstep(0.,0.014,md);
+    col=vec3(0.9,0.88,0.82)*aa*0.85+Y*(0.1+0.16*uPtr.z)*exp(-md*13.)*(1.-aa);
+    a=clamp(max(col.r,max(col.g,col.b)),0.,1.);
+  }
+  gl_FragColor=vec4(clamp(col,0.,a),a);
 }`
 
 /* ── shared loop ── */
@@ -127,6 +152,7 @@ export class Chrome {
   private ro: ResizeObserver
   private io: IntersectionObserver
   private offs: (() => void)[] = []
+  private lite = matchMedia("(pointer: coarse), (max-width: 700px)").matches
 
   constructor(
     private tile: HTMLElement,
@@ -184,7 +210,9 @@ export class Chrome {
       return s
     }
     const prog = gl.createProgram()!
-    const fs = sh(gl.FRAGMENT_SHADER, frag(shape))
+    const deriv = !!gl.getExtension("OES_standard_derivatives")
+    // phones and small screens get a shorter march and a 1x backing store
+    const fs = sh(gl.FRAGMENT_SHADER, frag(shape, deriv, this.lite))
     gl.attachShader(prog, sh(gl.VERTEX_SHADER, VERT))
     gl.attachShader(prog, fs)
     gl.linkProgram(prog)
@@ -209,7 +237,7 @@ export class Chrome {
     this.H = this.host.clientHeight
     if (!this.W || !this.H || !this.gl) return
     // Raymarching is per pixel, so cap the backing store; the soft chrome hides the difference
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5)
+    const dpr = Math.min(window.devicePixelRatio || 1, this.lite ? 1 : 1.5)
     this.canvas.width = Math.round(this.W * dpr)
     this.canvas.height = Math.round(this.H * dpr)
     this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)

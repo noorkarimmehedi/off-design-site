@@ -97,11 +97,12 @@
   color: color-mix(in oklab, var(--sf-bg), black 4%);
 }
 
-/* Dark theme: same ground as the page (#111), the deboss lit from above on a darker press */
+/* Dark theme: same ground as the page (#111). Like the light footer, the press reads from its edges:
+   a bright lip under each stroke and a lit inner bottom edge, on a fill only a shade darker than the ground */
 .dark .sf {
   --sf-bg: #111111;
-  --sf-ink: rgb(160 160 160 / 0.6);
-  --sf-ink-hi: #b0b0b0;
+  --sf-ink: rgb(170 170 170 / 0.72);
+  --sf-ink-hi: #d0d0d0;
   --sf-rule: rgb(255 255 255 / 0.12);
   color-scheme: dark;
 }
@@ -109,11 +110,11 @@
   outline-color: #e6e6e6;
 }
 .dark .pressed-mark {
-  --press-shade: #000000b3;
-  --press-light: #ffffff1f;
-  --press-floor: #00000024;
-  --press-lip: #ffffff14;
-  color: color-mix(in oklab, var(--sf-bg), black 20%);
+  --press-shade: #000000e6;
+  --press-light: #ffffff38;
+  --press-floor: #00000080;
+  --press-lip: #ffffff70;
+  color: color-mix(in oklab, var(--sf-bg), black 12%);
 }
 
 @media (max-width: 809px) {
@@ -125,10 +126,10 @@
   .sf-mark { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
   /* Small, the deboss edges shrink to a hairline, so the press goes shallower to keep reading as a stamp */
   .dark .pressed-mark {
-    --press-shade: #00000099;
-    --press-light: #ffffff26;
-    --press-lip: #ffffff1a;
-    color: color-mix(in oklab, var(--sf-bg), black 9%);
+    --press-shade: #000000d9;
+    --press-light: #ffffff40;
+    --press-lip: #ffffff75;
+    color: color-mix(in oklab, var(--sf-bg), black 10%);
   }
 }
 
