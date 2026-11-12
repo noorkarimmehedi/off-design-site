@@ -1,6 +1,5 @@
 /* Site-wide chat launcher, after BeUI's Dynamic Island.
-   Motion lives in lib/island.ts: the shell is revealed with a spring on clip-path, the shadow moves on
-   its own layer with transform, and content uses opacity + transform only. No layout or blur per frame. */
+   Motion lives in chat-widget.tsx: the shell springs its real size, content springs in from a soft blur. */
 
 .ci-dock {
   position: fixed;
@@ -25,40 +24,33 @@
   from { opacity: 0; transform: translateY(10px); }
 }
 
-/* Stage sized (from JS) to the larger state. The black shell fills it and is revealed with clip-path;
-   only the clipped area paints and takes pointer events. */
+/* The shell springs its real width/height to the active content (motion/react, BeUI's Dynamic Island).
+   Content is pinned to the bottom-right corner, so the bar unfurls up and left out of the pill. */
 .ci-shell {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: hidden;
   background: #0b0b0b;
   color: #f4f4f4;
   pointer-events: auto;
-  will-change: clip-path;
-}
-/* Shadow + faint light edge (for dark pages), on its own layer so it moves with transform only */
-.ci-shadow {
-  position: absolute;
-  pointer-events: none;
   box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 14px 30px -14px rgb(0 0 0 / 0.5);
-  will-change: transform;
+  contain: layout paint;
 }
-
+.ci-sizer {
+  width: max-content;
+  flex: none;
+}
 .ci-slot {
-  position: absolute;
-  right: 0;
-  bottom: 0;
   display: flex;
   align-items: center;
-  width: max-content;
+  justify-content: flex-end;
   white-space: nowrap;
-  transform-origin: 100% 100%;
-  will-change: transform, opacity;
-}
-.ci-slot:not([data-on]) {
-  opacity: 0;
-  pointer-events: none;
 }
 .ci-compact {
+  display: flex;
+  align-items: center;
   gap: 9px;
   padding: 7px 16px 7px 7px;
   border: 0;
@@ -69,11 +61,15 @@
   -webkit-tap-highlight-color: transparent;
 }
 .ci-compact:focus-visible { outline: 1px dashed rgb(255 255 255 / 0.6); outline-offset: -4px; border-radius: 32px; }
-.ci-open {
+.ci-row {
+  display: flex;
+  align-items: center;
   gap: 6px;
   padding: 7px;
 }
-.ci-open .ci-av { margin-right: 4px; }
+.ci-row .ci-av { margin-right: 4px; }
+
+.ci-av { margin-right: 4px; }
 
 .ci-av {
   position: relative;

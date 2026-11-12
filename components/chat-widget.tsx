@@ -1,13 +1,25 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion } from "motion/react"
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type Ref } from "react"
 import { satoshi } from "@/lib/fonts"
-import { boxOf, morphIsland, setIsland, swapContent, type Box } from "@/lib/island"
-import { onWidthResize } from "@/lib/viewport"
 import "./chat-island.css"
 
 const WHATSAPP = "https://api.whatsapp.com/send/?phone=8801733670129"
+
+// Motion after BeUI's Dynamic Island (beui.dev/components/blocks/dynamic-island).
+// Shell physics in Apple's duration/bounce form: one long glide with a barely-there bounce, the same
+// both ways. The shell springs its real width/height (not a transform), so content is never distorted.
+const SHELL_SPRING = { type: "spring", duration: 0.8, bounce: 0.2 } as const
+// Content gets a touch more life than the shell
+const CONTENT_SPRING = { type: "spring", duration: 0.8, bounce: 0.35 } as const
+const EASE_OUT = [0.23, 1, 0.32, 1] as const
+// Constant radius, never animated. The browser clamps it to half the height, so the pill-to-bar
+// morph falls out of the resize with no corner glitches.
+const RADIUS = 32
+// Pill size before the first measure, so the shell always owns explicit dimensions to spring from
+const PILL = { width: 100, height: 44 }
 
 function WhatsAppMark() {
   return (
@@ -26,75 +38,73 @@ function Mark() {
   )
 }
 
-// Bottom-right chat island: the "arc. Chat" pill springs open into a bar with WhatsApp and Book a call.
-// Opens on hover (mouse), Enter/Space (keyboard, focus moves into the bar) and first tap (touch).
-// Closes when the mouse leaves, on an outside tap, on Escape, or when focus leaves the island.
-export default function ChatWidget() {
-  const [open, setOpen] = useState(false)
-  const dockRef = useRef<HTMLDivElement>(null)
-  const shellRef = useRef<HTMLDivElement>(null)
-  const shadowRef = useRef<HTMLDivElement>(null)
-  const compactRef = useRef<HTMLButtonElement>(null)
-  const openRef = useRef<HTMLDivElement>(null)
-  const firstAction = useRef<HTMLAnchorElement>(null)
-  const geo = useRef<{ W: number; H: number; compact: Box; open: Box } | null>(null)
+/** Tracks the natural size of the content so the shell can spring to it. */
+function useContentSize() {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [size, setSize] = useState<{ width: number; height: number } | null>(null)
 
-  // Size the stage once to the larger state; both states are then just clip-path boxes inside it
-  const measure = () => {
-    const c = compactRef.current!
-    const o = openRef.current!
-    const compact = boxOf(c)
-    const openBox = boxOf(o)
-    const W = Math.max(compact.w, openBox.w)
-    const H = Math.max(compact.h, openBox.h)
-    const dock = dockRef.current!
-    dock.style.width = `${W}px`
-    dock.style.height = `${H}px`
-    geo.current = { W, H, compact, open: openBox }
-  }
-
+  // Synchronous mount measure: the shell owns explicit dimensions before the first interaction,
+  // so a quick first tap springs instead of snapping open.
   useLayoutEffect(() => {
-    measure()
-    const g = geo.current!
-    setIsland(shellRef.current!, shadowRef.current!, g.W, g.H, g.compact, "bottom-right")
-    // Satoshi may swap in after first paint and change widths
-    const snap = () => {
-      if (!shellRef.current || !shadowRef.current) return
-      measure()
-      const g2 = geo.current!
-      const isOpen = shellRef.current.hasAttribute("data-open")
-      setIsland(shellRef.current, shadowRef.current, g2.W, g2.H, isOpen ? g2.open : g2.compact, "bottom-right")
-    }
-    document.fonts?.ready.then(snap)
-    // Re-measure only on a real width change (rotation). Phone toolbars sliding while scrolling fire
-    // height-only resizes; ignoring them keeps a running morph from snapping in Chrome/Arc on iPhone.
-    return onWidthResize(snap)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const el = ref.current
+    if (el) setSize({ width: el.offsetWidth, height: el.offsetHeight })
   }, [])
 
-  const first = useRef(true)
-  useLayoutEffect(() => {
-    if (first.current) {
-      first.current = false
-      return
-    }
-    const g = geo.current
-    if (!g) return
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    morphIsland(
-      shellRef.current!,
-      shadowRef.current!,
-      g.W,
-      g.H,
-      open ? g.compact : g.open,
-      open ? g.open : g.compact,
-      "bottom-right",
-      reduce,
-    )
-    swapContent((open ? openRef : compactRef).current!, (open ? compactRef : openRef).current, false, reduce)
-  }, [open])
+  // Content swaps and the font swap-in resize the content, never the viewport, so toolbar
+  // resizes on iPhone (height-only) can't reach this.
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof ResizeObserver === "undefined") return
+    const observer = new ResizeObserver(() => setSize({ width: el.offsetWidth, height: el.offsetHeight }))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  return [ref, size] as const
+}
+
+// `ref` goes through to the motion element: popLayout needs it to lift the outgoing slot out of the
+// flow at once, so the shell measures only the incoming content
+function Slot({ children, className, ref }: { children: ReactNode; className: string; ref?: Ref<HTMLDivElement> }) {
+  const reduce = useReducedMotion()
+  return (
+    <motion.div
+      ref={ref}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9, y: 8, filter: "blur(5px)" }}
+      animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+      // Exit is pulled back into the pill: fast and blur-free, before the shrinking shell can clip it
+      exit={
+        reduce
+          ? { opacity: 0, transition: { duration: 0.1 } }
+          : { opacity: 0, scale: 0.9, y: 6, filter: "blur(0px)", transition: { duration: 0.08, ease: EASE_OUT } }
+      }
+      // One spring drives transform, opacity and blur together, so content travels with the shell
+      transition={reduce ? { duration: 0.15 } : CONTENT_SPRING}
+      // Anchored to the pill's corner: content unfurls up and left out of it, and is pulled back in
+      style={{ transformOrigin: "100% 100%" }}
+      className={`ci-slot ${className}`}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// Bottom-right chat island: the "arc. Chat" pill springs open into a bar with WhatsApp and Book a call.
+// Opens on hover (mouse), Enter/Space (keyboard, focus moves into the bar) and first tap (touch).
+// Closes when the mouse leaves, on an outside tap, on Escape, or when focus moves out of the island.
+export default function ChatWidget() {
+  const reduce = useReducedMotion()
+  const [open, setOpen] = useState(false)
+  const [sizerRef, size] = useContentSize()
+  const shellRef = useRef<HTMLDivElement>(null)
+  const firstAction = useRef<HTMLAnchorElement>(null)
+  const focusOnOpen = useRef(false)
 
   useEffect(() => {
+    if (open && focusOnOpen.current) {
+      focusOnOpen.current = false
+      firstAction.current?.focus()
+    }
     if (!open) return
     const onDown = (e: PointerEvent) => {
       if (!shellRef.current?.contains(e.target as Node)) setOpen(false)
@@ -113,46 +123,59 @@ export default function ChatWidget() {
   const mouse = (e: React.PointerEvent) => e.pointerType === "mouse"
 
   return (
-    <div ref={dockRef} className={`ci-dock ${satoshi.variable}`} data-chat-widget>
-      <div ref={shadowRef} className="ci-shadow" aria-hidden="true" />
-      <div
+    <div className={`ci-dock ${satoshi.variable}`} data-chat-widget>
+      <motion.div
         ref={shellRef}
         className="ci-shell"
-        data-open={open ? "" : undefined}
+        initial={false}
+        animate={size ? { width: size.width, height: size.height } : PILL}
+        transition={reduce ? { duration: 0 } : SHELL_SPRING}
+        style={{ borderRadius: RADIUS }}
         onPointerEnter={(e) => mouse(e) && setOpen(true)}
         onPointerLeave={(e) => mouse(e) && setOpen(false)}
         onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node)) setOpen(false)
+          // Only a move to somewhere else on the page closes it; a swapped-out button losing focus doesn't
+          const next = e.relatedTarget as Node | null
+          if (next && !e.currentTarget.contains(next)) setOpen(false)
         }}
       >
-        <button
-          ref={compactRef}
-          type="button"
-          className="ci-slot ci-compact"
-          data-on={open ? undefined : ""}
-          aria-expanded={open}
-          aria-controls="ci-actions"
-          aria-label="Chat with arc"
-          tabIndex={open ? -1 : 0}
-          onClick={(e) => {
-            setOpen(true)
-            if (e.detail === 0) requestAnimationFrame(() => firstAction.current?.focus())
-          }}
-        >
-          <Mark />
-          <span>Chat</span>
-        </button>
-        <div ref={openRef} className="ci-slot ci-open" id="ci-actions" data-on={open ? "" : undefined} inert={!open}>
-          <Mark />
-          <a ref={firstAction} className="ci-act ci-wa" href={WHATSAPP} target="_blank" rel="noopener noreferrer">
-            <WhatsAppMark />
-            WhatsApp
-          </a>
-          <Link className="ci-act ci-call" href="/call" onClick={() => setOpen(false)}>
-            Book a call
-          </Link>
+        {/* max-content keeps this at the natural size of the active content; the shell springs toward it */}
+        <div ref={sizerRef} className="ci-sizer">
+          <AnimatePresence mode="popLayout" initial={false} anchorX="right" anchorY="bottom">
+            {open ? (
+              <Slot key="open" className="ci-open">
+                <div id="ci-actions" className="ci-row">
+                  <Mark />
+                  <a ref={firstAction} className="ci-act ci-wa" href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+                    <WhatsAppMark />
+                    WhatsApp
+                  </a>
+                  <Link className="ci-act ci-call" href="/call" onClick={() => setOpen(false)}>
+                    Book a call
+                  </Link>
+                </div>
+              </Slot>
+            ) : (
+              <Slot key="compact" className="ci-compact-slot">
+                <button
+                  type="button"
+                  className="ci-compact"
+                  aria-expanded={false}
+                  aria-controls="ci-actions"
+                  aria-label="Chat with arc"
+                  onClick={(e) => {
+                    if (e.detail === 0) focusOnOpen.current = true // keyboard: move focus into the bar
+                    setOpen(true)
+                  }}
+                >
+                  <Mark />
+                  <span>Chat</span>
+                </button>
+              </Slot>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }
