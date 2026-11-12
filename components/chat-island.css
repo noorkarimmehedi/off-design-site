@@ -1,5 +1,5 @@
 /* Site-wide chat launcher, after BeUI's Dynamic Island.
-   Motion lives in chat-widget.tsx: the shell springs its real size, content springs in from a soft blur. */
+   Motion lives in chat-widget.tsx: transform + opacity only, so it stays smooth in Chrome and Arc on iPhone. */
 
 .ci-dock {
   position: fixed;
@@ -24,33 +24,70 @@
   from { opacity: 0; transform: translateY(10px); }
 }
 
-/* The shell springs its real width/height to the active content (motion/react, BeUI's Dynamic Island).
-   Content is pinned to the bottom-right corner, so the bar unfurls up and left out of the pill. */
-.ci-shell {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
+/* Stage sized from JS to the larger state (--ci-w x --ci-h). Every piece is anchored bottom-right
+   and moved with transform only (chat-widget.tsx), so the graphics chip runs the whole morph. */
+.ci-shadow,
+.ci-stadium i,
+.ci-win {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform-origin: 100% 100%;
+  will-change: transform;
+  pointer-events: none;
+}
+.ci-shadow {
+  width: var(--ci-w);
+  height: var(--ci-h);
+  border-radius: 999px;
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.5);
+}
+.ci-stadium { position: absolute; inset: 0; pointer-events: none; }
+.ci-cap-l,
+.ci-cap-r {
+  width: var(--ci-h);
+  height: var(--ci-h);
+  border-radius: 50%;
+}
+.ci-mid {
+  width: var(--ci-w);
+  height: var(--ci-h);
+}
+.ci-fill i { background: #0b0b0b; }
+/* Faint light edge for dark pages; drawn under the fill so only the outside of the ring shows */
+.ci-ring i { background: #0b0b0b; box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22); }
+
+/* Content window: slides with transform while .ci-win-in slides back, so only the clip edge moves */
+.ci-win {
+  width: var(--ci-w);
+  height: var(--ci-h);
+  border-radius: calc(var(--ci-h) / 2);
   overflow: hidden;
-  background: #0b0b0b;
   color: #f4f4f4;
-  pointer-events: auto;
-  box-shadow: 0 0 0 0.75px rgb(255 255 255 / 0.22), 0 14px 30px -14px rgb(0 0 0 / 0.5);
-  contain: layout paint;
 }
-.ci-sizer {
-  width: max-content;
-  flex: none;
+.ci-win-in {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
 }
+
 .ci-slot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  width: max-content;
   white-space: nowrap;
+  transform-origin: 100% 100%;
+  will-change: transform, opacity;
+  pointer-events: auto;
+}
+.ci-slot:not([data-on]) {
+  opacity: 0;
+  pointer-events: none;
 }
 .ci-compact {
-  display: flex;
-  align-items: center;
   gap: 9px;
   padding: 7px 16px 7px 7px;
   border: 0;
@@ -61,13 +98,13 @@
   -webkit-tap-highlight-color: transparent;
 }
 .ci-compact:focus-visible { outline: 1px dashed rgb(255 255 255 / 0.6); outline-offset: -4px; border-radius: 32px; }
-.ci-row {
-  display: flex;
-  align-items: center;
+.ci-open {
   gap: 6px;
   padding: 7px;
 }
-.ci-row .ci-av { margin-right: 4px; }
+.ci-open .ci-av { margin-right: 4px; }
+
+.ci-av { margin-right: 4px; }
 
 .ci-av { margin-right: 4px; }
 
