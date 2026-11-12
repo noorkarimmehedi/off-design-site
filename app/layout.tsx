@@ -203,7 +203,7 @@ html { font-family: var(--font-sans); background: var(--color-ink); }
         `}</style>
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="arc-theme" disableTransitionOnChange>
           <SmoothScroll />
           {children}
           <EdgeBlur position="top" />

@@ -4,7 +4,8 @@ import Link from "next/link"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { satoshi } from "@/lib/fonts"
-import { boxOf, CONTENT, EASE_OUT, morphIsland, setIsland, swapContent } from "@/lib/island"
+import { boxOf, dockMotion, morphIsland, setIsland, swapContent, type Box } from "@/lib/island"
+import { onWidthResize, stableVh } from "@/lib/viewport"
 import "./call-island.css"
 
 const SEEN_KEY = "arc-call-island" // set when the visitor answers; lasts for this tab
@@ -52,22 +53,53 @@ export default function CallIsland() {
 
   useEffect(() => setMounted(true), [])
 
-  // Trigger: phones only, once per visit, after the visitor has scrolled into the page
+  // Trigger: phones only, once per visit, after the visitor has scrolled into the page.
+  // Uses the stable small-viewport height, not innerHeight, which jumps as phone toolbars slide.
   useEffect(() => {
     if (!window.matchMedia("(max-width: 809px)").matches || seen()) return
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight
+    let raf = 0
+    const check = () => {
+      raf = 0
+      const max = document.documentElement.scrollHeight - stableVh()
       if (max <= 0 || window.scrollY / max < TRIGGER) return
       window.removeEventListener("scroll", onScroll)
       setView("pill")
       later(() => setView((v) => (v === "pill" ? "ask" : v)), 650)
     }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(check)
+    }
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => {
       window.removeEventListener("scroll", onScroll)
+      cancelAnimationFrame(raf)
       timers.current.forEach(clearTimeout)
     }
   }, [])
+
+  // Stage = the larger of the two states; each state is a clip-path box inside it
+  const measure = () => {
+    const pill = boxOf(pillRef.current!, 30)
+    const ask = boxOf(askRef.current!, 30)
+    const W = Math.max(pill.w, ask.w)
+    const H = Math.max(pill.h, ask.h)
+    dockRef.current!.style.width = `${W}px`
+    dockRef.current!.style.height = `${H}px`
+    return { W, H, pill, ask }
+  }
+
+  // Re-measure only when the width really changes (rotation). Height-only resizes are the
+  // toolbar sliding, and re-measuring then would snap a running morph.
+  useEffect(() => {
+    if (!mounted) return
+    return onWidthResize(() => {
+      const v = prev.current
+      if (v === "hidden" || !shellRef.current || !shadowRef.current) return
+      const g = measure()
+      setIsland(shellRef.current, shadowRef.current, g.W, g.H, v === "ask" ? g.ask : g.pill, "top-center")
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted])
 
   useLayoutEffect(() => {
     const from = prev.current
@@ -79,44 +111,22 @@ export default function CallIsland() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 
     if (view === "hidden") {
-      const out = dock.animate(
-        reduce
-          ? [{ opacity: 1 }, { opacity: 0 }]
-          : [
-              { opacity: 1, transform: "none" },
-              { opacity: 0, transform: "translateY(-12px) scale(0.92)" },
-            ],
-        { duration: 220, easing: EASE_OUT, fill: "forwards" },
-      )
-      out.onfinish = () => {
+      dockMotion(dock, false, reduce, () => {
         dock.hidden = true
-        out.cancel()
-      }
+        dock.style.opacity = ""
+        dock.style.transform = ""
+      })
       return
     }
 
     if (from === "hidden") dock.hidden = false // must be in layout before measuring
-    // Stage = the larger of the two states; each state is a clip-path box inside it
-    const pill = boxOf(pillRef.current!, 30)
-    const ask = boxOf(askRef.current!, 30)
-    const W = Math.max(pill.w, ask.w)
-    const H = Math.max(pill.h, ask.h)
-    dock.style.width = `${W}px`
-    dock.style.height = `${H}px`
-    const to = view === "ask" ? ask : pill
+    const { W, H, pill, ask } = measure()
+    const to: Box = view === "ask" ? ask : pill
 
     if (from === "hidden") {
       // First appearance: drop in under the top edge
       setIsland(shell, shadow, W, H, to, "top-center")
-      dock.animate(
-        reduce
-          ? [{ opacity: 0 }, { opacity: 1 }]
-          : [
-              { opacity: 0, transform: "translateY(-14px) scale(0.9)", filter: "blur(6px)" },
-              { opacity: 1, transform: "none", filter: "blur(0px)" },
-            ],
-        { duration: reduce ? 200 : CONTENT.ms, easing: reduce ? "ease" : CONTENT.easing },
-      )
+      dockMotion(dock, true, reduce)
       return
     }
 

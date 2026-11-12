@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { satoshi } from "@/lib/fonts"
 import { boxOf, morphIsland, setIsland, swapContent, type Box } from "@/lib/island"
+import { onWidthResize } from "@/lib/viewport"
 import "./chat-island.css"
 
 const WHATSAPP = "https://api.whatsapp.com/send/?phone=8801733670129"
@@ -57,11 +58,17 @@ export default function ChatWidget() {
     const g = geo.current!
     setIsland(shellRef.current!, shadowRef.current!, g.W, g.H, g.compact, "bottom-right")
     // Satoshi may swap in after first paint and change widths
-    document.fonts?.ready.then(() => {
+    const snap = () => {
+      if (!shellRef.current || !shadowRef.current) return
       measure()
       const g2 = geo.current!
-      setIsland(shellRef.current!, shadowRef.current!, g2.W, g2.H, open ? g2.open : g2.compact, "bottom-right")
-    })
+      const isOpen = shellRef.current.hasAttribute("data-open")
+      setIsland(shellRef.current, shadowRef.current, g2.W, g2.H, isOpen ? g2.open : g2.compact, "bottom-right")
+    }
+    document.fonts?.ready.then(snap)
+    // Re-measure only on a real width change (rotation). Phone toolbars sliding while scrolling fire
+    // height-only resizes; ignoring them keeps a running morph from snapping in Chrome/Arc on iPhone.
+    return onWidthResize(snap)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
