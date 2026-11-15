@@ -20,10 +20,12 @@ export type WorkCard = {
 
 export const work: WorkCard[] = [
   { name: "Sera Khabar", href: "https://www.serakhabar.com/", video: "sk-achar.mp4", img: "sk-achar-poster", alt: "Sera Khabar achar launch film" },
+  { name: "SSLCOMMERZ", href: "/sslcommerz", video: "sslcommerz-whatif.mp4", img: "sslcommerz-whatif-poster", alt: "SSLCOMMERZ website concept on a display" },
   { name: "House of Dhaka", href: "/work", img: "w-hod", alt: "House of Dhaka, Latest Drop page on a phone" },
   { name: "Mango Lover", href: "https://www.mangolover.com.bd/", img: "w-ml-desk", wide: true, alt: "Mango Lover categories and best sellers on desktop" },
   { name: "Sera Khabar", href: "https://www.serakhabar.com/", img: "w-sk-mobile", alt: "Sera Khabar best sellers on a phone" },
   { name: "Mango Lover", href: "https://www.mangolover.com.bd/", img: "w-ml-mobile", alt: "Mango Lover categories on a phone" },
+  { name: "Gentleman's Wardrobe", href: "/gw", video: "gw-whatif.mp4", img: "gw-whatif-poster", alt: "Gentleman's Wardrobe website concept on a display" },
   { name: "Sera Khabar", href: "https://www.serakhabar.com/", img: "w-sk-desk", wide: true, alt: "Sera Khabar date-palm jaggery hero on desktop" },
   { name: "Mango Lover", href: "https://www.mangolover.com.bd/", img: "w-ml-foot", wide: true, alt: "Mango Lover footer on desktop" },
 ]
