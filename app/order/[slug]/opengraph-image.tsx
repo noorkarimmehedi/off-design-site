@@ -15,8 +15,9 @@ export default async function OrderPreview({ params }: { params: Promise<{ slug:
     catalog.mode === "quote"
       ? taka(priceSelection(defaultSelection(catalog, client.selection), catalog).total)
       : `Delivery ${catalog.delivery}`
+  const label = catalog.docLabel ?? "Work order"
   return gardenCard({
-    lines: client.name ? [{ text: "Work order for" }, { text: client.name, ink: true }] : [{ text: "Your work order", ink: true }],
+    lines: client.name ? [{ text: `${label} for` }, { text: client.name, ink: true }] : [{ text: `Your ${label.toLowerCase()}`, ink: true }],
     chips: [catalog.name, second],
     logo: client.logo,
   })

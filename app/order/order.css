@@ -39,6 +39,107 @@
   vertical-align: -0.06em;
   margin-left: 0.02em;
 }
+
+/* Highlighted part of a deliverable (catalog `highlight`): a callout under the detail that shows
+   while folded, and a tinted section inside the unfolded features. iMessage blue. */
+.wo {
+  --hl: #0a84ff;
+  --hl-tint: rgb(10 132 255 / 0.08);
+}
+.wo .d-row p.d-hl {
+  margin-top: 8px;
+  color: var(--fg);
+}
+.wo .hl-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: 1px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--hl);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+.wo .scope-in .scope-hl {
+  margin: 2px 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--hl-tint);
+}
+.wo .scope-in .scope-hl h4 {
+  color: var(--hl);
+}
+.wo .scope-in .scope-hl li::before {
+  background: var(--hl);
+}
+
+/* Client tagline pill (TaglineBadge): words stacked in one track; the active one sits in the
+   middle, the one before it leaves through the top, the rest wait below. The track's width eases
+   to the active word, so the pill grows and shrinks with it. */
+.wo .tag-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 2.1em;
+  padding: 0 0.75em;
+  margin-right: 0.4em;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.38em;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  vertical-align: 0.35em;
+  overflow: hidden;
+}
+.wo .tag-track {
+  position: relative;
+  display: block;
+  height: 1.3em;
+  transition: width 650ms var(--ease-out);
+}
+.wo .tag-word {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(110%);
+  filter: blur(4px);
+}
+.wo .tag-word.in {
+  position: relative;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 500ms ease 80ms, transform 650ms var(--ease-out) 80ms, filter 500ms ease 80ms;
+}
+.wo .tag-word.out {
+  opacity: 0;
+  transform: translateY(-110%);
+  filter: blur(4px);
+  transition: opacity 350ms ease, transform 550ms var(--ease-out), filter 350ms ease;
+}
+.wo .tag-sizers {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.wo .tag-sizers > span {
+  position: absolute;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wo .tag-track,
+  .wo .tag-word {
+    transition: none !important;
+  }
+}
+
 .wo .hero-foot {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1230,5 +1331,21 @@
   .wo .scope-in,
   .wo .d-terms ol {
     transform: none;
+  }
+}
+
+/* Phones: the price sits beside the item name only; the detail and features below it use the
+   row's full width instead of a narrow column with an empty strip under the price. */
+@media (max-width: 809px) {
+  .wo .d-row > .min-w-0 {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+  .wo .d-row > .c-now {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .wo .d-row .d-name {
+    padding-right: 5.5em;
   }
 }

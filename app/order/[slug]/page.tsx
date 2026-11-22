@@ -17,10 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const { name, catalog: catalogId } = resolveClient(slug)
   const catalog = getCatalog(catalogId)
-  const title = name ? `Work order — ${name} × Arc Labs` : "Work order — Arc Labs Corporation"
+  const label = catalog.docLabel ?? "Work order"
+  const title = name ? `${label} — ${name} × Arc Labs` : `${label} — Arc Labs Corporation`
   const description =
     catalog.mode === "quote"
-      ? `Review the scope and price for ${name ?? "your project"}, then sign your work order with Arc Labs Corporation.`
+      ? `Review the scope and price for ${name ?? "your project"}, then sign your ${label.toLowerCase()} with Arc Labs Corporation.`
       : "Pick your features, see your price and sign your work order with Arc Labs Corporation."
   return {
     title,
@@ -41,7 +42,7 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ sl
       <div className="print:hidden">
         <HomeHeader />
       </div>
-      <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} />
+      <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} badge={client.badge} />
       <SiteFoot />
       <ScrollReveal />
     </main>

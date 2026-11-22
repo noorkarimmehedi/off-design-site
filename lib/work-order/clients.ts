@@ -12,7 +12,11 @@ export type ClientPreset = {
   locked?: boolean
   /** Brand logo in assets/og, shown beside the arc logo in the preview */
   logo?: string
+  /** Brand pill before the client's name in the hero; its words take turns */
+  badge?: ClientBadge
 }
+
+export type ClientBadge = { words: string[]; color: string }
 
 export const CLIENTS: Record<string, ClientPreset> = {
   "sera-khabar": { name: "সেরা খাবার", selection: { landing: 5 } },
@@ -27,6 +31,12 @@ export const CLIENTS: Record<string, ClientPreset> = {
     name: "রাজশাহী আমবাড়ী",
     catalog: "web-admin-landing",
     logo: "rajshahi-aambari.png",
+  },
+  // Website + Merchant Suite admin (no social inbox) + 1 landing page — fixed scope, ৳35,000.
+  icey: {
+    name: "ICEy",
+    catalog: "icey",
+    badge: { words: ["Big Flavors.", "Better Vibes.", "Quick Refresh."], color: "#3d6ad6" },
   },
 }
 
@@ -48,6 +58,7 @@ export function resolveClient(slug: string): {
   catalog?: string
   locked: boolean
   logo?: string
+  badge?: ClientBadge
 } {
   const saved = CLIENTS[slug] ?? CLIENTS[safeDecode(slug)]
   if (saved) return { ...saved, locked: saved.locked ?? true }

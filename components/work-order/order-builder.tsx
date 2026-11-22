@@ -15,6 +15,8 @@ import {
 } from "@/lib/work-order/catalog"
 import { TakaFlow } from "@/components/ui/number-flow"
 import SignatureField, { type SignatureFieldHandle } from "./signature-field"
+import TaglineBadge from "./tagline-badge"
+import type { ClientBadge } from "@/lib/work-order/clients"
 
 const WHATSAPP = "+880 1733-670129"
 const WA_LINK = "https://api.whatsapp.com/send/?phone=8801733670129"
@@ -34,6 +36,7 @@ export default function OrderBuilder({
   preset,
   catalog,
   nameLocked = false,
+  badge,
 }: {
   slug: string
   clientName?: string
@@ -42,6 +45,8 @@ export default function OrderBuilder({
   catalog: Catalog
   /** Name came from a saved client entry, so the client can't edit it */
   nameLocked?: boolean
+  /** Brand pill shown before the client's name */
+  badge?: ClientBadge
 }) {
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(catalog, preset))
   const [business, setBusiness] = useState(clientName ?? "")
@@ -172,6 +177,7 @@ export default function OrderBuilder({
   }
 
   const who = business.trim()
+  const docLabel = catalog.docLabel ?? "Work order"
   const today = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
   // Folded terms show their own titles, so the line is true for every catalogue
   const termsSummary = catalog.terms.map(([k]) => k).join(" · ")
@@ -189,7 +195,7 @@ export default function OrderBuilder({
       `}</style>
 
       {/* Hero: the homepage's big soft line, with the client's name in ink */}
-      <section ref={heroRef} className="wo-hero print:hidden" aria-label="Work order">
+      <section ref={heroRef} className="wo-hero print:hidden" aria-label={docLabel}>
         <h1>
           <span className="line">
             <span>{sentence(catalog.headline)}</span>
@@ -197,6 +203,7 @@ export default function OrderBuilder({
           <span className="line">
             <span>
               By <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} /> for{" "}
+              {badge && <TaglineBadge words={badge.words} color={badge.color} />}
               {/* Follows the Business name field, so a corrected spelling shows here too */}
               <span className={`who ${isBangla(who) ? "bn" : ""}`}>{who || "you"}</span>
             </span>
@@ -204,7 +211,7 @@ export default function OrderBuilder({
         </h1>
         <div className="hero-foot">
           <span className="label">
-            Work order · {result ? result.number : catalog.name}
+            {docLabel} · {result ? result.number : catalog.name}
           </span>
           <div>
             <p>
@@ -221,9 +228,9 @@ export default function OrderBuilder({
         </div>
       </section>
 
-      <article className={`doc rv print:hidden${quote ? " quote" : ""}${still ? " still" : ""}`} aria-label="Work order">
+      <article className={`doc rv print:hidden${quote ? " quote" : ""}${still ? " still" : ""}`} aria-label={docLabel}>
         <div className="doc-head">
-          <h2>Work order</h2>
+          <h2>{docLabel}</h2>
           <dl>
             <dt>For</dt>
             <dd className={isBangla(who) ? "bn" : ""}>{who || "—"}</dd>
@@ -280,6 +287,12 @@ export default function OrderBuilder({
                       {f.required && !quote && <span className="incl">Included</span>}
                     </div>
                     {f.detail && <p>{f.detail}</p>}
+                    {f.highlight && (
+                      <p className="d-hl">
+                        <span className="hl-tag">New</span>
+                        {f.highlight}
+                      </p>
+                    )}
                     {f.points && f.points.length > 0 && <Scope count={f.points.length}>{<ul>{f.points.map((p) => <li key={p}>{p}</li>)}</ul>}</Scope>}
                     {f.pointGroups && f.pointGroups.length > 0 && <ScopeGroups groups={f.pointGroups} />}
                     {f.perUnit && (
@@ -362,7 +375,7 @@ export default function OrderBuilder({
         {/* Accept: details → review & sign → pay the advance */}
         <section ref={signRef} className="d-sign" id="sign" aria-labelledby="sign-heading">
           {result ? (
-            <Confirmation result={result} business={business} reference={reference} hasSlip={Boolean(slip)} />
+            <Confirmation docLabel={docLabel} result={result} business={business} reference={reference} hasSlip={Boolean(slip)} />
           ) : (
             <>
               <div className="sign-lead">
@@ -434,7 +447,7 @@ export default function OrderBuilder({
                   <button type="button" onClick={sign} disabled={!signed} className="btn">
                     Sign & continue
                   </button>
-                  <p className="note">Signing means you accept this work order and its terms.</p>
+                  <p className="note">Signing means you accept this {docLabel.toLowerCase()} and its terms.</p>
                 </Step>
 
                 <Step
@@ -564,7 +577,7 @@ function ScopeGroups({ groups }: { groups: FeaturePointGroup[] }) {
   return (
     <Scope count={count}>
       {groups.map((g) => (
-        <div key={g.title}>
+        <div key={g.title} className={g.highlight ? "scope-hl" : undefined}>
           <h4>{g.title}</h4>
           <ul>
             {g.points.map((p) => (
@@ -689,7 +702,19 @@ function Field({
   )
 }
 
-function Confirmation({ result, business, reference, hasSlip }: { result: Result; business: string; reference: string; hasSlip: boolean }) {
+function Confirmation({
+  result,
+  business,
+  reference,
+  hasSlip,
+  docLabel,
+}: {
+  result: Result
+  business: string
+  reference: string
+  hasSlip: boolean
+  docLabel: string
+}) {
   const proof = [hasSlip && "screenshot", reference.trim() && `reference ${reference.trim()}`].filter(Boolean).join(" and ")
   return (
     <div className="done-card">
@@ -699,14 +724,14 @@ function Confirmation({ result, business, reference, hasSlip }: { result: Result
       </div>
       <h2>Let’s build it.</h2>
       <p>
-        Thank you{business ? <span className={isBangla(business) ? "bn" : ""}>, {business}</span> : ""}. Work order <b>{result.number}</b> is signed,
+        Thank you{business ? <span className={isBangla(business) ? "bn" : ""}>, {business}</span> : ""}. {docLabel} <b>{result.number}</b> is signed,
         with your payment {proof}. We’ll verify the <b>{taka(result.advance)}</b> advance and confirm on WhatsApp — work starts as soon as it
         clears.
       </p>
       <div className="acts">
         <a
           className="btn"
-          href={`https://wa.me/8801733670129?text=${encodeURIComponent(`Hi Arc Labs, I've signed work order ${result.number} and paid the advance.`)}`}
+          href={`https://wa.me/8801733670129?text=${encodeURIComponent(`Hi Arc Labs, I've signed ${docLabel.toLowerCase()} ${result.number} and paid the advance.`)}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -814,13 +839,14 @@ function PrintOrder({
   reference: string
   hasSlip: boolean
 }) {
+  const docLabel = catalog.docLabel ?? "Work order"
   const date = new Date(result.signedAt).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })
   const mono = "font-mono text-[8pt] uppercase tracking-[0.2em] text-[#6f6a62]"
   return (
     <div id="print-order" className="hidden min-h-[297mm] bg-white p-[12mm] text-[10pt] leading-[1.5] text-[#141210]" style={{ fontFamily: "Geist, sans-serif" }}>
       <div className="bg-black p-[8mm] text-[#ede8df]" style={{ WebkitPrintColorAdjust: "exact", printColorAdjust: "exact" }}>
         <div className="flex justify-between font-mono text-[8pt] uppercase tracking-[0.22em] text-[#8f887d]">
-          <span>Work order</span>
+          <span>{docLabel}</span>
           <span>{result.number}</span>
         </div>
         <div className="mt-[6mm] flex items-end gap-[3mm]">

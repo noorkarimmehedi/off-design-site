@@ -10,6 +10,8 @@ export type Feature = {
   points?: string[]
   /** Points split under the catalogue's own section headings */
   pointGroups?: FeaturePointGroup[]
+  /** Short callout shown under the detail even while the features are folded */
+  highlight?: string
   price: number
   compareAt: number
   /** Always part of the order; shown ticked and locked */
@@ -18,7 +20,12 @@ export type Feature = {
   perUnit?: { label: string; min: number; max: number; default: number }
 }
 
-export type FeaturePointGroup = { title: string; points: string[] }
+export type FeaturePointGroup = {
+  title: string
+  points: string[]
+  /** Drawn as a tinted panel so it stands out from the other sections */
+  highlight?: boolean
+}
 
 export type FeatureGroup = {
   id: string
@@ -33,6 +40,8 @@ export type Catalog = {
   id: string
   /** Shown in the order header and on the printed copy */
   name: string
+  /** What the document is called on the page, e.g. "Quotation". Defaults to "Work order". */
+  docLabel?: string
   /** Delivery window quoted on the order */
   delivery: string
   /** "builder" lets the client pick features; "quote" is a fixed scope at a fixed price */
