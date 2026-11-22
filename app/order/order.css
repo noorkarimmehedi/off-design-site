@@ -1222,11 +1222,16 @@
     row-gap: 16px;
     margin-top: 32px;
   }
+  /* The three facts stay on one line: type and padding scale with the screen */
+  .wo .facts {
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
   .wo .chip {
     height: 30px;
-    padding: 0 11px;
+    padding: 0 clamp(7px, 2.3vw, 11px);
     border-radius: 9px;
-    font-size: 13px;
+    font-size: clamp(11px, 3.15vw, 13px);
   }
   .wo .doc {
     margin: 112px calc(-1 * max(15px, env(safe-area-inset-left, 0px))) 0;
