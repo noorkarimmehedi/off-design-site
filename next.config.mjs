@@ -17,6 +17,9 @@ const nextConfig = {
     const origin = "https://ghorerbazar.dott-redirect.workers.dev"
     return {
       beforeFiles: [
+        // Grambangla product page concept: a static page in public/grambangla
+        { source: "/grambangla", destination: "/grambangla/index.html" },
+        { source: "/grambangla/", destination: "/grambangla/index.html" },
         // Client quotations: /quotation/<slug> is the link we send; the page lives at /order/<slug>
         { source: "/quotation", destination: "/order" },
         { source: "/quotation/:path*", destination: "/order/:path*" },
