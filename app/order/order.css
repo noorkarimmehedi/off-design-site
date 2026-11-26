@@ -40,6 +40,15 @@
   margin-left: 0.02em;
 }
 
+/* Client's own logo, before their name; sized to the cap height so it sits in the line */
+.wo .wo-hero .b-logo {
+  display: inline-block;
+  height: 1.05em;
+  width: auto;
+  margin-right: 0.18em;
+  vertical-align: -0.2em;
+}
+
 /* Highlighted part of a deliverable (catalog `highlight`): a callout under the detail that shows
    while folded, and a tinted section inside the unfolded features. iMessage blue. */
 .wo {
@@ -325,7 +334,7 @@
   margin-top: 1px;
   border-radius: 6px;
   border: 1px solid rgb(0 0 0 / 0.3);
-  transition: border-color 160ms ease, transform 160ms var(--ease-out);
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms var(--ease-out);
 }
 .wo .box svg {
   position: absolute;
@@ -361,6 +370,26 @@
 }
 .wo .doc.quote .d-row[aria-disabled="true"] .box {
   opacity: 1;
+}
+/* Dark theme: --ink is near the panel grey, so the box and tick go light, and a ticked box fills */
+.dark .wo .box {
+  border-color: rgb(255 255 255 / 0.4);
+}
+.dark .wo .box svg {
+  stroke: #111111;
+  stroke-width: 2.4;
+}
+.dark .wo .on .box {
+  border-color: #f2f2f2;
+  background: #f2f2f2;
+}
+@media (hover: hover) and (pointer: fine) {
+  .dark .wo .d-row:not([aria-disabled="true"]):hover {
+    background: rgb(255 255 255 / 0.03);
+  }
+}
+.dark .wo .d-row:focus-visible {
+  background: rgb(255 255 255 / 0.05);
 }
 .wo .doc.still .box,
 .wo .doc.still .box path {
@@ -474,6 +503,16 @@
 }
 .wo .scope-in h4:first-child {
   margin-top: 0;
+}
+/* Each point group is its own block, so every heading is a first child: space the blocks instead */
+.wo .scope-in > div + div {
+  margin-top: 16px;
+}
+.wo .scope-in h4 {
+  margin-bottom: 6px;
+}
+.wo .scope-in ul {
+  row-gap: 8px;
 }
 .wo .scope-in ul {
   margin: 0;
@@ -1217,6 +1256,19 @@
     font-size: min(34px, calc((100vw - 30px) / 10.5));
     line-height: 1.18;
   }
+  /* Phones keep the hero to two lines: the client's logo already spells their name, so the typed
+     name steps aside (still read out by screen readers) */
+  .wo .wo-hero .who.with-logo {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .wo .wo-hero .b-logo {
+    margin-right: 0;
+  }
   .wo .hero-foot {
     grid-template-columns: 1fr;
     row-gap: 16px;
@@ -1347,10 +1399,28 @@
     grid-row: 1;
   }
   .wo .d-row > .c-now {
-    grid-column: 3;
-    grid-row: 1;
+    display: none;
   }
-  .wo .d-row .d-name {
-    padding-right: 5.5em;
+  .wo .d-row .m-price {
+    float: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin: 0 0 4px 14px;
+  }
+  .wo .d-row .m-price .c-was {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .wo .d-row .m-price .c-now small {
+    display: inline;
+    margin-left: 3px;
+  }
+}
+@media (min-width: 810px) {
+  .wo .d-row .m-price {
+    display: none;
   }
 }

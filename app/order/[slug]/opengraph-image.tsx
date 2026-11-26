@@ -6,7 +6,7 @@ import { gardenCard, OG_SIZE } from "@/lib/og/garden"
 // Fixed quotes show their price; pick-your-own orders show the delivery window instead.
 export const size = OG_SIZE
 export const contentType = "image/png"
-export const alt = "Arc Labs work order"
+export const alt = "Arc Labs quotation"
 
 export default async function OrderPreview({ params }: { params: Promise<{ slug: string }> }) {
   const client = resolveClient((await params).slug)
@@ -15,7 +15,7 @@ export default async function OrderPreview({ params }: { params: Promise<{ slug:
     catalog.mode === "quote"
       ? taka(priceSelection(defaultSelection(catalog, client.selection), catalog).total)
       : `Delivery ${catalog.delivery}`
-  const label = catalog.docLabel ?? "Work order"
+  const label = catalog.docLabel ?? "Quotation"
   return gardenCard({
     lines: client.name ? [{ text: `${label} for` }, { text: client.name, ink: true }] : [{ text: `Your ${label.toLowerCase()}`, ink: true }],
     chips: [catalog.name, second],

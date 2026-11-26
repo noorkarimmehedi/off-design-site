@@ -17,6 +17,9 @@ const nextConfig = {
     const origin = "https://ghorerbazar.dott-redirect.workers.dev"
     return {
       beforeFiles: [
+        // Client quotations: /quotation/<slug> is the link we send; the page lives at /order/<slug>
+        { source: "/quotation", destination: "/order" },
+        { source: "/quotation/:path*", destination: "/order/:path*" },
         { source: "/ghorerbazar", destination: `${origin}/ghorerbazar/` },
         { source: "/ghorerbazar/:path*", destination: `${origin}/ghorerbazar/:path*` },
         { source: "/raaztech", destination: "https://raaztech.dott-redirect.workers.dev/raaztech/" },

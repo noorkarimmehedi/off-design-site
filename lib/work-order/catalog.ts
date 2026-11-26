@@ -2,6 +2,7 @@ import { MERCHANT_CATALOG } from "./catalogs/merchant"
 import { WEB_BOT_CATALOG } from "./catalogs/web-bot"
 import { WEB_ADMIN_LANDING_CATALOG } from "./catalogs/web-admin-landing"
 import { ICEY_CATALOG } from "./catalogs/icey"
+import { GRAMBANGLA_CATALOG } from "./catalogs/grambangla"
 import type { Catalog, Feature, Line, Selection } from "./types"
 
 export type { Catalog, Feature, FeatureGroup, FeaturePointGroup, Line, Selection } from "./types"
@@ -12,6 +13,7 @@ export const CATALOGS: Record<string, Catalog> = {
   [WEB_BOT_CATALOG.id]: WEB_BOT_CATALOG,
   [WEB_ADMIN_LANDING_CATALOG.id]: WEB_ADMIN_LANDING_CATALOG,
   [ICEY_CATALOG.id]: ICEY_CATALOG,
+  [GRAMBANGLA_CATALOG.id]: GRAMBANGLA_CATALOG,
 }
 
 export const DEFAULT_CATALOG_ID = MERCHANT_CATALOG.id
@@ -43,6 +45,9 @@ export function defaultSelection(catalog: Catalog, preset?: Selection): Selectio
 }
 
 export const taka = (n: number) => "৳" + n.toLocaleString("en-US")
+
+/** Price as written on the order: bundled items read "Included" instead of ৳0 */
+export const priceLabel = (f: Feature, amount = f.price) => (f.bundled ? "Included" : taka(amount))
 
 export const lineLabel = (l: Line) => (l.feature.perUnit ? `${l.feature.name} ×${l.qty}` : l.feature.name)
 

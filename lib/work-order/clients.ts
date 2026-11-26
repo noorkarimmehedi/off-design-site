@@ -12,6 +12,8 @@ export type ClientPreset = {
   locked?: boolean
   /** Brand logo in assets/og, shown beside the arc logo in the preview */
   logo?: string
+  /** Brand logo in public/, drawn in the hero beside the client's name */
+  heroLogo?: string
   /** Brand pill before the client's name in the hero; its words take turns */
   badge?: ClientBadge
 }
@@ -38,6 +40,15 @@ export const CLIENTS: Record<string, ClientPreset> = {
     catalog: "icey",
     badge: { words: ["Big Flavors.", "Better Vibes.", "Quick Refresh."], color: "#3d6ad6" },
   },
+  // Grambangla (deshi food: ghee, mustard oil, semai, spices) — storefront ৳23,000 + admin panel with every
+  // module ৳22,000; landing pages ৳8,000 each, off unless picked. Brand green from grambanglashop.com.
+  grambangla: {
+    name: "গ্রাম বাংলা",
+    catalog: "grambangla",
+    logo: "grambangla.png",
+    heroLogo: "/clients/grambangla.webp",
+    badge: { words: ["Pure Ghee.", "Mustard Oil.", "Deshi Spices."], color: "#1B5E20" },
+  },
 }
 
 /** "bengal-mart" → "Bengal Mart"; Bangla slugs keep their script ("সেরা-খাবার" → "সেরা খাবার") */
@@ -58,6 +69,7 @@ export function resolveClient(slug: string): {
   catalog?: string
   locked: boolean
   logo?: string
+  heroLogo?: string
   badge?: ClientBadge
 } {
   const saved = CLIENTS[slug] ?? CLIENTS[safeDecode(slug)]

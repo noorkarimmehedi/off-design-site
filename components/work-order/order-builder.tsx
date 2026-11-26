@@ -6,6 +6,7 @@ import {
   BANK,
   defaultSelection,
   lineLabel,
+  priceLabel,
   priceSelection,
   taka,
   type Catalog,
@@ -22,7 +23,6 @@ const WHATSAPP = "+880 1733-670129"
 const WA_LINK = "https://api.whatsapp.com/send/?phone=8801733670129"
 const isBangla = (s: string) => /[ঀ-৿]/.test(s)
 const pad = (i: number) => String(i + 1).padStart(2, "0")
-const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 const smooth = (): ScrollBehavior => (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth")
 
 type Result = { number: string; total: number; advance: number; signedAt: string }
@@ -37,6 +37,7 @@ export default function OrderBuilder({
   catalog,
   nameLocked = false,
   badge,
+  heroLogo,
 }: {
   slug: string
   clientName?: string
@@ -47,6 +48,8 @@ export default function OrderBuilder({
   nameLocked?: boolean
   /** Brand pill shown before the client's name */
   badge?: ClientBadge
+  /** Brand logo drawn in the hero before the client's name */
+  heroLogo?: string
 }) {
   const [selection, setSelection] = useState<Selection>(() => defaultSelection(catalog, preset))
   const [business, setBusiness] = useState(clientName ?? "")
@@ -177,7 +180,7 @@ export default function OrderBuilder({
   }
 
   const who = business.trim()
-  const docLabel = catalog.docLabel ?? "Work order"
+  const docLabel = catalog.docLabel ?? "Quotation"
   const today = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
   // Folded terms show their own titles, so the line is true for every catalogue
   const termsSummary = catalog.terms.map(([k]) => k).join(" · ")
@@ -198,14 +201,15 @@ export default function OrderBuilder({
       <section ref={heroRef} className="wo-hero print:hidden" aria-label={docLabel}>
         <h1>
           <span className="line">
-            <span>{sentence(catalog.headline)}</span>
+            <span>{catalog.headline}</span>
           </span>
           <span className="line">
             <span>
-              By <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} /> for{" "}
+              by <img className="h-logo" src="/home/arc-gloss.webp" alt="arc" width={720} height={270} draggable={false} /> for{" "}
               {badge && <TaglineBadge words={badge.words} color={badge.color} />}
+              {heroLogo && <img className="b-logo" src={heroLogo} alt="" width={279} height={329} draggable={false} />}
               {/* Follows the Business name field, so a corrected spelling shows here too */}
-              <span className={`who ${isBangla(who) ? "bn" : ""}`}>{who || "you"}</span>
+              <span className={`who ${isBangla(who) ? "bn" : ""}${heroLogo ? " with-logo" : ""}`}>{who || "you"}</span>
             </span>
           </span>
         </h1>
@@ -282,9 +286,17 @@ export default function OrderBuilder({
                     </svg>
                   </span>
                   <div className="min-w-0">
+                    {/* Phones: price and was-price float in the row's corner so the text wraps around them */}
+                    <span className="m-price" aria-hidden="true">
+                      <span className="c-now">
+                        {priceLabel(f)}
+                        {f.perUnit && <small>each</small>}
+                      </span>
+                      <span className="c-was">{taka(f.compareAt)}</span>
+                    </span>
                     <div className="d-name">
                       <span>{f.name}</span>
-                      {f.required && !quote && <span className="incl">Included</span>}
+                      {f.required && !quote && !f.bundled && <span className="incl">Included</span>}
                     </div>
                     {f.detail && <p>{f.detail}</p>}
                     {f.highlight && (
@@ -301,7 +313,7 @@ export default function OrderBuilder({
                           −
                         </button>
                         <output aria-live="polite">
-                          {qty} {f.perUnit.label}
+                          {qty} {qty === 1 ? f.perUnit.label.replace(/s$/, "") : f.perUnit.label}
                         </output>
                         <button type="button" aria-label={`More ${f.perUnit.label}`} disabled={locked || qty >= f.perUnit.max} onClick={() => setQty(f, qty + 1)}>
                           +
@@ -311,7 +323,7 @@ export default function OrderBuilder({
                   </div>
                   <span className="c-was">{taka(f.compareAt)}</span>
                   <span className="c-now">
-                    {taka(f.price)}
+                    {priceLabel(f)}
                     {f.perUnit && <small>each</small>}
                   </span>
                 </div>
@@ -839,7 +851,7 @@ function PrintOrder({
   reference: string
   hasSlip: boolean
 }) {
-  const docLabel = catalog.docLabel ?? "Work order"
+  const docLabel = catalog.docLabel ?? "Quotation"
   const date = new Date(result.signedAt).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })
   const mono = "font-mono text-[8pt] uppercase tracking-[0.2em] text-[#6f6a62]"
   return (
@@ -890,7 +902,7 @@ function PrintOrder({
                 ))}
               </td>
               <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right text-[#6f6a62] line-through">{taka(l.compareAt)}</td>
-              <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right">{taka(l.price)}</td>
+              <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right">{priceLabel(l.feature, l.price)}</td>
             </tr>
           ))}
         </tbody>

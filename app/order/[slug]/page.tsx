@@ -17,16 +17,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const { name, catalog: catalogId } = resolveClient(slug)
   const catalog = getCatalog(catalogId)
-  const label = catalog.docLabel ?? "Work order"
+  const label = catalog.docLabel ?? "Quotation"
   const title = name ? `${label} — ${name} × Arc Labs` : `${label} — Arc Labs Corporation`
   const description =
     catalog.mode === "quote"
       ? `Review the scope and price for ${name ?? "your project"}, then sign your ${label.toLowerCase()} with Arc Labs Corporation.`
-      : "Pick your features, see your price and sign your work order with Arc Labs Corporation."
+      : "Pick your features, see your price and sign your quotation with Arc Labs Corporation."
   return {
     title,
     description,
-    openGraph: { title, description, url: `/order/${slug}`, siteName: "Arc Labs Corporation", type: "website" },
+    openGraph: { title, description, url: `/quotation/${slug}`, siteName: "Arc Labs Corporation", type: "website" },
     twitter: { card: "summary_large_image", title, description },
     robots: { index: false, follow: false },
   }
@@ -42,7 +42,7 @@ export default async function ClientOrderPage({ params }: { params: Promise<{ sl
       <div className="print:hidden">
         <HomeHeader />
       </div>
-      <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} badge={client.badge} />
+      <OrderBuilder slug={slug} clientName={client.name} preset={client.selection} catalog={catalog} nameLocked={client.locked} badge={client.badge} heroLogo={client.heroLogo} />
       <SiteFoot />
       <ScrollReveal />
     </main>

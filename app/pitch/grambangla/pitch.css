@@ -1,0 +1,945 @@
+/* Grambangla pitch deck, in the homepage's language (app/home.css tokens on .ah): grey ground, big
+   soft headline, label-left splits. Each slide fills the screen for screen-sharing; on a phone they
+   simply stack. Grambangla's green is the one brand colour, used for their actions. */
+
+.pg {
+  --gb: #1b5e20;
+  --gb-soft: rgb(27 94 32 / 0.1);
+  --gold: #fbc02d;
+  padding-bottom: 0;
+}
+.pg .bn {
+  font-family: "Hind Siliguri", var(--font);
+  letter-spacing: 0;
+}
+.pg .soft {
+  color: var(--muted);
+}
+.pg .num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* top bar: both marks, and where we are */
+.pg-bar {
+  position: fixed;
+  z-index: 40;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px max(15px, env(safe-area-inset-left, 0px));
+  pointer-events: none;
+}
+.pg-marks {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: 0 1px 0 var(--rule);
+  color: var(--muted);
+  font-size: 15px;
+}
+.pg-marks img:first-child {
+  height: 22px;
+  width: auto;
+}
+.pg-marks img:last-child {
+  height: 32px;
+  width: auto;
+}
+.pg-count {
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* a slide */
+.pg-slide {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 56px;
+  padding: 120px 0 80px;
+  scroll-margin-top: 0;
+}
+.pg .pg-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.pg .pg-copy {
+  display: grid;
+  gap: 14px;
+  max-width: 600px;
+}
+.pg .pg-lead {
+  font-size: 40px;
+  line-height: 46px;
+  letter-spacing: -0.035em;
+  color: var(--fg);
+  text-wrap: balance;
+}
+.pg .pg-gap {
+  margin: 18px 0 14px;
+}
+.pg-fine {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
+  letter-spacing: 0;
+  max-width: 760px;
+}
+
+/* 01 cover */
+.pg-cover h1 {
+  margin: 0;
+  display: grid;
+  font: 400 88px/0.98 var(--font);
+  letter-spacing: -0.05em;
+  color: var(--fg);
+}
+.pg-cover h1 .soft {
+  color: var(--soft);
+}
+.pg-sub {
+  color: var(--muted);
+}
+.pg-shelf {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+.pg-shelf li {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: #fff;
+  overflow: hidden;
+  animation: pv-up 900ms var(--ease-out) both;
+  animation-delay: var(--d);
+}
+.pg-shelf img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 02 facts */
+.pg-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.pg-facts li {
+  display: grid;
+  align-content: space-between;
+  gap: 40px;
+  min-height: 190px;
+  padding: 20px;
+  border-radius: 14px;
+  background: var(--panel);
+}
+.pg-facts b {
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.pg-facts span {
+  font-size: 16px;
+  line-height: 21px;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+
+/* 03 notes */
+.pg-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: n;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-left: calc(50% + 12px);
+  border-top: 1px solid var(--rule);
+}
+.pg-notes li {
+  counter-increment: n;
+  grid-column: 1 / -1;
+  position: relative;
+  padding: 18px 0 18px 44px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 25px;
+}
+.pg-notes li::before {
+  content: counter(n, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 21px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.pg-notes b {
+  font-weight: 400;
+  color: var(--fg);
+}
+
+/* 03 audit: their own pages on a phone, the team's cursors marking what's wrong */
+.pg-audit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+.pg-slide:has(.pg-audit) {
+  gap: 36px;
+  padding-top: 96px;
+}
+.au {
+  margin: 0;
+}
+.au .lv-stage {
+  font-family: var(--font);
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.au-phone {
+  position: absolute;
+  left: 4px;
+  top: 14px;
+}
+.au-page {
+  position: relative;
+  width: 402px;
+}
+.au-page img {
+  display: block;
+  width: 402px;
+  height: auto;
+  max-width: none;
+}
+.au-spot {
+  position: absolute;
+  border-radius: 10px;
+  outline: 3px dashed transparent;
+  outline-offset: 2px;
+  background: transparent;
+  transition: outline-color 200ms ease, background-color 300ms ease;
+}
+.au-spot[data-on] {
+  outline-color: var(--who);
+  background: color-mix(in srgb, var(--who) 12%, transparent);
+}
+.au-pin,
+.au-n {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--who);
+  color: #fff;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+}
+.au-pins {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  display: flex;
+  gap: 4px;
+}
+.au-pin {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  box-shadow: 0 0 0 3px #fff;
+  animation: au-pop 320ms var(--ease-out) both;
+}
+@keyframes au-pop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}
+/* title and notes as one column, centred on the phone's height */
+.au-side {
+  position: absolute;
+  left: 368px;
+  right: 0;
+  top: 14px;
+  height: 694px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+}
+.au-head {
+  display: grid;
+  gap: 2px;
+  font-size: 22px;
+  line-height: 28px;
+}
+.au-head b {
+  font-weight: 400;
+}
+.au-head span {
+  font-size: 14px;
+  line-height: 19px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.au-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.au-notes li {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px 14px;
+  border-radius: 14px;
+  background: var(--panel);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 300ms ease, transform 400ms var(--ease-out);
+}
+.au-notes li[data-on] {
+  opacity: 1;
+  transform: none;
+}
+.au-who {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--who);
+  letter-spacing: 0;
+}
+.au-n {
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+}
+.au-notes p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 23px;
+  color: var(--fg);
+}
+.au-ghost {
+  visibility: hidden;
+}
+.au .lv-cur {
+  z-index: 20;
+}
+/* phones: the page on top, title and notes below it */
+.au[data-compact] .au-phone {
+  left: 35px;
+  top: 6px;
+}
+.au[data-compact] .au-side {
+  left: 0;
+  top: 726px;
+  height: auto;
+  justify-content: flex-start;
+}
+.au[data-compact] .au-notes p {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/* 04 product pages */
+.pg-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+.pg-pages li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.pg-page-shot {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: var(--tint);
+  overflow: hidden;
+}
+.pg-page-shot::after {
+  /* a hint of the page's own layout: headline bars in the product's ink */
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 30%;
+  bottom: 14px;
+  height: 34px;
+  background:
+    linear-gradient(var(--tink), var(--tink)) 0 0 / 80% 9px no-repeat,
+    linear-gradient(var(--tink), var(--tink)) 0 16px / 55% 6px no-repeat,
+    linear-gradient(var(--tink), var(--tink)) 0 28px / 40% 6px no-repeat;
+  opacity: 0.55;
+}
+.pg-page-shot img {
+  position: absolute;
+  inset: 6% 6% 22%;
+  width: 88%;
+  height: 72%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.pg-pages b {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--fg);
+}
+
+/* 05 live pages: phone screenshots in a row (a swipeable rail on phones) */
+.pg-work {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+}
+.pg-work li {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 19px;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.pg-work b {
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--fg);
+}
+.pg-phoneshot {
+  display: block;
+  margin-bottom: 14px;
+  transition: transform 300ms var(--ease-out);
+}
+/* holds the phone's real proportions (screen 402 × 874 plus the 13pt band) before it measures */
+.pg-fitphone {
+  aspect-ratio: 428 / 900;
+}
+.pg-fitphone .ss-phone__content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pg-phoneshot:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* 06 cart */
+.pg-cart {
+  width: min(560px, 100%);
+  margin-left: calc(50% + 12px);
+  border-radius: 18px;
+  background: var(--panel);
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+}
+.pg-cart-list {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+}
+.pg-line {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+.pg-line img,
+.pg-pick img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #fff;
+  box-shadow: 0 0 0 1px var(--tile-hi);
+}
+.pg-line > span:nth-child(2) {
+  display: grid;
+}
+.pg-line b {
+  font-weight: 600;
+}
+.pg-line small,
+.pg-goes small {
+  color: var(--muted);
+  font-size: 13px;
+}
+.pg-in {
+  animation: pv-swap 400ms var(--ease-out) both;
+}
+.pg-nudge,
+.pg-pick {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.pg-nudge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 8px 4px 76px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--gb-soft);
+  color: var(--fg);
+  font-size: 14px;
+  line-height: 19px;
+}
+.pg-nudge-t {
+  display: grid;
+  gap: 1px;
+}
+.pg-nudge-t small {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
+}
+.pg-nudge b {
+  font-weight: 600;
+  color: var(--gb);
+}
+.pg-add {
+  flex: none;
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--gb);
+  color: #fff;
+  font-size: 13px;
+  line-height: 18px;
+  transition: transform 160ms var(--ease-out);
+}
+.pg-nudge:active .pg-add,
+.pg-pick:active .pg-add {
+  transform: scale(0.95);
+}
+.pg-goes {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 10px 8px 6px;
+  border-top: 1px dashed var(--rule);
+}
+.pg-pick {
+  display: grid;
+  grid-template-columns: 56px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  background: none;
+}
+.pg-pick .bn {
+  font-weight: 600;
+}
+.pg-cart-foot {
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px 18px;
+  background: var(--tile);
+}
+.pg-free {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--gb);
+}
+.pg-free i {
+  display: block;
+  height: 6px;
+  border-radius: 6px;
+  background: var(--tile-hi);
+  position: relative;
+  overflow: hidden;
+}
+.pg-free i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gb);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p));
+  transition: transform 500ms var(--ease-out);
+}
+.pg-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.pg-total b {
+  font-weight: 400;
+  font-size: 30px;
+  letter-spacing: -0.03em;
+}
+
+/* 06 team: the rail runs edge to edge */
+.pg-wide .lv-railwrap {
+  margin-right: calc(-1 * max(15px, env(safe-area-inset-right, 0px)));
+}
+
+/* 07 iMessage */
+.pg-imsg-wrap {
+  align-items: center;
+}
+.pg-phone {
+  justify-self: start;
+  width: min(380px, 100%);
+  padding: 14px 14px 16px;
+  border-radius: 28px;
+  background: var(--panel);
+  display: grid;
+  gap: 10px;
+  font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+.pg-phone-top {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+}
+.pg-phone-top b {
+  font-weight: 500;
+}
+.pg-ava {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gb);
+  color: #fff;
+  font-size: 14px;
+}
+.pg-msgs {
+  display: grid;
+  gap: 6px;
+}
+.pg-msgs p {
+  justify-self: start;
+  max-width: 82%;
+  padding: 8px 12px;
+  border-radius: 18px;
+  background: #e9e9eb;
+  color: #111;
+  font-size: 15px;
+  line-height: 20px;
+  white-space: pre-line;
+  animation: pv-swap 420ms var(--ease-out) both;
+  animation-delay: var(--d);
+}
+.pg-msgs p.me {
+  justify-self: end;
+  background: #0a84ff;
+  color: #fff;
+}
+.pg-phone .pg-fine {
+  text-align: center;
+}
+
+/* 08 cost */
+/* hosting in plain words on the left, the slider and the bill on the right */
+.pg-costwrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.pg-hosting {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  max-width: 560px;
+  border-top: 1px solid var(--rule);
+}
+.pg-hosting li {
+  position: relative;
+  padding: 12px 0 12px 20px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.pg-hosting li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 21px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gb);
+}
+.dark .pg-hosting li::before {
+  background: #81c784;
+}
+.pg-cost {
+  display: grid;
+  gap: 36px;
+  max-width: 640px;
+}
+.pg-cost .ps-label b {
+  font-size: 40px;
+  line-height: 44px;
+}
+.pg-cost-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.pg-cost-total {
+  display: grid;
+  gap: 4px;
+}
+.pg-cost-total span,
+.pg-cost-total small {
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.pg-cost-total b {
+  font-weight: 400;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--gb);
+}
+.pg-cost-rows {
+  display: grid;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+}
+.pg-cost-rows > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+}
+.pg-cost-rows > div > span {
+  display: grid;
+  color: var(--fg);
+}
+.pg-cost-rows small {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.pg-cost-rows b {
+  font-weight: 400;
+  color: var(--fg);
+  text-align: right;
+}
+
+/* 09 offer */
+.pg-offer {
+  display: grid;
+  gap: 16px;
+  max-width: 560px;
+}
+.pg-price {
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: var(--fg);
+}
+.pg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pg-chips span {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 14px;
+  letter-spacing: 0;
+}
+.pg-cta {
+  justify-self: start;
+  display: inline-flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--gb);
+  color: #fff !important;
+  font-size: 18px;
+  transition: transform 160ms var(--ease-out), background-color 200ms ease;
+}
+.pg-cta:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pg-cta:hover {
+    background: #14481a;
+  }
+}
+/* the homepage's Clients section, as is (.ah .split and .ah .clients in home.css) */
+.pg .pg-proof {
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+
+/* dark theme: the product photos keep a white tile so their white backgrounds sit cleanly */
+.dark .pg {
+  --gb-soft: rgb(102 187 106 / 0.14);
+}
+.dark .pg-nudge b,
+.dark .pg-free {
+  color: #81c784;
+}
+.dark .pg-cost-total b {
+  color: #81c784;
+}
+.dark .pg-msgs p:not(.me) {
+  background: #2c2c2e;
+  color: #fff;
+}
+
+/* phones: slides stack at their natural height */
+@media (max-width: 809px) {
+  .pg-slide {
+    min-height: 0;
+    gap: 32px;
+    padding: 110px 0 40px;
+  }
+  .pg .pg-split {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pg .pg-lead {
+    font-size: 28px;
+    line-height: 33px;
+  }
+  .pg-cover {
+    min-height: 100svh;
+  }
+  .pg-cover h1 {
+    font-size: min(54px, calc((100vw - 30px) / 9.2));
+  }
+  .pg-shelf {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .pg-facts {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pg-facts li {
+    min-height: 150px;
+    padding: 16px;
+  }
+  .pg-facts b {
+    font-size: 30px;
+  }
+  .pg-facts span {
+    font-size: 14px;
+    line-height: 19px;
+  }
+  .pg-notes,
+  .pg-cart {
+    margin-left: 0;
+  }
+  .pg-costwrap {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .pg-notes li {
+    font-size: 16px;
+    line-height: 22px;
+    padding-left: 34px;
+  }
+  .pg-pages {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 10px;
+  }
+  .pg-audit {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .pg-work {
+    display: flex;
+    gap: 10px;
+    margin-right: calc(-1 * max(15px, env(safe-area-inset-right, 0px)));
+    padding-right: 15px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .pg-work li {
+    flex: none;
+    width: 62vw;
+    scroll-snap-align: start;
+  }
+  .pg-nudge {
+    margin-left: 8px;
+  }
+  .pg-cost-grid {
+    grid-template-columns: 1fr;
+  }
+  .pg-price {
+    font-size: 64px;
+  }
+  .pg-count {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pg-shelf li,
+  .pg-msgs p,
+  .pg-in {
+    animation: none;
+  }
+}

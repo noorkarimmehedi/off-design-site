@@ -16,6 +16,9 @@ export type Feature = {
   compareAt: number
   /** Always part of the order; shown ticked and locked */
   required?: boolean
+  /** Comes with another item (e.g. a module of the admin panel): keeps its own compare-at price,
+      costs nothing on its own and reads "Included" in the price column */
+  bundled?: boolean
   /** Priced per unit; the client picks how many */
   perUnit?: { label: string; min: number; max: number; default: number }
 }
@@ -40,7 +43,7 @@ export type Catalog = {
   id: string
   /** Shown in the order header and on the printed copy */
   name: string
-  /** What the document is called on the page, e.g. "Quotation". Defaults to "Work order". */
+  /** What the document is called on the page, e.g. "Quotation". Defaults to "Quotation". */
   docLabel?: string
   /** Delivery window quoted on the order */
   delivery: string

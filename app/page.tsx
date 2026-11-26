@@ -7,7 +7,8 @@ import SiteFoot from "@/components/home/site-foot"
 import ScrollReveal from "@/components/home/scroll-reveal"
 import ServiceTiles from "@/components/home/service-tiles"
 import WorkRail from "@/components/home/work-rail"
-import { clientLogos, concepts } from "@/lib/home"
+import { concepts } from "@/lib/home"
+import ClientLogos from "@/components/home/client-logos"
 import RiffleBook from "@/components/home/riffle-book"
 import { LiveShot } from "@/components/home/live-shot"
 import { satoshi } from "@/lib/fonts"
@@ -86,47 +87,7 @@ export default function Page() {
         <h2 className="label rv" id="ah-clients">
           Clients
         </h2>
-        <ul className="clients rv">
-          {clientLogos.map((c) => {
-            const mark =
-              "logo" in c ? (
-                <img
-                  className="logo"
-                  src={`/home/logos/${c.logo}.webp`}
-                  alt={c.name}
-                  style={{ ["--h" as string]: `${c.height}px` }}
-                  draggable={false}
-                />
-              ) : (
-                <span className={`wordmark ${c.wordmark}`}>{c.name}</span>
-              )
-            // On phones each client becomes a tile like the Services cards: name, logo, website.
-            // Desktop hides the name and website and keeps the plain logo grid.
-            const site = c.href ? new URL(c.href).hostname.replace(/^www\./, "") : null
-            const body = (
-              <>
-                <span className="cl-name" aria-hidden="true">
-                  {c.name}
-                </span>
-                <span className="cl-mark">{mark}</span>
-                <span className="cl-site" aria-hidden="true">
-                  {site ? `${site} ↗` : "Private work"}
-                </span>
-              </>
-            )
-            return (
-              <li key={c.name}>
-                {c.href ? (
-                  <a className="cl" href={c.href} target="_blank" rel="noopener noreferrer" aria-label={`${c.name} (opens in a new tab)`}>
-                    {body}
-                  </a>
-                ) : (
-                  <span className="cl mark">{body}</span>
-                )}
-              </li>
-            )
-          })}
-        </ul>
+        <ClientLogos className="rv" />
       </section>
 
       <section aria-labelledby="ah-whatif">

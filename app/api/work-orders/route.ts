@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getCatalog, lineLabel, priceSelection, taka, type Selection } from "@/lib/work-order/catalog"
+import { getCatalog, lineLabel, priceLabel, priceSelection, taka, type Selection } from "@/lib/work-order/catalog"
 
 // Signed work orders are stored as rows in the Notion "Signed Work Orders" data source.
 const NOTION = "https://api.notion.com/v1"
@@ -127,7 +127,7 @@ export async function POST(req: Request) {
         para(text(`${business} × Arc Labs Corporation — work order ${number}`, true)),
         para(text("Package "), text(catalog.name, true)),
         h2("Selected features"),
-        ...order.lines.map((l) => bullet(text(`${lineLabel(l)} — `), text(taka(l.price), true), text(`  (was ${taka(l.compareAt)})`))),
+        ...order.lines.map((l) => bullet(text(`${lineLabel(l)} — `), text(priceLabel(l.feature, l.price), true), text(`  (was ${taka(l.compareAt)})`))),
         para(text("Total "), text(taka(order.total), true), text(` · compare-at ${taka(order.compareAt)} · saving ${taka(order.savings)}`)),
         para(text("Advance due (50%) "), text(taka(order.advance), true), text(` · final ${taka(order.total - order.advance)}`)),
         h2("Advance payment"),
