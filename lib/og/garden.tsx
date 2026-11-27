@@ -6,7 +6,7 @@ import { shapedTextSvg } from "@/lib/og/shaped-text"
 // The garden link-preview card used across the site: painted linen sky and flower bed
 // (artwork by Ryan Brewer, used with permission), with the homepage's type on it — a grey arc
 // pill (the client's logo beside it when we have one), a two-tone Satoshi headline and a row of
-// frosted chips. Everything sits in the top half so iMessage's title label (bottom-left) never covers it.
+// frosted chips (with a client: a white bar, arc | their logo). Everything sits in the top half so iMessage's title label (bottom-left) never covers it.
 
 export const OG_SIZE = { width: 1200, height: 630 }
 
@@ -43,19 +43,16 @@ export async function gardenCard({ lines, chips = [], logo }: { lines: GardenLin
             top: 44,
             display: "flex",
             alignItems: "center",
-            gap: 18,
-            padding: brandLogo ? "12px 22px 12px 26px" : "22px 30px",
-            borderRadius: 22,
-            background: "#ededed",
+            gap: brandLogo ? 22 : 18,
+            padding: brandLogo ? "14px 26px 14px 30px" : "22px 30px",
+            borderRadius: brandLogo ? 24 : 22,
+            background: brandLogo ? "#ffffff" : "#ededed",
           }}
         >
-          <img src={data(arc, "image/png")} width={112} height={40} style={{ objectFit: "contain" }} />
-          {brandLogo && <span style={{ fontSize: 28, color: "#7a7a7a" }}>×</span>}
-          {brandLogo && (
-            <div style={{ display: "flex", width: 76, height: 76, borderRadius: 999, overflow: "hidden", background: "#ffffff", alignItems: "center", justifyContent: "center" }}>
-              <img src={data(brandLogo, "image/png")} width={70} height={70} style={{ objectFit: "contain" }} />
-            </div>
-          )}
+          {/* With a client: one white bar, arc and their logo at the same height, split by a hairline */}
+          <img src={data(arc, "image/png")} width={brandLogo ? 106 : 112} height={brandLogo ? 38 : 40} style={{ objectFit: "contain" }} />
+          {brandLogo && <div style={{ display: "flex", width: 1.5, height: 44, background: "#d6d6d6" }} />}
+          {brandLogo && <img src={data(brandLogo, "image/png")} width={60} height={60} style={{ objectFit: "contain", borderRadius: 14 }} />}
         </div>
 
         {/* Headline and chips, in one column so a long name pushes the chips down instead of under them */}
