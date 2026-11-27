@@ -34,10 +34,11 @@ export const CLIENTS: Record<string, ClientPreset> = {
     catalog: "web-admin-landing",
     logo: "rajshahi-aambari.png",
   },
-  // Website + Merchant Suite admin (no social inbox) + 1 landing page — fixed scope, ৳35,000.
+  // Website + Merchant Suite admin (no social inbox) + 2 landing pages — fixed scope, ৳30,000.
   icey: {
     name: "ICEy",
     catalog: "icey",
+    logo: "icey.png",
     badge: { words: ["Big Flavors.", "Better Vibes.", "Quick Refresh."], color: "#3d6ad6" },
   },
   // Grambangla (deshi food: ghee, mustard oil, semai, spices) — storefront ৳23,000 + admin panel with every
@@ -54,6 +55,7 @@ export const CLIENTS: Record<string, ClientPreset> = {
   waterandplant: {
     name: "Water&Plant",
     catalog: "waterandplant",
+    logo: "waterandplant.png",
     badge: { words: ["Superfoods.", "Microgreens.", "Natural Living."], color: "#1A4E8C" },
   },
 }

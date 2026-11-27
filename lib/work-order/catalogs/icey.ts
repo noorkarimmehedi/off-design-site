@@ -6,7 +6,7 @@ import type { Catalog } from "../types"
 // Social inbox is not included. Total ৳30,000.
 export const ICEY_CATALOG: Catalog = {
   id: "icey",
-  name: "Website, admin panel & landing page",
+  name: "Website, admin panel & landing pages",
   docLabel: "Quotation",
   delivery: "14–21 days",
   mode: "builder",
