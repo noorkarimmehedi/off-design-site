@@ -385,6 +385,16 @@ body{background:
 .ft-art{filter:brightness(1.02)}
 .ft-mark{margin:48px 0 0;padding-bottom:40px}
 .ft-mark .ft-logo{display:block;width:auto;height:clamp(96px,9vw,132px);margin:0 auto}
+/* the logo comes alive once: a Grok Imagine clip (smoke from the house's chimney) made from the logo itself
+   sits over it, blends its white into the paper, plays when the footer is in view, then hands back to the still */
+.ft-anim{position:relative;width:fit-content;margin:0 auto}
+/* no stacking context here, so the clip's multiply reaches the paper behind the footer */
+footer>.ft-mark{z-index:auto}
+.ft-anim .ft-logo{transition:opacity 260ms ease;mix-blend-mode:multiply}  /* same blend as the clip, so the handover is invisible */
+.ft-vid{position:absolute;left:50%;top:50%;height:calc(100% / .703);width:auto;aspect-ratio:1;transform:translate(-50%,-50%);
+  mix-blend-mode:multiply;opacity:0;pointer-events:none;transition:opacity 260ms ease}
+.ft-anim.playing .ft-vid{opacity:1}
+.ft-anim.playing .ft-logo{opacity:0}
 .ft-word{display:block;font:600 min(calc((100vw - 80px) / 4.2),330px)/1.2 "Noto Sans Bengali",sans-serif;letter-spacing:-.02em;color:var(--orange-dk);text-align:center;white-space:nowrap}
 .stage .shot.cover{mix-blend-mode:normal}
 .thumb img.cover{object-fit:cover;mix-blend-mode:normal}
@@ -786,7 +796,7 @@ body{background:
       <span class="pmt cod" title="Cash on Delivery"><svg viewBox="0 0 28 18" aria-hidden="true"><rect x="1" y="1" width="26" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M1 5.5A4.5 4.5 0 0 0 5.5 1M22.5 1A4.5 4.5 0 0 0 27 5.5M1 12.5A4.5 4.5 0 0 1 5.5 17M22.5 17a4.5 4.5 0 0 1 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".55"/><text x="14" y="13.2" text-anchor="middle" font-family="Noto Sans Bengali, sans-serif" font-size="11" font-weight="700" fill="currentColor">৳</text></svg><span class="w"><b><span class="lg">Cash on Delivery</span><span class="sm">COD</span></b><span class="lg bn">পণ্য হাতে পেয়ে টাকা</span></span></span>
     </div>
   </div>
-  <div class="ft-mark"><img class="ft-logo" src="assets/logo-hd.webp" alt="Grambangla" width="300" height="335" decoding="async"></div>
+  <div class="ft-mark"><div class="ft-anim" id="ftAnim"><img class="ft-logo" src="assets/logo-hd.webp" alt="Grambangla" width="300" height="335" decoding="async"><video class="ft-vid" muted playsinline preload="none" aria-hidden="true" tabindex="-1"><source src="assets/motion/village.webm" type="video/webm"><source src="assets/motion/village.mp4" type="video/mp4"></video></div></div>
 </footer>
 <a class="by-arc" href="https://www.arc-bangladesh.com/" target="_blank" rel="noopener" aria-label="Designed and engineered by arc (opens arc-bangladesh.com)">
   <span class="by-t">Designed &amp; engineered by</span><span class="by-rule" aria-hidden="true"></span><img src="assets/arc-white.webp" alt="arc." width="600" height="215">
@@ -1024,6 +1034,17 @@ addEventListener("keydown",e=>{ if(e.key==="Escape"&&root.classList.contains("is
 
 /* placeholder links: stay put (the page is served under a <base>) */
 document.addEventListener("click",e=>{const a=e.target.closest('a[href="#"]'); if(a) e.preventDefault()});
+
+/* footer logo: load the clip as the footer nears, play it once when the logo is in view */
+(()=>{
+  const box=$("#ftAnim"), vid=box&&box.querySelector(".ft-vid");
+  if(!vid||matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  vid.addEventListener("ended",()=>box.classList.remove("playing"));
+  // start fetching as the footer nears (no load(): it would abort a play() fired in the same frame)
+  new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ vid.preload="auto"; o.disconnect() } },{rootMargin:"600px 0px"}).observe(box);
+  new IntersectionObserver((es,o)=>{ if(!es[0].isIntersecting) return; o.disconnect();
+    vid.play().then(()=>box.classList.add("playing")).catch(()=>{}) },{threshold:.7}).observe(box);
+})();
 
 /* render copy */
 applyText();

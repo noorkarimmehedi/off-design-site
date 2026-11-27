@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base href="/grambangla/">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Footer logo motion — Grambangla</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Footer logo motion variants for grambangla, each in a copy of the real footer (index.html .ft).
+   Each clip is a Grok Imagine video started from the logo itself. It plays once when the footer
+   scrolls into view, then hands over to the still logo; with reduced motion only the still shows. */
+:root{
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --bg:#fffaf2; --tile:#f4ecd9; --ink:#17200f; --muted:#6b6450; --line:#e7dcc3; --gb:#1b5e20;
+  --font:"Inter","Noto Sans Bengali",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:400 14px/1.3 var(--font);letter-spacing:-.4px;-webkit-font-smoothing:antialiased}
+img,video{display:block;max-width:100%}
+button{font:inherit;color:inherit;letter-spacing:inherit;background:none;border:0;cursor:pointer}
+
+.top{max-width:1200px;margin:0 auto;padding:72px 40px 28px}
+.top .k{font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--muted)}
+.top h1{margin-top:10px;font-size:40px;font-weight:500;letter-spacing:-1.4px;line-height:1.05}
+.top p{margin-top:14px;max-width:620px;font-size:16px;line-height:1.45;color:color-mix(in srgb,var(--ink) 72%,transparent)}
+.rules{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.rules span{height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);display:inline-flex;align-items:center;font-size:12.5px;color:var(--muted)}
+
+.grid{max-width:1200px;margin:0 auto;padding:8px 40px 120px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.v{border-radius:16px;background:#fff;box-shadow:0 0 0 1px var(--line);overflow:hidden}
+.v-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:18px 20px 0}
+.v-head .tag{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600;margin-right:10px;flex:none}
+.v-head h2{display:flex;align-items:center;font-size:18px;font-weight:500;letter-spacing:-.5px}
+.v-head p{margin:6px 0 0 36px;font-size:13.5px;line-height:1.45;color:var(--muted);max-width:380px}
+.replay{flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:999px;background:var(--tile);font-size:13px;font-weight:500;
+  transition:transform 160ms var(--ease-out),background-color .2s ease}
+.replay:active{transform:scale(.96)}
+.replay svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media (hover:hover) and (pointer:fine){.replay:hover{background:color-mix(in srgb,var(--tile) 80%,var(--ink) 8%)}}
+
+/* the footer, as on the product page, scaled into the card */
+.ft{position:relative;margin-top:18px;padding:28px 24px 0;background:var(--bg);overflow:hidden}
+.ft-tag{font-size:17px;font-weight:500;letter-spacing:-.6px;line-height:1.15;max-width:240px}
+.ft-tag small{display:block;margin-top:4px;font:500 13px/1.35 "Noto Sans Bengali",sans-serif;letter-spacing:0;color:var(--gb)}
+.ft-art{margin:22px -24px 0}
+.ft-art img{width:100%;height:auto;mix-blend-mode:multiply;-webkit-mask-image:linear-gradient(transparent,#000 14%);mask-image:linear-gradient(transparent,#000 14%)}
+.ft-mark{position:relative;display:grid;place-items:center;height:210px}
+/* still logo underneath; the clip sits on top and blends its white away into the paper */
+.ft-mark .still{height:132px;width:auto}
+.ft-mark video{position:absolute;left:50%;top:50%;height:188px;width:188px;transform:translate(-50%,-50%);mix-blend-mode:multiply;
+  opacity:0;transition:opacity 260ms ease}
+.ft-mark.playing video{opacity:1}
+/* the shine's light band spills past the shield in the clip; clip it to the logo's own shape */
+.v[data-id="shine"] video{-webkit-mask:url(assets/logo-hd.webp) center/auto 70.3% no-repeat;mask:url(assets/logo-hd.webp) center/auto 70.3% no-repeat}
+.ft-mark.playing .still{opacity:0}
+.ft-mark .still{transition:opacity 260ms ease}
+.missing{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.by{height:40px;display:flex;align-items:center;justify-content:center;background:var(--gb);color:#f4e6d4;font-size:9.5px;letter-spacing:2.4px;text-transform:uppercase;opacity:.95}
+
+.v-foot{display:flex;gap:18px;padding:14px 20px 18px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line)}
+.v-foot b{font-weight:500;color:var(--ink)}
+
+@media (max-width:860px){
+  .top{padding:48px 16px 20px}.top h1{font-size:30px}
+  .grid{grid-template-columns:1fr;padding:8px 16px 80px;gap:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ft-mark video{display:none}.ft-mark.playing .still{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="k">Grambangla · footer logo</div>
+  <h1>Four ways the logo can come alive.</h1>
+  <p>Each clip is made with Grok Imagine from the logo itself, so it starts on the real mark. It plays once when the footer scrolls into view, then rests on the still logo. Press Replay to watch it again.</p>
+  <div class="rules"><span>Plays once, on scroll into view</span><span>Ends on the still logo</span><span>Paper shows through (multiply)</span><span>Reduced motion: still logo only</span></div>
+</header>
+
+<main class="grid" id="grid"></main>
+
+<script>
+const V=[
+  {id:"sunrise",name:"Sunrise",what:"The sun behind the house rises a little and its rays fan out once, like dawn over the village.",moves:"Sun and rays",feel:"Warm, calm"},
+  {id:"breeze",name:"Harvest breeze",what:"The wheat sheaves and the single stalk sway in a soft breeze, then settle.",moves:"Wheat only",feel:"Gentle, alive"},
+  {id:"village",name:"Village wakes",what:"Smoke curls from the chimney and a small bird crosses the sun.",moves:"Smoke, a bird",feel:"Storytelling"},
+  {id:"shine",name:"Golden shine",what:"One warm band of light sweeps across the mark, like sun catching a printed label.",moves:"A light sweep",feel:"Premium, quick"},
+];
+const PLAY='<svg viewBox="0 0 14 14"><path d="M2.5 7a4.5 4.5 0 1 0 1.3-3.2M2.5 1.8v2.4h2.4"/></svg>';
+document.getElementById("grid").innerHTML=V.map((v,i)=>`
+  <section class="v" data-id="${v.id}">
+    <div class="v-head">
+      <div><h2><span class="tag">${"ABCD"[i]}</span>${v.name}</h2><p>${v.what}</p></div>
+      <button class="replay">${PLAY}Replay</button>
+    </div>
+    <div class="ft">
+      <p class="ft-tag">Pure deshi food, from the village to your home.<small>খাঁটি গ্রামবাংলার স্বাদ, আপনার ঘরে।</small></p>
+      <div class="ft-art"><img src="assets/ft-strip.webp" alt="" width="2000" height="460" loading="lazy"></div>
+      <div class="ft-mark">
+        <img class="still" src="assets/logo-hd.webp" alt="Grambangla" width="300" height="335">
+        <video src="assets/motion/${v.id}.mp4" muted playsinline preload="auto"></video>
+      </div>
+    </div>
+    <div class="by">Designed &amp; engineered by arc.</div>
+    <div class="v-foot"><span>Moves: <b>${v.moves}</b></span><span>Feel: <b>${v.feel}</b></span></div>
+  </section>`).join("");
+
+const calm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function play(sec){
+  if(calm) return;
+  const m=sec.querySelector(".ft-mark"), vid=m.querySelector("video");
+  if(vid.error||!vid.duration&&vid.readyState===0&&vid.networkState===3) return;
+  vid.currentTime=0; m.classList.add("playing");
+  vid.play().catch(()=>m.classList.remove("playing"));
+}
+document.querySelectorAll(".v").forEach(sec=>{
+  const m=sec.querySelector(".ft-mark"), vid=m.querySelector("video");
+  // hand back to the still logo when the clip ends
+  vid.addEventListener("ended",()=>m.classList.remove("playing"));
+  vid.addEventListener("error",()=>{ m.insertAdjacentHTML("beforeend",'<span class="missing">Clip still rendering</span>') },{once:true});
+  sec.querySelector(".replay").addEventListener("click",()=>play(sec));
+});
+const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ play(e.target); io.unobserve(e.target) } }),{threshold:.6});
+document.querySelectorAll(".v").forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

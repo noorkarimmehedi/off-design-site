@@ -77,7 +77,24 @@ export const GRAMBANGLA_CATALOG: Catalog = {
       note: "In your admin panel",
       accent: true,
       features: [
-        { id: "protection", name: "Fake order protection", detail: "Every order is checked before it ships. Risky ones are held with the reason in plain words — risk score, IP record, repeat-attempt tracking and advance payment proof.", price: 0, compareAt: 2500, bundled: true, required: true },
+        // Courier-history check as built in Sera Khabar's CommerceOS (runs on every new website order)
+        {
+          id: "protection",
+          name: "Fake order protection",
+          detail: "Every order is checked before it ships. Risky ones are held with the reason in plain words: risk score, IP record, repeat-attempt tracking and advance payment proof.",
+          highlight: "Every new order's phone number is checked automatically the moment it arrives.",
+          points: [
+            "As soon as an order comes in, the customer's number is checked against their delivery history with the couriers (Steadfast, Pathao, RedX and others); nobody has to press a button",
+            "The order shows the result: Safe, Caution or High risk, with the success rate and how many parcels they received or cancelled",
+            "A courier-by-courier breakdown, so you can see where a customer refused parcels before",
+            "Re-check any number with one tap, or check a whole list of orders at once",
+            "Numbers checked in the last 30 days reuse their result, so repeat customers don't cost extra checks",
+          ],
+          price: 0,
+          compareAt: 2500,
+          bundled: true,
+          required: true,
+        },
         { id: "campaign-links", name: "Campaign links", detail: "A tracked link per ad or post with automatic UTM tags — clicks, orders and delivered revenue per link.", price: 0, compareAt: 1500, bundled: true, required: true },
         { id: "analytics", name: "Website analytics", detail: "Your own visitor tracking: visitors, sessions, entry pages, nightly reports and retention.", price: 0, compareAt: 1500, bundled: true, required: true },
         { id: "business-report", name: "Business report", detail: "P&L, order value, delivery outcomes, product weight and hourly sales against the previous period.", price: 0, compareAt: 2000, bundled: true, required: true },
