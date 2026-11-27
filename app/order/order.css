@@ -230,6 +230,13 @@
   grid-template-columns: 22px minmax(0, 1fr) 120px 120px;
   gap: 16px;
 }
+/* Catalog with hideCompareAt: no "Was" column (phones keep their own grid) */
+@media (min-width: 810px) {
+  .wo .doc.no-was .d-colh,
+  .wo .doc.no-was .d-row {
+    grid-template-columns: 22px minmax(0, 1fr) 120px;
+  }
+}
 .wo .d-colh {
   padding-top: 28px;
   font-size: 12px;

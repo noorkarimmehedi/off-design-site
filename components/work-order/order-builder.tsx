@@ -83,6 +83,7 @@ export default function OrderBuilder({
   const order = useMemo(() => priceSelection(selection, catalog), [selection, catalog])
   const locked = Boolean(result)
   const quote = catalog.mode === "quote"
+  const showWas = !catalog.hideCompareAt
   const paid = Boolean(reference.trim() || slip)
   const detailsDone = Boolean(business.trim() && signer.trim() && phone.trim())
   const ready = detailsDone && signaturePng && paid
@@ -232,7 +233,7 @@ export default function OrderBuilder({
         </div>
       </section>
 
-      <article className={`doc rv print:hidden${quote ? " quote" : ""}${still ? " still" : ""}`} aria-label={docLabel}>
+      <article className={`doc rv print:hidden${quote ? " quote" : ""}${still ? " still" : ""}${showWas ? "" : " no-was"}`} aria-label={docLabel}>
         <div className="doc-head">
           <h2>{docLabel}</h2>
           <dl>
@@ -250,7 +251,7 @@ export default function OrderBuilder({
         <div className="d-colh" aria-hidden="true">
           <span />
           <span>Item</span>
-          <span>Was</span>
+          {showWas && <span>Was</span>}
           <span>Price</span>
         </div>
 
@@ -292,7 +293,7 @@ export default function OrderBuilder({
                         {priceLabel(f)}
                         {f.perUnit && <small>each</small>}
                       </span>
-                      <span className="c-was">{taka(f.compareAt)}</span>
+                      {showWas && <span className="c-was">{taka(f.compareAt)}</span>}
                     </span>
                     <div className="d-name">
                       <span>{f.name}</span>
@@ -321,7 +322,7 @@ export default function OrderBuilder({
                       </div>
                     )}
                   </div>
-                  <span className="c-was">{taka(f.compareAt)}</span>
+                  {showWas && <span className="c-was">{taka(f.compareAt)}</span>}
                   <span className="c-now">
                     {priceLabel(f)}
                     {f.perUnit && <small>each</small>}
@@ -338,15 +339,17 @@ export default function OrderBuilder({
           </span>
           <div>
             <div className="totals">
-              <div className="row">
-                <span>Compare-at</span>
-                <TakaFlow value={order.compareAt} strike />
-              </div>
+              {showWas && (
+                <div className="row">
+                  <span>Compare-at</span>
+                  <TakaFlow value={order.compareAt} strike />
+                </div>
+              )}
               <div className="grand">
                 <span className="lbl">Total</span>
                 <TakaFlow value={order.total} className="amt" />
               </div>
-              {order.savings > 0 && (
+              {showWas && order.savings > 0 && (
                 <div className="save">
                   You save <TakaFlow value={order.savings} />
                 </div>
@@ -876,7 +879,7 @@ function PrintOrder({
         <thead>
           <tr className={mono}>
             <th className="border-b border-[#141210] pb-[2mm] text-left font-normal">Deliverable</th>
-            <th className="border-b border-[#141210] pb-[2mm] text-right font-normal">Compare-at</th>
+            {!catalog.hideCompareAt && <th className="border-b border-[#141210] pb-[2mm] text-right font-normal">Compare-at</th>}
             <th className="border-b border-[#141210] pb-[2mm] text-right font-normal">Price</th>
           </tr>
         </thead>
@@ -901,7 +904,7 @@ function PrintOrder({
                   </div>
                 ))}
               </td>
-              <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right text-[#6f6a62] line-through">{taka(l.compareAt)}</td>
+              {!catalog.hideCompareAt && <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right text-[#6f6a62] line-through">{taka(l.compareAt)}</td>}
               <td className="border-b border-[#dcd6cc] py-[1.6mm] text-right">{priceLabel(l.feature, l.price)}</td>
             </tr>
           ))}
@@ -911,7 +914,7 @@ function PrintOrder({
         <div className="text-right">
           <div className={mono}>Total</div>
           <div className="text-[22pt] font-semibold leading-tight">{taka(order.total)}</div>
-          <div className="text-[9pt] text-[#e2432c]">You save {taka(order.savings)}</div>
+          {!catalog.hideCompareAt && <div className="text-[9pt] text-[#e2432c]">You save {taka(order.savings)}</div>}
         </div>
       </div>
       <div className="mt-[5mm] grid grid-cols-2 border border-[#dcd6cc]">

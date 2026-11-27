@@ -49,6 +49,13 @@ export const CLIENTS: Record<string, ClientPreset> = {
     heroLogo: "/clients/grambangla.webp",
     badge: { words: ["Pure Ghee.", "Mustard Oil.", "Deshi Spices."], color: "#1B5E20" },
   },
+  // Water&Plant (superfoods, microgreens kits, bio-enzyme cleaners) — website + Merchant Suite admin, no landing
+  // pages, no social inbox — fixed scope, ৳10,000. Brand navy from the waterandplant.com logo.
+  waterandplant: {
+    name: "Water&Plant",
+    catalog: "waterandplant",
+    badge: { words: ["Superfoods.", "Microgreens.", "Natural Living."], color: "#1A4E8C" },
+  },
 }
 
 /** "bengal-mart" → "Bengal Mart"; Bangla slugs keep their script ("সেরা-খাবার" → "সেরা খাবার") */

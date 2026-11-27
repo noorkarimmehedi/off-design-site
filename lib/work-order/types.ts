@@ -47,6 +47,8 @@ export type Catalog = {
   docLabel?: string
   /** Delivery window quoted on the order */
   delivery: string
+  /** Hide every compare-at ("Was") price, the compare-at total and the "You save" line */
+  hideCompareAt?: boolean
   /** "builder" lets the client pick features; "quote" is a fixed scope at a fixed price */
   mode: "builder" | "quote"
   /** Headline on the order page hero */
