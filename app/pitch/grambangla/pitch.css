@@ -386,7 +386,8 @@
   aspect-ratio: 3 / 4;
   margin-bottom: 8px;
   border-radius: 14px;
-  background: var(--tint);
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--rule);
   overflow: hidden;
 }
 .pg-page-shot::after {
@@ -411,6 +412,12 @@
   object-fit: contain;
   mix-blend-mode: multiply;
 }
+/* the photos blend (multiply) into the card, so on the dark theme the card takes the
+   product's light tint instead of the dark page colour; otherwise the jars turn black */
+.dark .pg-page-shot {
+  background: var(--tint);
+  box-shadow: none;
+}
 .pg-pages b {
   font-weight: 600;
   font-size: 16px;
@@ -423,8 +430,22 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.3fr) repeat(5, minmax(0, 1fr));
   gap: 16px;
+  align-items: end;
+}
+/* the first phone is our Grambangla concept: a size up, with its label in their green */
+.pg-work li:first-child > b,
+.pg-work li:first-child > span {
+  color: var(--gb);
+}
+.dark .pg-work li:first-child > b,
+.dark .pg-work li:first-child > span {
+  color: #81c784;
+}
+/* labels keep two lines of room, so every phone's bottom edge lines up */
+.pg-work li > span {
+  min-height: 38px;
 }
 .pg-work li {
   display: grid;
@@ -458,6 +479,136 @@
 @media (hover: hover) and (pointer: fine) {
   .pg-phoneshot:hover {
     transform: translateY(-4px);
+  }
+}
+
+/* 07 build your combo: the page on a laptop and a phone, both linking to it */
+.pg-url {
+  display: inline-flex;
+  justify-self: start;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin-top: 20px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--rule);
+  color: var(--fg);
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out), box-shadow 200ms ease;
+}
+.pg-url span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pg-url span:last-child {
+  color: var(--gb);
+}
+.dark .pg-url span:last-child {
+  color: #81c784;
+}
+.pg-url:active {
+  transform: scale(0.97);
+}
+.pg-combo {
+  display: grid;
+  grid-template-columns: minmax(0, 720px) 300px;
+  justify-content: center;
+  gap: 48px;
+  align-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+.pg-combo-desk {
+  display: block;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--panel);
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 30px 60px -30px rgb(0 0 0 / 0.35);
+  transition: transform 300ms var(--ease-out);
+}
+.pg-combo-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+  color: var(--muted);
+}
+.pg-combo-bar i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rule);
+}
+.pg-combo-bar span {
+  margin-left: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pg-combo-desk img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.pg-combo-phone {
+  display: block;
+  transition: transform 300ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .pg-combo:hover .pg-combo-desk,
+  .pg-combo:hover .pg-combo-phone {
+    transform: translateY(-4px);
+  }
+  .pg-combo:hover .pg-combo-phone {
+    transition-delay: 40ms;
+  }
+  .pg-url:hover {
+    box-shadow: inset 0 0 0 1px var(--fg);
+  }
+}
+@media (max-width: 1100px) {
+  .pg-combo {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 32px;
+  }
+}
+/* phones: the laptop full width, then the phone at a readable size under it */
+@media (max-width: 820px) {
+  .pg-combo {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 28px;
+  }
+  .pg-combo-phone {
+    width: min(72vw, 300px);
+  }
+  .pg-combo-bar {
+    height: 24px;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  .pg-combo-bar i {
+    width: 7px;
+    height: 7px;
+  }
+  .pg-combo-bar span {
+    display: none;
+  }
+  .pg-url {
+    font-size: 13px;
+    padding: 8px 12px;
   }
 }
 
@@ -688,7 +839,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 24px;
-  align-items: start;
+  /* the calculator sits level with the middle of the long left column */
+  align-items: center;
 }
 .pg-hosting {
   margin: 0;
@@ -720,6 +872,92 @@
 .dark .pg-hosting li::before {
   background: #81c784;
 }
+.pg-costside {
+  display: grid;
+  gap: 32px;
+  max-width: 560px;
+}
+.pg-stack h3 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.pg-stack dl {
+  margin: 0;
+  display: grid;
+  border-top: 1px solid var(--rule);
+}
+.pg-stack dl > div {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.pg-stack dt {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--muted);
+}
+.pg-stack dd {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+.pg-stack dd b {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+.pg-stack dd b {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pg-stack-items {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.pg-stack-items li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--fg);
+}
+.pg-stack-items li::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 7px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gb);
+}
+.dark .pg-stack-items li::before {
+  background: #81c784;
+}
+.pg-logos {
+  display: inline-flex;
+  gap: 6px;
+}
+.pg-logos svg {
+  display: block;
+}
+.pg-stack dd > span {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
+}
 .pg-cost {
   display: grid;
   gap: 36px;
@@ -728,6 +966,53 @@
 .pg-cost .ps-label b {
   font-size: 40px;
   line-height: 44px;
+}
+.pg-rush {
+  display: grid;
+  gap: 12px;
+}
+.pg-rush .soft {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+.pg-seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.pg-seg button {
+  display: grid;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 15px;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms ease-out, color 160ms ease-out;
+}
+.pg-seg button small {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+.pg-seg button[aria-checked="true"] {
+  background: var(--panel);
+  color: var(--fg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}
+.pg-seg button:focus-visible {
+  outline: 2px solid var(--gb);
+  outline-offset: 2px;
 }
 .pg-cost-grid {
   display: grid;
@@ -778,6 +1063,7 @@
   letter-spacing: 0;
 }
 .pg-cost-rows b {
+  white-space: nowrap;
   font-weight: 400;
   color: var(--fg);
   text-align: right;
@@ -920,6 +1206,9 @@
   .pg-work li {
     flex: none;
     width: 62vw;
+  }
+  .pg-work li:first-child {
+    width: 74vw;
     scroll-snap-align: start;
   }
   .pg-nudge {
@@ -942,4 +1231,48 @@
   .pg-in {
     animation: none;
   }
+}
+
+/* storage row: the headline on top, then three short facts in a label / value grid */
+.pg-cost-rows > .pg-store {
+  display: grid;
+  gap: 10px;
+}
+.pg-store-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pg-store-head > span {
+  display: grid;
+  color: var(--fg);
+}
+.pg-store-facts {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--fg) 5%, transparent);
+}
+.pg-store-facts > div {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 12px;
+}
+.pg-store-facts dt {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--muted);
+}
+.pg-store-facts dd {
+  margin: 0;
+  display: grid;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--fg);
+}
+.pg-store-facts dd small {
+  font-size: 12px;
+  line-height: 16px;
 }

@@ -30,11 +30,18 @@ const CF = {
 
 // Supabase Pro is $25 with $10 of compute credit, which covers Micro.
 const SUPABASE_PRO = 25
-// We start every store on Small (what the measured store runs on), never the shared Micro.
+// Normal days run on Micro (covered by the credit); a rush moves up to Small, what the measured store
+// runs on at ~1,500 orders a day. Past 2,000 a day normal days need Small and a rush needs Medium.
+// Supabase compute list prices less the $10 credit: Micro $10, Small $15, Medium $60.
 const COMPUTE = [
-  { upTo: 2000, name: "Small", extra: 5 },
-  { upTo: Infinity, name: "Medium", extra: 50 },
+  { upTo: 2000, name: "Micro", extra: 0 },
+  { upTo: Infinity, name: "Small", extra: 5 },
 ]
+// One size up, for a rush (Eid, a big sale). Supabase bills compute by the hour.
+const RUSH_SIZE: Record<string, { name: string; extra: number }> = {
+  Micro: { name: "Small", extra: 5 },
+  Small: { name: "Medium", extra: 50 },
+}
 
 /** Database space included in Supabase Pro, and the price of each GB past it */
 export const INCLUDED_GB = 8
@@ -45,21 +52,28 @@ export const USD_TO_BDT = 122
 
 const over = (used: number, included: number, perMillion: number) => (Math.max(0, used - included) / 1e6) * perMillion
 
-export function runningCost(ordersPerDay: number) {
+/** `rush` prices the month as if the database ran one size bigger the whole month */
+export function runningCost(ordersPerDay: number, rush = false) {
   const month = ordersPerDay * 30
   const cloudflare =
     CF.base +
     over(month * MEASURED.requestsPerOrder, CF.includedRequests, CF.perMillionRequests) +
     over(month * MEASURED.cpuMsPerOrder, CF.includedCpuMs, CF.perMillionCpuMs) +
     over(month * MEASURED.durableRequestsPerOrder, CF.includedDurableRequests, CF.perMillionDurableRequests)
-  const compute = COMPUTE.find((c) => ordersPerDay <= c.upTo)!
+  const normal = COMPUTE.find((c) => ordersPerDay <= c.upTo)!
+  const compute = rush ? RUSH_SIZE[normal.name] : normal
   const supabase = SUPABASE_PRO + compute.extra
+  /** Extra cost of running one size bigger for a 7-day rush, billed by the hour */
+  const rushWeekUsd = ((RUSH_SIZE[normal.name].extra - normal.extra) / 30) * 7
   const usd = cloudflare + supabase
   return {
     month,
     cloudflare,
     supabase,
     compute: compute.name,
+    normalSize: normal.name,
+    rushSize: RUSH_SIZE[normal.name].name,
+    rushWeekBdt: rushWeekUsd * USD_TO_BDT,
     usd,
     bdt: usd * USD_TO_BDT,
     perOrderBdt: month ? (usd * USD_TO_BDT) / month : 0,

@@ -20,6 +20,8 @@ const nextConfig = {
         // Grambangla product page concept: a static page in public/grambangla
         { source: "/grambangla", destination: "/grambangla/index.html" },
         { source: "/grambangla/", destination: "/grambangla/index.html" },
+        // the combo maker concept, in the same design (built by scripts/grambangla-combo-builder.py)
+        { source: "/grambangla/build-your-combo", destination: "/grambangla/build-your-combo.html" },
         // Client quotations: /quotation/<slug> is the link we send; the page lives at /order/<slug>
         { source: "/quotation", destination: "/order" },
         { source: "/quotation/:path*", destination: "/order/:path*" },

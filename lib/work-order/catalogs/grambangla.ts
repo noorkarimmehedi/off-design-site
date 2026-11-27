@@ -91,6 +91,26 @@ export const GRAMBANGLA_CATALOG: Catalog = {
         { id: "payments", name: "bKash / Nagad payments", detail: "Online payment at checkout.", price: 0, compareAt: 2000, bundled: true, required: true },
         { id: "sms", name: "SMS order updates", detail: "Automatic confirmation and delivery messages.", price: 0, compareAt: 1000, bundled: true, required: true },
         { id: "abandoned", name: "Abandoned checkout recovery", detail: "See who left at checkout and follow up.", price: 0, compareAt: 1500, bundled: true, required: true },
+        // Telesales, as built for Mango Lover's CommerceOS (src/pages/Telesales.tsx there)
+        {
+          id: "telesales",
+          name: "Telesales",
+          detail: "A calling desk for your team: who to call today, what happened on each call, and orders taken on the phone.",
+          highlight: "Turn your customer list into repeat orders, one call at a time.",
+          points: [
+            "Today's call lists, in calling order: callbacks at the time the customer chose, cancelled orders to re-send, a 10-day check-in after delivery, VIP check-ins, repeat buyers due to reorder, and seasonal win-backs (semai before Eid)",
+            "Call mode: one customer at a time with their full history: orders, what they bought, past calls and notes",
+            "Log what happened in one tap (ordered, callback, will order later, not interested, complaint, no answer, busy, switched off, wrong number), and the next step is set for you: retry in 3 hours, back on the callback day, paused 60 days",
+            "Take the order on the call: the products they bought before come first, and it's saved as a Telesales order",
+            "Find any customer by tag (New, Regular, VIP), district, product bought, last order, delivered value or call status, and save the view",
+            "Today's team board: calls, customers reached, orders and revenue from calls for each agent",
+            "Export customer lists as CSV for Facebook ad audiences",
+          ],
+          price: 0,
+          compareAt: 4000,
+          bundled: true,
+          required: true,
+        },
       ],
     },
     {

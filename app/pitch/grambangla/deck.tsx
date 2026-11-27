@@ -12,6 +12,7 @@ import { LiveRail } from "@/app/pricing-variants/live/rail-stream";
 import ClientLogos from "@/components/home/client-logos";
 import { Phone } from "@/components/stageshow/phone";
 import { Audit, PAGES as AUDIT } from "./audit";
+import { Logo, type LogoKey } from "./stack-logos";
 import {
   EXTRA_GB_USD,
   INCLUDED_GB,
@@ -86,14 +87,17 @@ const PAGES = [
   },
 ];
 
+// The combo maker concept, a static page in their design (public/grambangla/build-your-combo.html)
+const COMBO_URL = "/grambangla/build-your-combo";
+
 // Phone screenshots of live pages (taken 27 Nov 2026), each linking to the page itself
 const WORK = [
   {
-    src: "ghorerbazar-product",
+    src: "grambangla-product",
     kind: "Product page",
-    brand: "Ghorer Bazar",
+    brand: "Grambangla",
     note: "our concept",
-    href: "https://www.arc-bangladesh.com/ghorerbazar",
+    href: "/grambangla",
   },
   {
     src: "angonaloy-home",
@@ -136,6 +140,7 @@ const SLIDES = [
   "Product pages",
   "Pages we built",
   "Bigger carts",
+  "Build your combo",
   "Your team",
   "iMessage",
   "Running cost",
@@ -331,7 +336,7 @@ export default function Deck() {
         </ul>
       </section>
 
-      {/* 05 · real pages, live: our Ghorer Bazar concept and the Dawah and Sera Khabar stores */}
+      {/* 05 · real pages, live: our Grambangla concept and the Dawah and Sera Khabar stores */}
       <section className="pg-slide" {...slide(4)}>
         <div className="pg-split">
           <h2 className="label">Pages we built</h2>
@@ -341,8 +346,8 @@ export default function Deck() {
             </p>
             <p className="soft">
               Dawah and Mango Lover sell ghee and oil like you do; Sera Khabar
-              sells gur. Ghorer Bazar is our own concept of how a Bangladeshi
-              product page should sell. Tap any phone to open the live page.
+              sells gur. The Grambangla page is our concept of your own ghee
+              page. Tap any phone to open the live page.
             </p>
           </div>
         </div>
@@ -392,8 +397,68 @@ export default function Deck() {
         <Cart />
       </section>
 
+      {/* 07 · build your combo: a live page in their design, any products in one box */}
+      <section className="pg-slide" {...slide(6)}>
+        <div className="pg-split">
+          <h2 className="label">Build your combo</h2>
+          <div className="pg-copy">
+            <p className="pg-lead">Shoppers make their own combo.</p>
+            <p className="soft">
+              Six boxes, your whole shop. Tap a box, search in Bangla or
+              English, and add ghee, oil, masala or a ready mix. Three items
+              take 5% off, four take 8%, a full box 12%. You set the steps.
+            </p>
+            <a
+              className="pg-url"
+              href={COMBO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>arc-bangladesh.com/grambangla/build-your-combo</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+        <a
+          className="pg-combo"
+          href={COMBO_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open the Build Your Combo page"
+        >
+          <span className="pg-combo-desk">
+            <span className="pg-combo-bar" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+              <span>arc-bangladesh.com/grambangla/build-your-combo</span>
+            </span>
+            <img
+              src={`${IMG}/combo-desktop.webp`}
+              alt="The Build Your Combo page on a laptop: four products in the box, 8% off"
+              width={1600}
+              height={1000}
+              loading="lazy"
+              draggable={false}
+            />
+          </span>
+          <span className="pg-combo-phone">
+            <FitPhone>
+              <img
+                src={`${IMG}/combo-phone.webp`}
+                alt="The product picker on a phone, with search and categories"
+                width={600}
+                height={1305}
+                loading="lazy"
+                draggable={false}
+              />
+            </FitPhone>
+          </span>
+        </a>
+      </section>
+
       {/* 06 · team */}
-      <section className="pg-slide pg-wide" {...slide(6)}>
+      <section className="pg-slide pg-wide" {...slide(7)}>
         <div className="pg-split">
           <h2 className="label">Your team</h2>
           <div className="pg-copy">
@@ -411,7 +476,7 @@ export default function Deck() {
       </section>
 
       {/* 07 · iMessage */}
-      <section className="pg-slide" {...slide(7)}>
+      <section className="pg-slide" {...slide(8)}>
         <div className="pg-split pg-imsg-wrap">
           <div>
             <h2 className="label">iMessage</h2>
@@ -426,7 +491,7 @@ export default function Deck() {
       </section>
 
       {/* 08 · running cost */}
-      <section className="pg-slide" {...slide(8)}>
+      <section className="pg-slide" {...slide(9)}>
         <div className="pg-split">
           <h2 className="label">Running cost</h2>
           <div className="pg-copy">
@@ -441,7 +506,7 @@ export default function Deck() {
       </section>
 
       {/* 09 · offer */}
-      <section className="pg-slide" {...slide(9)}>
+      <section className="pg-slide" {...slide(10)}>
         <div className="pg-split">
           <h2 className="label">The offer</h2>
           <div className="pg-offer">
@@ -657,13 +722,90 @@ const atPos = (p: number) => {
 };
 
 /** How long the included database space lasts, in words a founder reads at a glance */
-function storageLeft(months: number) {
-  if (months >= 120) return "10+ years of orders";
-  if (months >= 24) return `About ${Math.floor(months / 12)} years of orders`;
-  if (months >= 2)
-    return `About ${Math.floor(months)} months, then $${EXTRA_GB_USD} a GB`;
-  return `Under 2 months, then $${EXTRA_GB_USD} a GB`;
+/* Database room in plain words: what it costs now, how long it lasts, what comes after */
+function storageFacts(months: number, mbPerMonth: number) {
+  const perGb = Math.round(EXTRA_GB_USD * USD_TO_BDT);
+  const gbYear = Math.max(1, Math.round((mbPerMonth * 12) / 1024));
+  const lasts =
+    months >= 120
+      ? "10+ years of orders"
+      : months >= 24
+        ? `About ${Math.floor(months / 12)} years of orders`
+        : months >= 2
+          ? `About ${Math.floor(months)} months of orders`
+          : "Under 2 months of orders";
+  return [
+    { k: "Cost now", v: "Already in the monthly price above" },
+    { k: "Lasts", v: lasts, note: "at this many orders a day" },
+    {
+      k: "After that",
+      v: `৳${perGb} a month for each extra GB`,
+      note: `a year of orders is about ${gbYear} GB, so about ৳${(gbYear * perGb).toLocaleString("en-IN")} a month for each extra year kept`,
+    },
+  ];
 }
+
+/* What the store is built with, each with a line a non-technical founder can follow */
+const STACK: {
+  part: string;
+  tech: string;
+  logos: LogoKey[];
+  plain: string;
+  items?: string[];
+}[] = [
+  {
+    part: "Frontend",
+    tech: "React, TypeScript, Tailwind CSS",
+    logos: ["react", "typescript", "tailwindcss"],
+    plain: "The screens your customers and your team see and tap.",
+  },
+  {
+    part: "Backend",
+    tech: "Node.js (Express)",
+    logos: ["nodedotjs", "express"],
+    plain: "The engine behind them: takes orders, checks stock, books couriers.",
+  },
+  {
+    part: "Database",
+    tech: "PostgreSQL, on Supabase",
+    logos: ["postgresql", "supabase"],
+    plain: "Where every order, product and customer is kept, backed up daily.",
+  },
+  {
+    part: "Hosting",
+    tech: "Cloudflare Workers and Images",
+    logos: ["cloudflareworkers"],
+    plain:
+      "Runs the site on Cloudflare's servers and shrinks product photos for each phone, so pages open fast on mobile data.",
+  },
+  {
+    part: "Live updates",
+    tech: "Supabase Realtime, Cloudflare Durable Objects",
+    logos: ["supabase", "cloudflare"],
+    plain: "The admin panel updates itself; nobody has to press refresh.",
+    items: [
+      "New orders land on the orders screen the moment they're placed.",
+      "Shoppers on the site right now: browsing, with a cart, checking out or just bought, on a map of where they are.",
+      "Who on your team has which order open, so two people never call the same customer.",
+      "An incoming call pops up with the caller's last order, and the call's status updates on the order while you talk.",
+      "Each order's history fills in as teammates confirm, edit, print or ship it.",
+      "Team chat, orders taken in Facebook, Instagram and WhatsApp messages, and the home screen numbers keep themselves current.",
+    ],
+  },
+  {
+    part: "Error alerts",
+    tech: "Sentry",
+    logos: ["sentry"],
+    plain: "Tells us the moment something breaks, usually before you notice.",
+  },
+  {
+    part: "Connected to",
+    tech: "Steadfast, Pathao, BulkSMSBD, Meta",
+    logos: ["meta"],
+    plain:
+      "Couriers booked from the order, SMS to customers, and every sale reported back to your Facebook ads.",
+  },
+];
 
 /* What a founder needs to know about hosting, in plain words */
 const HOSTING = [
@@ -676,15 +818,46 @@ const HOSTING = [
 ];
 
 function CostCalc() {
-  const [orders, setOrders] = useState(100);
-  const c = runningCost(orders);
+  const [orders, setOrders] = useState(500);
+  const [rush, setRush] = useState(false);
+  const c = runningCost(orders, rush);
   return (
     <div className="pg-costwrap">
-      <ul className="pg-hosting">
-        {HOSTING.map((h) => (
-          <li key={h}>{h}</li>
-        ))}
-      </ul>
+      <div className="pg-costside">
+        <ul className="pg-hosting">
+          {HOSTING.map((h) => (
+            <li key={h}>{h}</li>
+          ))}
+        </ul>
+        <div className="pg-stack">
+          <h3>What it's built with</h3>
+          <dl>
+            {STACK.map((t) => (
+              <div key={t.part}>
+                <dt>{t.part}</dt>
+                <dd>
+                  <b>
+                    <span className="pg-logos" aria-hidden="true">
+                      {t.logos.map((l) => (
+                        <Logo key={l} name={l} size={16} />
+                      ))}
+                    </span>
+                    {t.tech}
+                  </b>
+                  <span>{t.plain}</span>
+                  {t.items && (
+                    <ul className="pg-stack-items">
+                      {t.items.map((i) => (
+                        <li key={i}>{i}</li>
+                      ))}
+                    </ul>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
       <div className="pg-cost">
         <div className="ps">
           <label htmlFor="pg-orders" className="ps-label">
@@ -719,9 +892,41 @@ function CostCalc() {
           </div>
         </div>
 
+        <div className="pg-rush">
+          <div className="pg-seg" role="radiogroup" aria-label="Database size">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={!rush}
+              onClick={() => setRush(false)}
+            >
+              Normal days
+              <small>{c.normalSize} database</small>
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={rush}
+              onClick={() => setRush(true)}
+            >
+              Rush time
+              <small>{c.rushSize} database</small>
+            </button>
+          </div>
+          <p className="soft">
+            Before Eid or a big sale we switch your database one size up so it
+            keeps up with the rush, then back down when it's over. It's billed
+            by the hour, so a rush week adds only about ৳
+            {(Math.round(c.rushWeekBdt / 10) * 10).toLocaleString("en-IN")}. The switch takes a couple of
+            minutes, so we do it at night.
+          </p>
+        </div>
+
         <div className="pg-cost-grid">
           <div className="pg-cost-total">
-            <span>Every month</span>
+            <span>
+              {rush ? `A whole month at rush size` : "Every month"}
+            </span>
             <b className="num">
               <NumberFlow
                 value={Math.round(c.bdt / 10) * 10}
@@ -748,16 +953,32 @@ function CostCalc() {
             <div>
               <span>
                 Orders, products and customers
-                <small>Supabase · {c.compute} database</small>
+                <small>
+                  Supabase · {c.compute} database
+                  {rush ? " all month" : ""}
+                </small>
               </span>
               <b className="num">${c.supabase.toFixed(2)}</b>
             </div>
-            <div>
-              <span>
-                Storage space
-                <small>{INCLUDED_GB} GB included</small>
-              </span>
-              <b>{storageLeft(c.storageMonths)}</b>
+            <div className="pg-store">
+              <div className="pg-store-head">
+                <span>
+                  Room for your data
+                  <small>Supabase · comes with the plan</small>
+                </span>
+                <b className="num">{INCLUDED_GB} GB included</b>
+              </div>
+              <dl className="pg-store-facts">
+                {storageFacts(c.storageMonths, c.dbMbPerMonth).map((f) => (
+                  <div key={f.k}>
+                    <dt>{f.k}</dt>
+                    <dd>
+                      {f.v}
+                      {f.note && <small>{f.note}</small>}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </div>
